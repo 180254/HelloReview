@@ -4,17 +4,27 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import pl.p.lodz.iis.hr.xmlconfig.github.General;
 import pl.p.lodz.iis.hr.xmlconfig.github.GitHub;
 
 @JacksonXmlRootElement(localName = "hello")
 public final class XMLConfig {
 
+    @JsonProperty("general")
+    private final General general;
+
     @JsonProperty("github")
     private final GitHub gitHub;
 
     @JsonCreator
-    public XMLConfig(@JsonProperty("github") GitHub gitHub) {
+    public XMLConfig(@JsonProperty("general") General general,
+                     @JsonProperty("github") GitHub gitHub) {
+        this.general = general;
         this.gitHub = gitHub;
+    }
+
+    public General getGeneral() {
+        return general;
     }
 
     public GitHub getGitHub() {

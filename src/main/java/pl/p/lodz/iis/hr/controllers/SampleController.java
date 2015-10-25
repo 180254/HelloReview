@@ -1,45 +1,50 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
+import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.client.GitHubClient;
+import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.p.lodz.iis.hr.components.XMLConfigProvider;
+import pl.p.lodz.iis.hr.services.XMLConfigProvider;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class SampleController {
 
     @Autowired
-    XMLConfigProvider xmlConfigProvider;
-
-    @Autowired
-    OAuth2RestTemplate oAuth2RestTemplate;
+    XMLConfigProvider xmlConfigProviderService;
+    @Autowired private ServletContext servletContext;
+//
+//    @Autowired
+//    ProfileManager profileManager;
 
     @RequestMapping("/")
-    public String main() {
-
-        Logger logger = LoggerFactory.getLogger(SampleController.class);
-        logger.info(oAuth2RestTemplate.getResource().getAccessTokenUri());
-        logger.info(oAuth2RestTemplate.getResource().getClientId());
-
-        logger.info(oAuth2RestTemplate.getResource().getClientSecret());
-        logger.info(oAuth2RestTemplate.getResource().getGrantType());
-        logger.info(oAuth2RestTemplate.getResource().getId());
-        logger.info(oAuth2RestTemplate.getResource().getTokenName());
-
-        logger.info(oAuth2RestTemplate.getResource().getAuthenticationScheme().toString());
-        logger.info(oAuth2RestTemplate.getResource().getClientAuthenticationScheme().toString());
-
+    public String main(HttpServletRequest request,HttpServletResponse response, Model model) throws RequiresHttpAction {
 
         return "main";
     }
 
     @RequestMapping("/auth/callback")
     public String login() {
+
+        return "main";
+    }
+
+    @RequestMapping("/oauth/github")
+    public String logi1n() {
 
         return "main";
     }

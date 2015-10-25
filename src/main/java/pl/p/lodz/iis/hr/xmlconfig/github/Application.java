@@ -7,10 +7,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public final class Application {
 
     @JsonProperty("clientID")
-    final private String clientID;
+    private final String clientID;
 
     @JsonProperty("clientSecret")
-    final private String clientSecret;
+    private final String clientSecret;
 
     @JsonCreator
     public Application(@JsonProperty("clientID") String clientID,
