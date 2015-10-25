@@ -1,0 +1,19 @@
+header > pre {
+    font-size: 9px;
+}
+
+.header-h {
+    color: blue;
+}
+
+.header-r {
+    color: red;
+}
+
+.main-hello > .github-button {
+    width: 300px;
+}
+
+.main-hello .username {
+    color: rgb(203, 218, 0);
+}

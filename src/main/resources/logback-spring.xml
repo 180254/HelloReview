@@ -4,7 +4,7 @@
         <withJansi>true</withJansi>
         <encoder>
             <pattern>
-                %d{HH:mm:ss.SSS} [%-7.7thread] %highlight(%-5level) [ %cyan(%-32.32logger{32}) ] - %msg%n%xException
+                %d{HH:mm:ss.SSS} [%-7.7thread] %highlight(%-5level) [ %cyan(%-32.32logger{32}) ] - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -16,5 +16,5 @@
     </root>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="pl.p.lodz.iis" level="DEBUG"/>
+    <logger name="pl.p.lodz.iis.hr" level="DEBUG"/>
 </configuration>

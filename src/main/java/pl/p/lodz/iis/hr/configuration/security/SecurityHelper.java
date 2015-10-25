@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.security;
+package pl.p.lodz.iis.hr.configuration.security;
 
 
 import org.pac4j.core.context.J2EContext;
@@ -9,12 +9,13 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import pl.p.lodz.iis.hr.utils.LazySupplier;
+import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.function.Supplier;
 
-public class Pac4jHelper {
+public class SecurityHelper {
 
     private final GitHubClient gitHubClient;
 
@@ -22,9 +23,9 @@ public class Pac4jHelper {
     private final Supplier<ProfileManager<UserProfile>> profileManager;
     private final Supplier<GitHubProfile> sessionUserProfile;
 
-    public Pac4jHelper(GitHubClient gitHubClient,
-                       HttpServletRequest request,
-                       HttpServletResponse response) {
+    public SecurityHelper(GitHubClient gitHubClient,
+                          HttpServletRequest request,
+                          HttpServletResponse response) {
 
         this.gitHubClient = gitHubClient;
         webContext = LazySupplier.of(() -> new J2EContext(request, response));
@@ -55,5 +56,14 @@ public class Pac4jHelper {
     public GitHubProfile getUserProfileUp2Date() {
         String accessToken = sessionUserProfile.get().getAccessToken();
         return gitHubClient.getUserProfile(accessToken);
+    }
+
+    public boolean isMaster(XMLConfig xmlConfig) {
+        return sessionUserProfile.get().getUsername()
+                .equals(xmlConfig.getGitHub().getMaster().getUsername());
+    }
+
+    public boolean isPeer(XMLConfig xmlConfig) {
+        return !isMaster(xmlConfig);
     }
 }

@@ -45,21 +45,15 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
-
-    compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
-    compile("org.springframework.boot:spring-boot-starter-data-rest:${springBootVersion}")
-//    compile("org.springframework.boot:spring-boot-starter-mail:${springBootVersion}")
-//    compile("org.springframework.boot:spring-boot-starter-cache:${springBootVersion}")
-//    compile("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
-//    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
-//    compile("org.springframework.boot:spring-boot-actuator-docs:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+
 //    compile("org.springframework.social:spring-social-github:1.0.0.M4")
+
+    compile("com.h2database:h2:1.4.190")
 
     compile("org.pac4j:spring-webmvc-pac4j:1.0.0-SNAPSHOT")
     compile("org.pac4j:pac4j-oauth:1.8.1-SNAPSHOT")
-
-    compile("com.h2database:h2:1.4.190")
 
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3")
 

@@ -20,12 +20,12 @@ public class LazySupplier<T> implements Supplier<T> {
         this.delegate = delegate;
     }
 
+    public static <T> Supplier<T> of(Supplier<T> provider) {
+        return new LazySupplier<>(provider);
+    }
+
     @Override
     public T get() {
         return map.computeIfAbsent(LazySupplier.class, key -> delegate.get());
-    }
-
-    public static <T> Supplier<T> of(Supplier<T> provider) {
-        return new LazySupplier<>(provider);
     }
 }

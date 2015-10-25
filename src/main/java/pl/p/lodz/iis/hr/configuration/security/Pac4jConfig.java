@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.security;
+package pl.p.lodz.iis.hr.configuration.security;
 
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
@@ -6,22 +6,20 @@ import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import pl.p.lodz.iis.hr.services.XMLConfigProvider;
+import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 import pl.p.lodz.iis.hr.xmlconfig.github.Application;
 import pl.p.lodz.iis.hr.xmlconfig.github.General;
 
 @Configuration
-@PropertySource("classpath:pac4j.properties")
 public class Pac4jConfig {
 
     @Autowired
-    private XMLConfigProvider xmlConfigProvider;
+    private XMLConfig xmlConfig;
 
     @Bean(name = "pack4jClients")
     public Clients clients() {
-        General general = xmlConfigProvider.getXMLConfig().getGeneral();
-        Application application = xmlConfigProvider.getXMLConfig().getGitHub().getApplication();
+        General general = xmlConfig.getGeneral();
+        Application application = xmlConfig.getGitHub().getApplication();
 
         GitHubClient git = new GitHubClient(application.getClientID(), application.getClientSecret());
         return new Clients(String.format("%s/callback", general.getUrl()), git);

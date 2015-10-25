@@ -1,11 +1,10 @@
-package pl.p.lodz.iis.hr.services;
+package pl.p.lodz.iis.hr.configuration.xmlconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.jetbrains.annotations.NonNls;
-import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.exceptions.UnableToInitializeException;
 import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 
@@ -15,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Service
 public class XMLConfigProvider {
 
     @NonNls
