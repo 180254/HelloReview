@@ -8,6 +8,6 @@ public class MasterController {
 
     @RequestMapping("/master")
     public String index() {
-        return "master/index";
+        return "master-index";
     }
 }

@@ -8,6 +8,6 @@ public class PeerController {
 
     @RequestMapping("/peer")
     public String index() {
-        return "peer/index";
+        return "peer-index";
     }
 }
