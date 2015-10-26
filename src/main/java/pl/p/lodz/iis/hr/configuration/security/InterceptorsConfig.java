@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import pl.p.lodz.iis.hr.configuration.security.interceptors.HasMasterRoleInterceptor;
+import pl.p.lodz.iis.hr.configuration.security.interceptors.HasPeerRoleInterceptor;
+import pl.p.lodz.iis.hr.configuration.security.interceptors.UserInfoInterceptor;
 import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 
 @Configuration
@@ -24,5 +27,6 @@ public class InterceptorsConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new HasMasterRoleInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/master/**");
         registry.addInterceptor(new HasPeerRoleInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/peer/**");
+        registry.addInterceptor(new UserInfoInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/**");
     }
 }

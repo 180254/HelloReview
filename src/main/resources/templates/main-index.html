@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main class="main-hello text-center">
+    <nav th:replace="fragments/nav :: nav"></nav>
+
+    <div th:if="${isLoggedIn == false}" class="social-button center-block">
+        <a class="btn btn-block btn-social btn-github" href="/login">
+            <i class="fa fa-github"></i>
+            <span th:text="#{main.signin}"></span>
+        </a>
+    </div>
+
+
+    <div th:if="${isLoggedIn}" class="social-button center-block">
+        <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}" target="_blank">
+            <i class="fa fa-github"></i>
+            Hello [<span th:text="${username}" class="username"></span>] !
+        </a>
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-header > pre {
+header pre {
     font-size: 9px;
 }
 
@@ -10,7 +10,8 @@ header > pre {
     color: red;
 }
 
-.main-hello > .github-button {
+.main-hello .social-button {
+    margin-top: 1em;
     width: 300px;
 }
 

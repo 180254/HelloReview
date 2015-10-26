@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="nav">
+    <ul class="nav nav-tabs">
+        <li role="presentation"
+            th:class="${#httpServletRequest.requestURI.equals('/')} ? active : ''">
+            <a href="/">Main page</a>
+        </li>
+
+        <li role="presentation"
+            th:if="${isLoggedIn and isMaster}"
+            th:class="${#httpServletRequest.requestURI.equals('/master')} ? active : ''">
+            <a href="/master">Master</a>
+        </li>
+
+
+        <li role="presentation"
+            th:if="${isLoggedIn and !isMaster}"
+            th:class="${#httpServletRequest.requestURI.equals('/peer')} ? active : ''">
+            <a href="/peer">Peer</a>
+        </li>
+
+        <li role="presentation"
+            th:if="${isLoggedIn}"
+            class="navbar-right">
+            <a href="/logout?url=/">Logout&nbsp;&nbsp;</a>
+        </li>
+
+    </ul>
+</nav>
+
+</body>
+</html>
