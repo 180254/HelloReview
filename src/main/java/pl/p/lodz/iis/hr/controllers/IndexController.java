@@ -1,21 +1,16 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class IndexController {
 
-
-    @RequestMapping("/")
-    public String index(HttpServletRequest request,
-                        HttpServletResponse response,
-                        Model model) {
-
+    @RequestMapping(
+            value = "/",
+            method = RequestMethod.GET)
+    public String index() {
         return "main-index";
     }
 }

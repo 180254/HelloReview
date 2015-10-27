@@ -9,12 +9,23 @@
             <a href="/">Main page</a>
         </li>
 
-        <li role="presentation"
+        <li role="presentation" class="dropdown"
             th:if="${isLoggedIn and isMaster}"
-            th:class="${#httpServletRequest.requestURI.equals('/master')} ? active : ''">
-            <a href="/master">Master</a>
-        </li>
+            th:classappend="${#httpServletRequest.requestURI.startsWith('/master/forms')} ? active : ''">
+            <a class="dropdown-toggle" data-toggle="dropdown"
+               href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                Forms <span class="caret"></span>
+            </a>
 
+            <ul class="dropdown-menu">
+                <li role="presentation">
+                    <a href="/master/forms">List existing</a>
+                </li>
+                <li role="presentation">
+                    <a href="/master/forms/add">Add new one</a>
+                </li>
+            </ul>
+        </li>
 
         <li role="presentation"
             th:if="${isLoggedIn and !isMaster}"

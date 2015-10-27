@@ -2,11 +2,10 @@ package pl.p.lodz.iis.hr.controllers;
 
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.client.GitHubClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.configuration.security.SecurityHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +21,11 @@ public class AuthController {
      * /callback - org.pac4j.springframework.web.CallbackController
      */
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+    @Autowired private GitHubClient gitHubClient;
 
-    @Autowired
-    private GitHubClient gitHubClient;
-
-    @RequestMapping("/login")
+    @RequestMapping(
+            value = "/login",
+            method = RequestMethod.GET)
     public String login(HttpServletRequest request,
                         HttpServletResponse response) {
 

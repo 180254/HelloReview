@@ -9,12 +9,12 @@ import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class HasMasterRoleInterceptor extends HandlerInterceptorAdapter {
+public class HasRolePeerInterceptor extends HandlerInterceptorAdapter {
 
     private final GitHubClient gitHubClient;
     private final XMLConfig xmlConfig;
 
-    public HasMasterRoleInterceptor(GitHubClient gitHubClient, XMLConfig xmlConfig) {
+    public HasRolePeerInterceptor(GitHubClient gitHubClient, XMLConfig xmlConfig) {
         this.gitHubClient = gitHubClient;
         this.xmlConfig = xmlConfig;
     }
@@ -28,7 +28,7 @@ public class HasMasterRoleInterceptor extends HandlerInterceptorAdapter {
         SecurityHelper securityHelper = new SecurityHelper(gitHubClient, request, response);
 
         if (securityHelper.isAuthenticated()) {
-            if (securityHelper.isMaster(xmlConfig)) {
+            if (securityHelper.isPeer(xmlConfig)) {
                 return true;
             } else {
                 response.sendError(HttpStatus.UNAUTHORIZED_401);

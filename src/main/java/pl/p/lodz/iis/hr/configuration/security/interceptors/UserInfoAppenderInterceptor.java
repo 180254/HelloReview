@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class UserInfoInterceptor extends HandlerInterceptorAdapter {
+public class UserInfoAppenderInterceptor extends HandlerInterceptorAdapter {
 
     private final GitHubClient gitHubClient;
     private final XMLConfig xmlConfig;
 
-    public UserInfoInterceptor(GitHubClient gitHubClient, XMLConfig xmlConfig) {
+    public UserInfoAppenderInterceptor(GitHubClient gitHubClient, XMLConfig xmlConfig) {
         this.gitHubClient = gitHubClient;
         this.xmlConfig = xmlConfig;
     }
