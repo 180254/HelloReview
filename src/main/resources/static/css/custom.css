@@ -18,3 +18,40 @@ header pre {
 .main-hello .username {
     color: rgb(203, 218, 0);
 }
+
+.form-main .form-description {
+    margin-bottom: 15px;
+    border: 8px solid rgba(240, 173, 78, 0.25);
+    font-size: 1.35em;
+    padding: 1em;
+}
+
+.form-main h2.question-text {
+    padding-bottom: 0.5em;
+    font-size: 1.3em;
+    color: darkmagenta;
+}
+
+.form-main .form-group {
+    margin-bottom: 15px;
+    border: 1px solid #CCC;
+    padding: 1em;
+}
+
+.form-main .input-2 {
+    padding: 1em;
+}
+
+.form-main .input-scale-b {
+    padding-left: 1.3em;
+    padding-right: 1.3em;
+}
+
+.form-submit button {
+    margin-top: 1em;
+    margin-bottom: 10em;
+
+    width: 80%;
+    font-size: 1.3em;
+    padding: 0.6em;
+}

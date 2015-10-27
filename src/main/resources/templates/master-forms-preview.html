@@ -4,24 +4,46 @@
 <body>
 <header th:replace="fragments/header :: header"></header>
 
-<main class="master-form-preview">
+<main class="form-main container">
 
     <form>
-        <div class="form-group" th:each="formItem : ${formItems}">
+        <div class="form-description" th:utext="${form.description}"></div>
 
-            <div th:if="${formItem instanceof T(pl.p.lodz.iis.hr.models.forms.questions.FormItemText)}">
-                <label th:for="'item' + ${formItem.id}">${formItem.label}</label>
-                <textarea th:id="'item' + ${formItem.id}" class="form-control" rows="2"></textarea>
-            </div>
+        <div class="form-group" th:each="question : ${form.questions}">
+            <h2 class="question-text" th:utext="${question.questionText}"></h2>
+            <span th:utext="${question.extraText}"></span>
 
-            <div th:if="${formItem instanceof T(pl.p.lodz.iis.hr.models.forms.questions.FormItemScale)}">
-                <span th:text="${formItem.question}"></span>
+            <div class="input" th:each="input : ${question.inputs}">
+
+                <div class="input-2"
+                     th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.questions.InputScale)}">
+                    <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
+                    <br/> <b class="input-scale-b" th:utext="${input.fromLabel}"></b>
+                    <input class="slider"
+                           th:id="'input' + ${input.id}"
+                           data-th-attr="data-slider-min=${input.fromS},
+                               data-slider-max=${input.toS},
+                               data-slider-value=${(input.toS - input.fromS)/2}"
+                           data-slider-step="1"/>
+                    <b class="input-scale-b" th:utext="${input.toLabel}"></b>
+                </div>
+
+                <div class="input-2"
+                     th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.questions.InputText)}">
+                    <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
+                    <textarea th:id="'input' + ${input.id}" class="form-control" rows="2" maxlength="1024"></textarea>
+                    <h6 class="pull-right t-letter-counter"></h6>
+                </div>
             </div>
 
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-    </form>
-</main>
 
+        <div class="form-submit text-center">
+            <button class="btn btn-default btn-info">Submit</button>
+        </div>
+
+    </form>
+
+</main>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.models.forms.questions;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -8,14 +7,12 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "id")
 public class InputText extends Input {
 
-    @Column(nullable = false)
-    private String label;
+    private static final long serialVersionUID = -8786608199930376985L;
 
-    public String getLabel() {
-        return label;
+    InputText() {
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public InputText(Question question, String label) {
+        super(question, label);
     }
 }

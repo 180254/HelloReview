@@ -9,11 +9,8 @@ import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 @Controller
 public class MasterController {
 
-    @Autowired
-    private GitHubClient gitHubClient;
-
-    @Autowired
-    private XMLConfig xmlConfig;
+    @Autowired private GitHubClient gitHubClient;
+    @Autowired private XMLConfig xmlConfig;
 
     @RequestMapping("/master")
     public String index() {

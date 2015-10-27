@@ -7,12 +7,16 @@ public final class ExceptionChecker {
     private ExceptionChecker() {
     }
 
-    public static <T> boolean checkNoExceptionThrown(Supplier<T> supplier) {
+    public static <T> boolean checkExceptionThrown(Supplier<T> supplier) {
         try {
             supplier.get();
-            return true;
-        } catch (Exception ignored) {
             return false;
+        } catch (Exception ignored) {
+            return true;
         }
+    }
+
+    public static <T> boolean checkNoExceptionThrown(Supplier<T> supplier) {
+        return !checkExceptionThrown(supplier);
     }
 }

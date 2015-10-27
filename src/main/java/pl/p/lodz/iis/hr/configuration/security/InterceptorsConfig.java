@@ -17,11 +17,8 @@ import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 @DependsOn({"pack4jConfig", "xmlConfig"})
 public class InterceptorsConfig extends WebMvcConfigurerAdapter {
 
-    @Autowired
-    private GitHubClient gitHubClient;
-
-    @Autowired
-    private XMLConfig xmlConfig;
+    @Autowired private GitHubClient gitHubClient;
+    @Autowired private XMLConfig xmlConfig;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

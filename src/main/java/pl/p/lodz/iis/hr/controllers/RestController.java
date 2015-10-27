@@ -58,34 +58,64 @@ public class RestController {
     }
 
 
-
     @RequestMapping(value = "/init",
             method = RequestMethod.GET,
             produces = "application/json")
     @ResponseBody
     public String init() {
-        Form form = new Form();
-        form.setName("Example");
+        Form form = new Form("Example", "Proszę ocenić {projectname}. <b>Hehe</b><br/>Deadline jest {deadline}.");
         form = formRepository.saveAndFlush(form);
 
-        Question question = new Question();
-        question.setForm(form);
-        question.setQuestionText("Czy poprawnie sformatowano kod.");
+        Question question = new Question(form, "Czy poprawnie sformatowano kod?", null);
         question = questionRepository.saveAndFlush(question);
 
-        InputScale inputScale = new InputScale();
-        inputScale.setQuestion(question);
-        inputScale.setLabel("Oceń w skali:");
-        inputScale.setFromLabel("NIE");
-        inputScale.setToLabel("TAK");
-        inputScale.setFromS(0);
-        inputScale.setToS(00);
+
+        InputScale inputScale = new InputScale(
+                question, "Oceń w skali",
+                "TAK", 0L, "NIE", 10L);
         inputScale = inputScaleRepository.saveAndFlush(inputScale);
 
-        InputText inputText = new InputText();
-        inputText.setQuestion(question);
-        inputText.setLabel("Dodatkowy komentarz:");
+
+        InputText inputText = new InputText(question, "Dodatkowy komentarz:");
         inputText = inputTextRepository.saveAndFlush(inputText);
+
+        //
+
+
+        question = new Question(form, "Ala ma kota",
+                "Nunc ullamcorper odio non <b>leo bibendum, vitae aliquet lectus varius." +
+                        "Praesent viverra leo tellus, in eleifend enim elementum eget. Nunc ac euismod elit." +
+                        "In ornare quam nisi, sed elementum risus dapibus quis</b>. Vestibulum vel quam condimentum," +
+                        "elementum risus et, euismod arcu. Suspendisse egestas, mauris sed scelerisque blandit," +
+                        "libero quam sagittis justo, eget efficitur leo justo non eros. Phasellus massa quam, mattis" +
+                        "non est in, volutpat auctor lacus.\n" +
+                        "Etiam risus risus, dignissim quis enim eget, placerat sagittis leo. Etiam egestas rutrum magna" +
+                        "vitae tempus. Nullam at consectetur mauris. Suspendisse fringilla, nibh rhoncus dictum faucibus," +
+                        "lectus neque mattis libero, a scelerisque turpis. ");
+        question = questionRepository.saveAndFlush(question);
+
+        inputText = new InputText(question, "Coś napisz:");
+        inputText = inputTextRepository.saveAndFlush(inputText);
+
+        inputScale = new InputScale(
+                question, "Oceń w skali",
+                "Super", 0L, "Beznadziejnie", 10L);
+        inputScale = inputScaleRepository.saveAndFlush(inputScale);
+
+        //
+
+        question = new Question(form, "Czy poprawnie użyto banana?", null);
+        question = questionRepository.saveAndFlush(question);
+
+        inputText = new InputText(question, "Dodatkowy komentarz:");
+        inputText = inputTextRepository.saveAndFlush(inputText);
+
+        inputScale = new InputScale(
+                question, "Oceń w skali",
+                "TAK", 0L, "NIE", 10L);
+        inputScale = inputScaleRepository.saveAndFlush(inputScale);
+
+
         return "";
     }
 }

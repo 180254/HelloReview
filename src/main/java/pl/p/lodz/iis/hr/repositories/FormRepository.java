@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pl.p.lodz.iis.hr.models.forms.Form;
 
 @Repository
-public interface FormRepository extends JpaRepository<Form, Long>{
+public interface FormRepository extends JpaRepository<Form, Long> {
 
 }

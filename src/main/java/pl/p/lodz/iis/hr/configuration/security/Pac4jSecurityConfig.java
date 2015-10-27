@@ -13,8 +13,7 @@ import pl.p.lodz.iis.hr.xmlconfig.github.General;
 @Configuration
 public class Pac4jSecurityConfig {
 
-    @Autowired
-    private XMLConfig xmlConfig;
+    @Autowired private XMLConfig xmlConfig;
 
     @Bean(name = "pack4jClients")
     public Clients clients() {

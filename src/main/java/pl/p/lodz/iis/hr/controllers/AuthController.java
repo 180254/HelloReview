@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.p.lodz.iis.hr.configuration.security.SecurityHelper;
+import pl.p.lodz.iis.hr.configuration.security.Pac4jSecurityHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,17 +29,17 @@ public class AuthController {
     public String login(HttpServletRequest request,
                         HttpServletResponse response) {
 
-        SecurityHelper securityHelper = new SecurityHelper(gitHubClient, request, response);
+        Pac4jSecurityHelper pac4jSecurityHelper = new Pac4jSecurityHelper(gitHubClient, request, response);
 
-        if (securityHelper.getProfileManager().isAuthenticated()
-                && checkNoExceptionThrown(securityHelper::getUserProfileUp2Date)) {
+        if (pac4jSecurityHelper.getProfileManager().isAuthenticated()
+                && checkNoExceptionThrown(pac4jSecurityHelper::getUserProfileUp2Date)) {
             return "redirect:/";
 
         } else {
-            securityHelper.getProfileManager().remove(true);
+            pac4jSecurityHelper.getProfileManager().remove(true);
 
             try {
-                return String.format("redirect:%s", securityHelper.getRedirectLocation());
+                return String.format("redirect:%s", pac4jSecurityHelper.getRedirectLocation());
             } catch (RequiresHttpAction ignored) {
                 return "redirect:/";
             }
