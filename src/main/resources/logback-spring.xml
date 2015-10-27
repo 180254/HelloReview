@@ -17,4 +17,7 @@
 
     <logger name="org.springframework" level="INFO"/>
     <logger name="pl.p.lodz.iis.hr" level="DEBUG"/>
+
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type" level="TRACE"/>
 </configuration>

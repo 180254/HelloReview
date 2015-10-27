@@ -3,7 +3,7 @@ package pl.p.lodz.iis.hr.configuration.security.interceptors;
 import org.eclipse.jetty.http.HttpStatus;
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import pl.p.lodz.iis.hr.configuration.security.SecurityHelper;
+import pl.p.lodz.iis.hr.configuration.security.Pac4jSecurityHelper;
 import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +25,10 @@ public class HasRoleMasterInterceptor extends HandlerInterceptorAdapter {
                              Object handler)
             throws Exception {
 
-        SecurityHelper securityHelper = new SecurityHelper(gitHubClient, request, response);
+        Pac4jSecurityHelper pac4jSecurityHelper = new Pac4jSecurityHelper(gitHubClient, request, response);
 
-        if (securityHelper.isAuthenticated()) {
-            if (securityHelper.isMaster(xmlConfig)) {
+        if (pac4jSecurityHelper.isAuthenticated()) {
+            if (pac4jSecurityHelper.isMaster(xmlConfig)) {
                 return true;
             } else {
                 response.sendError(HttpStatus.UNAUTHORIZED_401);

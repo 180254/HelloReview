@@ -11,7 +11,7 @@ import pl.p.lodz.iis.hr.xmlconfig.github.Application;
 import pl.p.lodz.iis.hr.xmlconfig.github.General;
 
 @Configuration
-public class Pac4jConfig {
+public class Pac4jSecurityConfig {
 
     @Autowired
     private XMLConfig xmlConfig;

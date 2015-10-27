@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.function.Supplier;
 
-public class SecurityHelper {
+public class Pac4jSecurityHelper {
 
     private final GitHubClient gitHubClient;
 
@@ -23,9 +23,9 @@ public class SecurityHelper {
     private final Supplier<ProfileManager<UserProfile>> profileManager;
     private final Supplier<GitHubProfile> sessionUserProfile;
 
-    public SecurityHelper(GitHubClient gitHubClient,
-                          HttpServletRequest request,
-                          HttpServletResponse response) {
+    public Pac4jSecurityHelper(GitHubClient gitHubClient,
+                               HttpServletRequest request,
+                               HttpServletResponse response) {
 
         this.gitHubClient = gitHubClient;
         webContext = LazySupplier.of(() -> new J2EContext(request, response));
