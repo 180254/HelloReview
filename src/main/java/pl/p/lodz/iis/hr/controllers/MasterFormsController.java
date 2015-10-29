@@ -19,7 +19,7 @@ public class MasterFormsController {
     @RequestMapping(
             value = "/m/forms/preview/{formID}",
             method = RequestMethod.GET)
-    public String index(
+    public String preview(
             @PathVariable long formID,
             Model model) {
 
@@ -31,5 +31,12 @@ public class MasterFormsController {
 
         model.addAttribute("form", form);
         return "m-forms-preview";
+    }
+
+    @RequestMapping(
+            value = "/m/forms/add",
+            method = RequestMethod.GET)
+    public String addF(){
+        return "m-forms-add";
     }
 }

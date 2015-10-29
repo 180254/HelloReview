@@ -10,8 +10,11 @@ header pre {
     color: red;
 }
 
-.main-hello .social-button {
+main {
     margin-top: 1em;
+}
+
+.main-hello .social-button {
     width: 300px;
 }
 
@@ -42,16 +45,42 @@ header pre {
     padding: 1em;
 }
 
+.form-main .input-3 {
+    margin-bottom: 1em;
+}
+
 .form-main .input-scale-b {
     padding-left: 1.3em;
     padding-right: 1.3em;
 }
 
-.form-submit button {
+.form-submit {
     margin-top: 1em;
     margin-bottom: 10em;
+}
 
+.form-submit button {
     width: 80%;
     font-size: 1.3em;
     padding: 0.6em;
+}
+
+.required {
+    color: red;
+}
+
+.form-special-tag {
+    color: darkmagenta;
+}
+
+.forms-buttons-add-preview {
+    font-family: monospace;
+}
+
+.forms-buttons-add-preview button {
+    width: 300px;
+}
+
+.forms-buttons-add-preview .btn-primary {
+    margin-top: 1em;
 }
