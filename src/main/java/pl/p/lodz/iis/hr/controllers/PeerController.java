@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PeerController {
 
-    @RequestMapping("/peer")
+    @RequestMapping("/p")
     public String index() {
         return "peer-index";
     }

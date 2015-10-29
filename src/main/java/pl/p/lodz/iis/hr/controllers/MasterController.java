@@ -12,9 +12,9 @@ public class MasterController {
     @Autowired private GitHubClient gitHubClient;
     @Autowired private XMLConfig xmlConfig;
 
-    @RequestMapping("/master")
+    @RequestMapping("/m")
     public String index() {
 
-        return "master-index";
+        return "m-index";
     }
 }

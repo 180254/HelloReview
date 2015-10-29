@@ -30,7 +30,7 @@ public class RestController {
 //    @Autowired private FormItemTextRepository formItemTextRepository;
 //
 
-//    @RequestMapping(value = "/master/rest/items",
+//    @RequestMapping(value = "/m/rest/items",
 //            method = RequestMethod.GET,
 //            produces = "application/json")
 //    @ResponseBody

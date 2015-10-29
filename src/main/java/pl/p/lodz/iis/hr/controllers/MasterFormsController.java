@@ -17,7 +17,7 @@ public class MasterFormsController {
     @Autowired private FormRepository formRepository;
 
     @RequestMapping(
-            value = "/master/forms/preview/{formID}",
+            value = "/m/forms/preview/{formID}",
             method = RequestMethod.GET)
     public String index(
             @PathVariable long formID,
@@ -30,6 +30,6 @@ public class MasterFormsController {
         }
 
         model.addAttribute("form", form);
-        return "master-forms-preview";
+        return "m-forms-preview";
     }
 }

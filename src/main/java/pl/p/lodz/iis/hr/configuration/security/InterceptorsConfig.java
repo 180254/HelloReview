@@ -22,8 +22,8 @@ public class InterceptorsConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new HasRoleMasterInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/master/**");
-        registry.addInterceptor(new HasRolePeerInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/peer/**");
+        registry.addInterceptor(new HasRoleMasterInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/m/**");
+        registry.addInterceptor(new HasRolePeerInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/p/**");
         registry.addInterceptor(new UserInfoAppenderInterceptor(gitHubClient, xmlConfig)).addPathPatterns("/**");
     }
 }
