@@ -1,14 +1,14 @@
-package pl.p.lodz.iis.hr.xmlconfig;
+package pl.p.lodz.iis.hr.configuration.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import pl.p.lodz.iis.hr.xmlconfig.github.General;
-import pl.p.lodz.iis.hr.xmlconfig.github.GitHub;
+import pl.p.lodz.iis.hr.configuration.appconfig.github.General;
+import pl.p.lodz.iis.hr.configuration.appconfig.github.GitHub;
 
 @JacksonXmlRootElement(localName = "hello")
-public final class XMLConfig {
+public final class AppConfig {
 
     @JsonProperty("general")
     private final General general;
@@ -17,7 +17,7 @@ public final class XMLConfig {
     private final GitHub gitHub;
 
     @JsonCreator
-    public XMLConfig(@JsonProperty("general") General general,
+    public AppConfig(@JsonProperty("general") General general,
                      @JsonProperty("github") GitHub gitHub) {
         this.general = general;
         this.gitHub = gitHub;

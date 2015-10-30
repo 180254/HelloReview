@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.xmlconfig;
+package pl.p.lodz.iis.hr.configuration.appconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.jetbrains.annotations.NonNls;
 import pl.p.lodz.iis.hr.exceptions.UnableToInitializeException;
-import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,49 +13,49 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class XMLConfigProvider {
+class AppConfigProvider {
 
     @NonNls
-    private static final String XML_CONFIG_FILENAME = "HelloReviewConfig.xml";
-    private final XMLConfig xmlConfig;
+    private static final String APP_CONFIG_FILENAME = "HelloReviewConfig.xml";
+    private final AppConfig appConfig;
 
-    public XMLConfigProvider() {
-        String content = readXMLConfigContentFromFile();
-        xmlConfig = parseXMLConfig(content);
+    AppConfigProvider() {
+        String content = readAppConfigContentFromFile();
+        appConfig = parseAppConfig(content);
     }
 
-    public XMLConfig getXMLConfig() {
-        return xmlConfig;
+    public AppConfig getAppConfig() {
+        return appConfig;
     }
 
-    private String readXMLConfigContentFromFile() {
+    private String readAppConfigContentFromFile() {
         try {
-            Path configPath = Paths.get(XML_CONFIG_FILENAME);
+            Path configPath = Paths.get(APP_CONFIG_FILENAME);
             byte[] configBytes = Files.readAllBytes(configPath);
             return new String(configBytes, StandardCharsets.UTF_8);
 
         } catch (IOException e) {
-            throw new UnableToInitializeException(XMLConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigProvider.class,
                     "Error during processing xml config: file incorrect format!", e);
         }
     }
 
-    private XMLConfig parseXMLConfig(String content) {
+    private AppConfig parseAppConfig(String content) {
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(false);
 
         XmlMapper xmlMapper = new XmlMapper(module);
-        ObjectReader reader = xmlMapper.readerFor(XMLConfig.class);
+        ObjectReader reader = xmlMapper.readerFor(AppConfig.class);
 
         try {
-            return reader.<XMLConfig>readValue(content);
+            return reader.<AppConfig>readValue(content);
 
         } catch (JsonProcessingException e) {
-            throw new UnableToInitializeException(XMLConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigProvider.class,
                     "Error during processing xml config: Config file has incorrect format!", e);
 
         } catch (IOException e) {
-            throw new UnableToInitializeException(XMLConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigProvider.class,
                     "Error during processing xml config: Other exception occurred!", e);
         }
     }

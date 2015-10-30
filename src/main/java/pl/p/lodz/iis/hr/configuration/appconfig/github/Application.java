@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.xmlconfig.github;
+package pl.p.lodz.iis.hr.configuration.appconfig.github;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

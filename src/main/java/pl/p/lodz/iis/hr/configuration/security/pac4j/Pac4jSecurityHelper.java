@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.security;
+package pl.p.lodz.iis.hr.configuration.security.pac4j;
 
 
 import org.pac4j.core.context.J2EContext;
@@ -8,8 +8,8 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubProfile;
-import pl.p.lodz.iis.hr.utils.LazySupplier;
-import pl.p.lodz.iis.hr.xmlconfig.XMLConfig;
+import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
+import pl.p.lodz.iis.hr.utils.MemoizeSupplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,9 +28,9 @@ public class Pac4jSecurityHelper {
                                HttpServletResponse response) {
 
         this.gitHubClient = gitHubClient;
-        webContext = LazySupplier.of(() -> new J2EContext(request, response));
-        profileManager = LazySupplier.of(() -> new ProfileManager<>(webContext.get()));
-        sessionUserProfile = LazySupplier.of(() -> ((GitHubProfile) profileManager.get().get(true)));
+        webContext = MemoizeSupplier.of(() -> new J2EContext(request, response));
+        profileManager = MemoizeSupplier.of(() -> new ProfileManager<>(webContext.get()));
+        sessionUserProfile = MemoizeSupplier.of(() -> ((GitHubProfile) profileManager.get().get(true)));
     }
 
     public boolean isAuthenticated() {
@@ -58,12 +58,12 @@ public class Pac4jSecurityHelper {
         return gitHubClient.getUserProfile(accessToken);
     }
 
-    public boolean isMaster(XMLConfig xmlConfig) {
+    public boolean isMaster(AppConfig appConfig) {
         return sessionUserProfile.get().getUsername()
-                .equals(xmlConfig.getGitHub().getMaster().getUsername());
+                .equals(appConfig.getGitHub().getMaster().getUsername());
     }
 
-    public boolean isPeer(XMLConfig xmlConfig) {
-        return !isMaster(xmlConfig);
+    public boolean isPeer(AppConfig appConfig) {
+        return !isMaster(appConfig);
     }
 }
