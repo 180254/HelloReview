@@ -84,3 +84,10 @@ main {
 .forms-buttons-add-preview .btn-primary {
     margin-top: 1em;
 }
+
+code {
+    display: block;
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+}
