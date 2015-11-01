@@ -12,27 +12,32 @@ import java.util.List;
 public class Question implements Serializable {
 
     private static final long serialVersionUID = -1242802972920860558L;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "question")
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final List<Input> inputs = new ArrayList<>(10);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private long id;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Form form;
+
     @Column(nullable = false)
     private String questionText;
+
     @Column(nullable = true, length = 5120)
-    private String extraText;
+    private String additionalTips;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "question")
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final List<Input> inputs = new ArrayList<>(10);
 
     Question() {
     }
 
-    public Question(Form form, String questionText, String extraText) {
+    public Question(Form form, String questionText, String additionalTips) {
         this.questionText = questionText;
-        this.extraText = extraText;
+        this.additionalTips = additionalTips;
         this.form = form;
     }
 
@@ -48,8 +53,8 @@ public class Question implements Serializable {
         return questionText;
     }
 
-    public String getExtraText() {
-        return extraText;
+    public String getAdditionalTips() {
+        return additionalTips;
     }
 
     public List<Input> getInputs() {

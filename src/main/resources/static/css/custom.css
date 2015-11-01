@@ -61,8 +61,8 @@ main {
 
 .form-submit button {
     width: 80%;
-    font-size: 1.3em;
-    padding: 0.6em;
+    font-size: 1.15em;
+    padding: 0.4em;
 }
 
 .required {
@@ -79,10 +79,6 @@ main {
 
 .forms-buttons-add-preview button {
     width: 300px;
-}
-
-.forms-buttons-add-preview .btn-primary {
-    margin-top: 1em;
 }
 
 code {

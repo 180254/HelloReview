@@ -8,6 +8,6 @@ public class AppConfigBean {
 
     @Bean
     public AppConfig appConfig() {
-        return new AppConfigProvider().getAppConfig();
+        return new AppConfigParser().getAppConfig();
     }
 }

@@ -13,13 +13,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-class AppConfigProvider {
+class AppConfigParser {
 
     @NonNls
     private static final String APP_CONFIG_FILENAME = "HelloReviewConfig.xml";
     private final AppConfig appConfig;
 
-    AppConfigProvider() {
+    AppConfigParser() {
         String content = readAppConfigContentFromFile();
         appConfig = parseAppConfig(content);
     }
@@ -35,7 +35,7 @@ class AppConfigProvider {
             return new String(configBytes, StandardCharsets.UTF_8);
 
         } catch (IOException e) {
-            throw new UnableToInitializeException(AppConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigParser.class,
                     "Error during processing xml config: file incorrect format!", e);
         }
     }
@@ -51,11 +51,11 @@ class AppConfigProvider {
             return reader.<AppConfig>readValue(content);
 
         } catch (JsonProcessingException e) {
-            throw new UnableToInitializeException(AppConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigParser.class,
                     "Error during processing xml config: Config file has incorrect format!", e);
 
         } catch (IOException e) {
-            throw new UnableToInitializeException(AppConfigProvider.class,
+            throw new UnableToInitializeException(AppConfigParser.class,
                     "Error during processing xml config: Other exception occurred!", e);
         }
     }

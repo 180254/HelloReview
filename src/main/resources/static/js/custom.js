@@ -1,8 +1,8 @@
 $(document).ready(function () {
     'use strict';
 
+    prettyPrint();
     $("input.slider").slider();
-
     formsTextareaLettersCounter();
     autosize($('textarea'));
 });
@@ -10,10 +10,9 @@ $(document).ready(function () {
 function formsTextareaLettersCounter() {
     'use strict';
 
-    var textMax = 1024;
-    var textareas = $('.form-main').find('textarea');
+    $('.form-main').find('textarea').each(function () {
 
-    textareas.each(function () {
+        var textMax = $(this).attr('maxlength');
         $(this).next().html('0 / ' + textMax);
 
         $(this).keyup(function() {

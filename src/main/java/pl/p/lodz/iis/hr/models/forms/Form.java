@@ -11,17 +11,21 @@ import java.util.List;
 public class Form implements Serializable {
 
     private static final long serialVersionUID = -6520652024047473630L;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "form")
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final List<Question> questions = new ArrayList<>(10);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "form_id")
     private long id;
-    @Column(nullable = false)
+
+    @Column(nullable = false, length = 255)
     private String name;
+
     @Column(nullable = false, length = 5120)
     private String description;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "form")
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final List<Question> questions = new ArrayList<>(10);
 
     Form() {
     }

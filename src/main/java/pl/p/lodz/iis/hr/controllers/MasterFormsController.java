@@ -36,7 +36,14 @@ public class MasterFormsController {
     @RequestMapping(
             value = "/m/forms/add",
             method = RequestMethod.GET)
-    public String addF(){
+    public String addF() {
         return "m-forms-add";
+    }
+
+    @RequestMapping(
+            value = "/m/forms/example",
+            method = RequestMethod.GET)
+    public String example() {
+        return "m-forms-example";
     }
 }

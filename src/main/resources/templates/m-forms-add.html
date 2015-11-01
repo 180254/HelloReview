@@ -3,42 +3,27 @@
 <head th:replace="fragments/header :: head"></head>
 <body>
 <header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
 
 <main class="container form-main">
 
-    <div>
-<code>&lt;form&gt;
-    &lt;name&gt;FirstFormTemplate&lt;/name&gt;
-    &lt;description&gt;&lt;![CDATA[ ]]&gt; &lt;/description&gt;
-
-        &lt;question&gt;
-            &lt;questionText&gt;&lt;/questionText&gt;
-            &lt;extraText&gt;&lt;/extraText&gt;
-
-            &lt;input type=&quot;text&quot;&gt;
-                &lt;label&gt;&lt;/label&gt;
-                &lt;required&gt;true&lt;/required&gt;
-            &lt;/input&gt;
-
-            &lt;input type=&quot;scale&quot;&gt;
-                &lt;label&gt;&lt;/label&gt;
-                &lt;fromLabel&gt;&lt;/fromLabel&gt;
-                &lt;from&gt;&lt;/from&gt;
-                &lt;toLabel&gt;&lt;/toLabel&gt;
-                &lt;to&gt;&lt;/to&gt;
-            &lt;/input&gt;
-
-    &lt;/question&gt;
-&lt;/form&gt;</code>  </div>
     <div class="form-group">
-        <label for="form-xml">Description <span class="required">*</span></label>
-        <textarea class="form-control input-3" rows="3" id="form-xml"></textarea>
+        <div class="input-2">
+            <label for="form-template-name">Form template name <span class="required">*</span></label>
+            <input type="text" class="form-control" id="form-template-name"/>
+        </div>
+
+        <div class="input-2">
+            <label for="form-xml">Form XML <span class="required">*</span></label>
+            <a href="example" target="_blank">(example)</a>
+            <textarea class="form-control" rows="20" id="form-xml" maxlength="100000"></textarea>
+            <h6 class="pull-right t-letter-counter"></h6>
+        </div>
     </div>
 
 
-    <div class="text-center form-submit forms-buttons-add-preview">
+    <div class="form-submit forms-buttons-add-preview">
         <button class="btn btn-default btn-info">Preview form template</button>
-        <br/>
         <button class="btn btn-default btn-primary">Add form template</button>
     </div>
 

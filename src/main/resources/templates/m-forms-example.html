@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+
+    <!-- // @formatter:off -->
+ <code class="prettyprint readmore">&lt;form&gt;
+    &lt;description&gt;&lt;![CDATA[Proszę ocenić pracę {url}.&lt;br/&gt;
+     {projectname}.&lt;br/&gt;
+    Odpowiedź na wszystkie pytania jest obowiązkowa.&lt;br/&gt;
+    Obowiązkowe pola są oznaczaone znakiem *.&lt;br/&gt;
+    Czas na udzielenie odpowiedzi mija: {deadline}.]]&gt;&lt;/description&gt;
+
+    &lt;question&gt;
+        &lt;questionText&gt;Czy poprawnie sformatowano kod?&lt;/questionText&gt;
+        &lt;additionalTips&gt;&lt;![CDATA[Zwróć uwagę, czy zgadzają się wcięcia.&lt;br/&gt;
+            Func ullamcorper odio non leo bibendum, vitae aliquet lectus varius.Praesent viverra leo
+            tellus, in eleifend enim elementum eget. Nunc ac euismod elit.In ornare quam nisi, sed elementum risus
+            dapibus quis. Vestibulum vel quam condimentum,elementum risus et, euismod arcu.]]&gt;&lt;/additionalTips&gt;
+
+        &lt;input type=&quot;scale&quot;&gt;
+            &lt;fromLabel&gt;Źle&lt;/fromLabel&gt;
+            &lt;from&gt;0&lt;/from&gt;
+            &lt;toLabel&gt;Prawidłowo&lt;/toLabel&gt;
+            &lt;to&gt;10&lt;/to&gt;
+        &lt;/input&gt;
+
+        &lt;input type=&quot;text&quot;&gt;
+            &lt;label&gt;Dodatkowy komentarz&lt;/label&gt;
+            &lt;required&gt;false&lt;/required&gt;
+        &lt;/input&gt;
+    &lt;/question&gt;
+
+    &lt;question&gt;
+        &lt;questionText&gt;Czy zastosowano wzorzec fabryki w klasie SomeClass?&lt;/questionText&gt;
+
+        &lt;input type=&quot;scale&quot;&gt;
+            &lt;fromLabel&gt;Nie&lt;/fromLabel&gt;
+            &lt;from&gt;0&lt;/from&gt;
+            &lt;toLabel&gt;Tak&lt;/toLabel&gt;
+            &lt;to&gt;1&lt;/to&gt;
+        &lt;/input&gt;
+
+        &lt;input type=&quot;text&quot;&gt;
+            &lt;label&gt;Dodatkowy komentarz&lt;/label&gt;
+            &lt;required&gt;true&lt;/required&gt;
+        &lt;/input&gt;
+    &lt;/question&gt;
+&lt;/form&gt;
+</code>
+    <!-- // @formatter:on  -->
+</main>
+</body>
+</html>
