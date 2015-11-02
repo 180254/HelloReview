@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <description><![CDATA[Proszę ocenić {projectname}.<br/>
+        Odpowiedź na wszystkie pytania jest obowiązkowa.<br/>
+        Obowiązkowe pola są oznaczaone znakiem *.<br/>
+        Czas na udzielenie odpowiedzi mija: {deadline}.]]>
+    </description>
+
+    <question>
+        <questionText>Czy poprawnie sformatowano kod?</questionText>
+        <additionalTips><![CDATA[Zwróć uwagę, czy zgadzają się wcięcia.<br/>
+            Func ullamcorper odio non leo bibendum, vitae aliquet lectus varius.Praesent viverra leo
+            tellus, in eleifend enim elementum eget. Nunc ac euismod elit.In ornare quam nisi, sed elementum risus
+            dapibus quis. Vestibulum vel quam condimentum,elementum risus et, euismod arcu.]]>
+        </additionalTips>
+
+        <input type="scale">
+            <label>Oceń w skali</label>
+
+            <fromLabel>Źle</fromLabel>
+            <from>0</from>
+            <toLabel>Prawidłowo</toLabel>
+            <to>10</to>
+        </input>
+
+        <input type="text">
+            <label>Dodatkowy komentarz</label>
+            <required>false</required>
+        </input>
+    </question>
+
+    <question>
+        <questionText>Czy zastosowano wzorzec fabryki w klasie SomeClass?</questionText>
+
+        <input type="scale">
+            <fromLabel>Nie</fromLabel>
+            <from>0</from>
+            <toLabel>Tak</toLabel>
+            <to>1</to>
+        </input>
+
+        <input type="text">
+            <label>Dodatkowy komentarz</label>
+            <required>true</required>
+        </input>
+    </question>
+</form>

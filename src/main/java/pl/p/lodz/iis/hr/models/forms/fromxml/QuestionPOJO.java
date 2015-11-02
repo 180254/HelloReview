@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.forms.questions.Input;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
