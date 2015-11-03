@@ -1,11 +1,15 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.p.lodz.iis.hr.models.forms.Form;
+import pl.p.lodz.iis.hr.models.forms.FormViews;
 import pl.p.lodz.iis.hr.models.forms.questions.InputScale;
 import pl.p.lodz.iis.hr.models.forms.questions.InputText;
 import pl.p.lodz.iis.hr.models.forms.questions.Question;
@@ -13,8 +17,6 @@ import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.InputScaleRepository;
 import pl.p.lodz.iis.hr.repositories.InputTextRepository;
 import pl.p.lodz.iis.hr.repositories.QuestionRepository;
-
-import java.util.List;
 
 @Controller
 public class RestController {
@@ -24,6 +26,7 @@ public class RestController {
     @Autowired private QuestionRepository questionRepository;
     @Autowired private InputScaleRepository inputScaleRepository;
     @Autowired private InputTextRepository inputTextRepository;
+    @Autowired private ObjectMapper objectMapper;
 
 
 //    @Autowired private FormItemScaleRepository formItemScaleRepository;
@@ -45,18 +48,10 @@ public class RestController {
             method = RequestMethod.GET,
             produces = "application/json")
     @ResponseBody
-    public List<Form> forms() {
-        return formRepository.findAll();
+    public String forms() throws JsonProcessingException {
+        ObjectWriter objectWriter = objectMapper.writerWithView(FormViews.RESTPreview.class);
+        return objectWriter.writeValueAsString(formRepository.findAll());
     }
-
-    @RequestMapping(value = "/rest/questions",
-            method = RequestMethod.GET,
-            produces = "application/json")
-    @ResponseBody
-    public List<Question> questions() {
-        return questionRepository.findAll();
-    }
-
 
     @RequestMapping(value = "/init",
             method = RequestMethod.GET,

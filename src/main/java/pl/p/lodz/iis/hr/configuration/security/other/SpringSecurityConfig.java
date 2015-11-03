@@ -40,6 +40,6 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @SuppressWarnings("ProhibitedExceptionDeclared")
     protected void configure(HttpSecurity http) throws Exception {
 //        http.headers().addHeaderWriter(getCSPHeader());
-        http.authorizeRequests().anyRequest().permitAll();
+        http.csrf().disable().authorizeRequests().anyRequest().permitAll();
     }
 }

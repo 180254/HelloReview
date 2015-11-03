@@ -1,5 +1,10 @@
 package pl.p.lodz.iis.hr.models.forms.questions;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.forms.FormViews;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -10,16 +15,24 @@ public class InputScale extends Input {
 
     private static final long serialVersionUID = -2230675781077172644L;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @Length(min = 1, max = 255)
+    @NotBlank
     private String fromLabel;
 
     @Column(nullable = false)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
     private long fromS;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @Length(min = 1, max = 255)
+    @NotBlank
     private String toLabel;
 
     @Column(nullable = false)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
     private long toS;
 
 
@@ -51,4 +64,5 @@ public class InputScale extends Input {
     public long getToS() {
         return toS;
     }
+
 }

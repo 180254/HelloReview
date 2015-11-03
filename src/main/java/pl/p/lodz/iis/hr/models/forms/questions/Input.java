@@ -1,12 +1,23 @@
 package pl.p.lodz.iis.hr.models.forms.questions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.forms.FormViews;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = InputText.class, name = "text"),
+        @JsonSubTypes.Type(value = InputScale.class, name = "scale")})
 public class Input implements Serializable {
 
     private static final long serialVersionUID = -8117462196984682568L;
@@ -14,17 +25,22 @@ public class Input implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "input_id")
+    @JsonView(FormViews.RESTPreview.class)
     private long id;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonView()
     private Question question;
 
     @Column(nullable = false)
-    private String label;
-
-    @Column(nullable = false)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
     private boolean required = true;
+
+    @Column(nullable = false, length = 255)
+    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @Length(min = 1, max = 255)
+    @NotBlank
+    private String label;
 
     Input() {
     }
@@ -42,15 +58,15 @@ public class Input implements Serializable {
         return question;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public boolean isRequired() {
         return required;
     }
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }
