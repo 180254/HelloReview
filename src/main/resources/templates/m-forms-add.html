@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: head"></head>
+<head th:include="fragments/header :: head"></head>
 <body>
 <header th:replace="fragments/header :: header"></header>
 <nav th:replace="fragments/nav :: nav"></nav>
 
 <main class="container form-main">
+    <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <div class="form-group">
+    <form id="form-add" class="form-group">
         <div class="input-2">
             <label for="form-template-name">Form template name <span class="required">*</span></label>
-            <input type="text" class="form-control" id="form-template-name"/>
+            <input type="text" class="form-control" name="form-template-name" id="form-template-name"/>
         </div>
 
         <div class="input-2">
             <label for="form-xml">Form XML <span class="required">*</span></label>
             <a href="xml/example" target="_blank">(example)</a>
-            <textarea class="form-control" rows="20" id="form-xml" maxlength="100000"></textarea>
-            <h6 class="pull-right t-letter-counter"></h6>
+            <textarea class="form-control" rows="20" name="form-xml" id="form-xml" maxlength="100000"></textarea>
+            <h6 class="pull-right t-letter-counter">&nbsp;</h6>
         </div>
-    </div>
+
+        <div id="form-add-error" class="input-2 form-add-error alert alert-danger" role="alert">
+            <h4>Validation errors</h4>
+            <ul id="form-add-error-list">
+            </ul>
+        </div>
+    </form>
 
 
     <div class="form-submit forms-buttons-add-preview">
-        <button class="btn btn-default btn-info">Preview form template</button>
-        <button class="btn btn-default btn-primary">Add form template</button>
+        <button id="form-add-preview" class="btn btn-default btn-info">Preview form template</button>
+        <button id="form-add-add" class="btn btn-default btn-primary">Add form template</button>
     </div>
 
 </main>

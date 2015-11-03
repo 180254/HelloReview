@@ -7,14 +7,14 @@
 
 <main class="container main-hello text-center">
 
-    <div th:if="${isLoggedIn == false}" class="social-button center-block">
+    <div th:if="${isLoggedIn == false}" class="social-button1 center-block">
         <a class="btn btn-block btn-social btn-github" href="/login">
             <i class="fa fa-github"></i>
             <span th:text="#{main.signin}"></span>
         </a>
     </div>
 
-    <div th:if="${isLoggedIn}" class="social-button center-block">
+    <div th:if="${isLoggedIn}" class="social-button1 center-block">
         <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}" target="_blank">
             <i class="fa fa-github"></i>
             Hello [<span th:text="${username}" class="username"></span>] !

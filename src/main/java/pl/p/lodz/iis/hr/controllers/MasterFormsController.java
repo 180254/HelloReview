@@ -43,12 +43,16 @@ public class MasterFormsController {
             value = "/m/forms/add",
             method = RequestMethod.POST)
     @ResponseBody
-    public Object fAdd(@RequestBody String formS, HttpServletResponse response) throws IOException {
+    public Object fAdd(
+            @ModelAttribute("form-template-name") String formName,
+            @ModelAttribute("form-xml") String formXML,
+            HttpServletResponse response) throws IOException {
+
         ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
                 .readerFor(Form.class).withView(FormViews.XMLTemplate.class);
 
         try {
-            Form form = xmlReader.readValue(formS);
+            Form form = xmlReader.readValue(formXML);
             List<String> validate = formValidator.validate(form);
             if (!validate.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -58,7 +62,7 @@ public class MasterFormsController {
             formRepository.saveAndFlush(form);
             return form.getId();
 
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return Collections.singletonList(String.format("exception > [%s]", e.getMessage()));
         }

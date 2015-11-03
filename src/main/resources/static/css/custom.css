@@ -10,11 +10,24 @@ header pre {
     color: red;
 }
 
+@media (min-width: 768px) {
+    .navbar-right {
+        right: 2em;
+    }
+}
+
 main {
     margin-top: 1em;
 }
 
-.main-hello .social-button {
+#ajax-loader {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    display: none;
+}
+
+.main-hello .social-button1 {
     width: 300px;
 }
 
@@ -86,4 +99,12 @@ code {
     unicode-bidi: embed;
     font-family: monospace;
     white-space: pre;
+}
+
+.form-add-error {
+    margin-top: 1em;
+}
+
+#form-add-error {
+    display: none;
 }

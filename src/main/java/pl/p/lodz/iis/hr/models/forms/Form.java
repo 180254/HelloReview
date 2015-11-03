@@ -27,7 +27,7 @@ public class Form implements Serializable {
     private long id;
 
     @Column(nullable = false, length = 255)
-    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @JsonView(FormViews.RESTPreview.class)
     @Length(min = 1, max = 255)
     @NotBlank
     private String name;
