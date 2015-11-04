@@ -18,9 +18,9 @@
             <label>Oceń w skali</label>
 
             <fromLabel>Źle</fromLabel>
-            <from>0</from>
+            <fromS>0</fromS>
             <toLabel>Prawidłowo</toLabel>
-            <to>10</to>
+            <toS>10</toS>
         </input>
 
         <input type="text">
@@ -33,10 +33,12 @@
         <questionText>Czy zastosowano wzorzec fabryki w klasie SomeClass?</questionText>
 
         <input type="scale">
+            <label>Oceń w skali</label>
+
             <fromLabel>Nie</fromLabel>
-            <from>0</from>
+            <fromS>0</fromS>
             <toLabel>Tak</toLabel>
-            <to>1</to>
+            <toS>1</toS>
         </input>
 
         <input type="text">

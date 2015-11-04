@@ -1,11 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:include="fragments/header :: head"></head>
 <body>
 <header th:replace="fragments/header :: header"></header>
 <nav th:replace="fragments/nav :: nav"></nav>
 
 <main class="container">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Form template name</th>
+            <th><i class="fa fa-eye"></i> Preview</th>
+            <th><i class="fa fa-eraser"></i> Delete</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="form : ${forms}">
+            <td th:text="${form.id}"></td>
+            <td th:text="${form.templateName}"></td>
+            <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">form</a>,
+                <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">xml</a></td>
+            <td><a href="#">del</a></td>
+        </tr>
+        </tbody>
+
+    </table>
+
 </main>
 </body>
 </html>
