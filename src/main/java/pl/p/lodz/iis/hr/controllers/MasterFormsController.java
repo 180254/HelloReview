@@ -3,11 +3,15 @@ package pl.p.lodz.iis.hr.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
@@ -43,28 +47,43 @@ public class MasterFormsController {
             value = "/m/forms/add",
             method = RequestMethod.POST)
     @ResponseBody
+    @Transactional
     public Object fAdd(
             @ModelAttribute("form-template-name") String formName,
             @ModelAttribute("form-xml") String formXML,
+            @NonNls @ModelAttribute("action") String action,
             HttpServletResponse response) throws IOException {
+
+        boolean badAction = (action == null)
+                || (!action.equals("preview") && !action.equals("add"));
+
+        if (badAction) {
+            response.sendError(HttpStatus.BAD_REQUEST.value());
+            return StringUtils.EMPTY;
+        }
 
         ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
                 .readerFor(Form.class).withView(FormViews.XMLTemplate.class);
 
         try {
             Form form = xmlReader.readValue(formXML);
+            form.setTemplateName(Strings.emptyToNull(formName));
+            form.setTemporary(action.equals("preview"));
+
             List<String> validate = formValidator.validate(form);
             if (!validate.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 return validate;
             }
 
+            form.fixRelations();
+            formRepository.delete(formRepository.findByTemporaryTrue());
             formRepository.saveAndFlush(form);
             return form.getId();
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(String.format("exception > [%s]", e.getMessage()));
+            return Collections.singletonList(String.format("it's not xml > exception thrown: [%s]", e.getMessage()));
         }
     }
 

@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.models.forms.questions;
+package pl.p.lodz.iis.hr.models.forms;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;

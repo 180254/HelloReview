@@ -5,8 +5,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.models.forms.questions.Input;
-import pl.p.lodz.iis.hr.models.forms.questions.Question;
+import pl.p.lodz.iis.hr.models.forms.Input;
+import pl.p.lodz.iis.hr.models.forms.Question;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +41,6 @@ public class FormValidator {
             }
         }
 
-
         return errors;
     }
 
@@ -59,7 +58,7 @@ public class FormValidator {
         errorsMessages.addAll(
                 errors.getAllErrors().stream()
                         .map(objectError ->
-                                String.format("%s > [%s: %s]",
+                                String.format("%s > %s: [%s]",
                                         errorPath,
                                         ((FieldError) objectError).getField(),
                                         objectError.getDefaultMessage()))

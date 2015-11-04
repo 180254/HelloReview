@@ -1,13 +1,13 @@
-package pl.p.lodz.iis.hr.models.forms.questions;
+package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.forms.FormViews;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
@@ -23,7 +23,8 @@ public class InputScale extends Input {
 
     @Column(nullable = false)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    private long fromS;
+    @NotNull
+    private Long fromS;
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
@@ -33,15 +34,16 @@ public class InputScale extends Input {
 
     @Column(nullable = false)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    private long toS;
+    @NotNull
+    private Long toS;
 
 
     InputScale() {
     }
 
     public InputScale(Question question, String label,
-                      String fromLabel, long fromS,
-                      String toLabel, long toS) {
+                      String fromLabel, Long fromS,
+                      String toLabel, Long toS) {
         super(question, label);
         this.fromLabel = fromLabel;
         this.fromS = fromS;
@@ -53,7 +55,7 @@ public class InputScale extends Input {
         return fromLabel;
     }
 
-    public long getFromS() {
+    public Long getFromS() {
         return fromS;
     }
 
@@ -61,7 +63,7 @@ public class InputScale extends Input {
         return toLabel;
     }
 
-    public long getToS() {
+    public Long getToS() {
         return toS;
     }
 

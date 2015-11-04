@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.forms.questions.Question;
+import pl.p.lodz.iis.hr.models.RelationsAware;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,39 +16,40 @@ import java.util.List;
 @Entity
 @JacksonXmlRootElement(localName = "form")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Form implements Serializable {
+public class Form implements Serializable, RelationsAware {
 
     private static final long serialVersionUID = -6520652024047473630L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "form_id")
     @JsonView(FormViews.RESTPreview.class)
     private long id;
 
     @Column(nullable = false, length = 255)
     @JsonView(FormViews.RESTPreview.class)
-    @Length(min = 1, max = 255)
-    @NotBlank
-    private String name;
+    @NotBlank @Length(min = 1, max = 255)
+    private String templateName;
 
     @Column(nullable = false, length = 4095)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    @Length(min = 1, max = 4095)
-    @NotBlank
+    @NotBlank @Length(min = 1, max = 4095)
     private String description;
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "form")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @JsonProperty("question")
     private final List<Question> questions = new ArrayList<>(10);
+
+    @Column(nullable = false)
+    @JsonView(FormViews.RESTPreview.class)
+    private boolean temporary;
 
     Form() {
     }
 
-    public Form(String name, String description) {
-        this.name = name;
+    public Form(String templateName, String description) {
+        this.templateName = templateName;
         this.description = description;
     }
 
@@ -56,15 +57,39 @@ public class Form implements Serializable {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     public String getDescription() {
         return description;
     }
 
+    void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Question> getQuestions() {
         return new ArrayList<>(questions);
+    }
+
+    public boolean isTemporary() {
+        return temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
+    }
+
+    @Override
+    public void fixRelations() {
+        for (Question question : questions) {
+            question.setForm(this);
+            question.fixRelations();
+        }
     }
 }

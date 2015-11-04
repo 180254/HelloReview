@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.models.forms.questions;
+package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.forms.FormViews;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,19 +16,20 @@ import java.io.Serializable;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = InputText.class, name = "text"),
-        @JsonSubTypes.Type(value = InputScale.class, name = "scale")})
+        @JsonSubTypes.Type(value = InputScale.class, name = "scale")
+})
 public class Input implements Serializable {
 
     private static final long serialVersionUID = -8117462196984682568L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "input_id")
     @JsonView(FormViews.RESTPreview.class)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonView()
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false)
+    @JsonView
     private Question question;
 
     @Column(nullable = false)
@@ -38,8 +38,7 @@ public class Input implements Serializable {
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    @Length(min = 1, max = 255)
-    @NotBlank
+    @NotBlank @Length(min = 1, max = 255)
     private String label;
 
     Input() {
@@ -58,15 +57,23 @@ public class Input implements Serializable {
         return question;
     }
 
+    void setQuestion(Question question) {
+        this.question = question;
+    }
+
     public boolean isRequired() {
         return required;
     }
 
-    public void setRequired(boolean required) {
+    void setRequired(boolean required) {
         this.required = required;
     }
 
     public String getLabel() {
         return label;
+    }
+
+    void setLabel(String label) {
+        this.label = label;
     }
 }

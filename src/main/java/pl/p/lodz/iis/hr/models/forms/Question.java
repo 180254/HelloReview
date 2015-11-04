@@ -1,11 +1,10 @@
-package pl.p.lodz.iis.hr.models.forms.questions;
+package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.models.forms.FormViews;
+import pl.p.lodz.iis.hr.models.RelationsAware;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,34 +12,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Question implements Serializable {
+public class Question implements Serializable, RelationsAware {
 
     private static final long serialVersionUID = -1242802972920860558L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "question_id")
     @JsonView(FormViews.RESTPreview.class)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonView()
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false)
+    @JsonView
     private Form form;
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    @Length(min = 1, max = 255)
-    @NotBlank
+    @NotBlank @Length(min = 1, max = 255)
     private String questionText;
 
     @Column(nullable = true, length = 4095)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
-    @Length(min = 1, max = 4095)
+    @Length(min = 0, max = 4095)
     private String additionalTips;
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
     @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @JsonProperty("input")
     private final List<Input> inputs = new ArrayList<>(10);
 
@@ -61,15 +59,34 @@ public class Question implements Serializable {
         return form;
     }
 
+    void setForm(Form form) {
+        this.form = form;
+    }
+
     public String getQuestionText() {
         return questionText;
+    }
+
+    void setQuestionText(String questionText) {
+        this.questionText = questionText;
     }
 
     public String getAdditionalTips() {
         return additionalTips;
     }
 
+    void setAdditionalTips(String additionalTips) {
+        this.additionalTips = additionalTips;
+    }
+
     public List<Input> getInputs() {
         return new ArrayList<>(inputs);
+    }
+
+    @Override
+    public void fixRelations() {
+        for (Input input : inputs) {
+            input.setQuestion(this);
+        }
     }
 }
