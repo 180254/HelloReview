@@ -37,9 +37,18 @@ public class MasterFormsController {
     @Autowired private FormValidator formValidator;
 
     @RequestMapping(
+            value = "/m/forms",
+            method = RequestMethod.GET)
+    public String fList(Model model) {
+        List<Form> byTemporaryFalse = formRepository.findByTemporaryFalse();
+        model.addAttribute("forms", byTemporaryFalse);
+        return "m-forms";
+    }
+
+    @RequestMapping(
             value = "/m/forms/add",
             method = RequestMethod.GET)
-    public String fAdd() {
+    public String fAddGET() {
         return "m-forms-add";
     }
 
@@ -48,9 +57,9 @@ public class MasterFormsController {
             method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public Object fAdd(
-            @ModelAttribute("form-template-name") String formName,
-            @ModelAttribute("form-xml") String formXML,
+    public Object fAddPOST(
+            @NonNls @ModelAttribute("form-template-name") String formName,
+            @NonNls @ModelAttribute("form-xml") String formXML,
             @NonNls @ModelAttribute("action") String action,
             HttpServletResponse response) throws IOException {
 
@@ -78,13 +87,17 @@ public class MasterFormsController {
 
             form.fixRelations();
             formRepository.delete(formRepository.findByTemporaryTrue());
-            formRepository.saveAndFlush(form);
+            formRepository.save(form);
             return form.getId();
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return Collections.singletonList(String.format("it's not xml > exception thrown: [%s]", e.getMessage()));
+        } catch (RuntimeException e) {
+            return Collections.singletonList("internal server error occurred");
+
         }
+
     }
 
 

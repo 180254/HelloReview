@@ -18,7 +18,8 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = InputText.class, name = "text"),
         @JsonSubTypes.Type(value = InputScale.class, name = "scale")
 })
-public class Input implements Serializable {
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+public abstract class Input implements Serializable {
 
     private static final long serialVersionUID = -8117462196984682568L;
 
@@ -44,7 +45,7 @@ public class Input implements Serializable {
     Input() {
     }
 
-    public Input(Question question, String label) {
+    protected Input(Question question, String label) {
         this.question = question;
         this.label = label;
     }

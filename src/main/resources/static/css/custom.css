@@ -101,10 +101,11 @@ code {
     white-space: pre;
 }
 
-.form-add-error {
+.form-add-ajax-info {
     margin-top: 1em;
 }
 
-#form-add-error {
+#form-add-error,
+#form-add-preview-url {
     display: none;
 }

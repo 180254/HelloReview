@@ -6,28 +6,49 @@ function formAddHandler(action) {
 
     var serializedWithAction = $('#form-add').serialize() + '&action=' + action,
         $ulErrors = $('#form-add-error-list'),
-        $divErrors = $('#form-add-error');
+        $divErrors = $('#form-add-error'),
+        $divPreview = $('#form-add-preview-url'),
+        $previewButton = $('#form-add-preview'),
+        $addButton = $('#form-add-add');
 
     $ulErrors.html('');
+    $previewButton.prop('disabled', true);
+    $addButton.prop('disabled', true);
 
     $.ajax({
         type: 'POST',
         url: '/m/forms/add',
         data: serializedWithAction
 
-    }).done(function () {
-        $divErrors.hide();
+    }).done(function (data) {
+        var url;
+
+        if (action === 'add') {
+            url = '/m/forms';
+            window.location = url;
+
+        } else {
+            url = '/m/forms/preview/' + data;
+            $divPreview.find('a').attr('href', url).text(url);
+            $divErrors.hide();
+            $divPreview.fadeIn();
+        }
 
     }).fail(function (jqXHR) {
         var errors = [].concat(jQuery.parseJSON(jqXHR.responseText)),
             i,
-            tot;
+            errLen;
 
         $divErrors.fadeIn();
+        $divPreview.hide();
 
-        for (i = 0, tot = errors.length; i < tot; i += 1) {
+        for (i = 0, errLen = errors.length; i < errLen; i += 1) {
             $('<ul>').text(errors[i]).appendTo($ulErrors);
         }
+
+    }).always(function () {
+        $previewButton.prop('disabled', false);
+        $addButton.prop('disabled', false);
     });
 }
 
@@ -36,6 +57,7 @@ $(document).ready(function () {
 
     $('#form-add-preview').click(function () {
         formAddHandler('preview');
+
     });
 
     $('#form-add-add').click(function () {
