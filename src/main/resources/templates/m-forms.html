@@ -22,7 +22,12 @@
             <td th:text="${form.templateName}"></td>
             <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">form</a>,
                 <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">xml</a></td>
-            <td><a href="#">del</a></td>
+            <td><a href="#"
+                   class="forms-delete-link"
+                   data-title="Are you sure?"
+                   data-btnOkLabe="Delete"
+                   data-btnCancelLabel="Cancel"
+                   data-btnOkClass="btn btn-sm btn-danger">del</a></td>
         </tr>
         </tbody>
 

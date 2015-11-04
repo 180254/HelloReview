@@ -146,4 +146,25 @@ public class MasterFormsController {
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(FormViews.XMLTemplate.class);
         return objectWriter.writeValueAsString(form);
     }
+
+    @RequestMapping(
+            value = "/m/forms/delete/{formID}",
+            method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public String delete(
+            @PathVariable long formID,
+            HttpServletResponse response) {
+
+        Form form = formRepository.getOne(formID);
+
+        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "Such resource doesn't exist";
+        }
+
+        formRepository.delete(form);
+        return "Done";
+    }
+
 }
