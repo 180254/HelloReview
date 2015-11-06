@@ -63,7 +63,7 @@ public class FormPOJOParser {
                 "</form>";
 
         XmlMapper xmlMapper = new XmlMapperProvider().getXmlMapper();
-        ObjectReader objectReader = xmlMapper.readerWithView(FormViews.XMLTemplate.class).forType(Form.class);
+        ObjectReader objectReader = xmlMapper.readerWithView(FormViews.ParseXML.class).forType(Form.class);
 
 
         System.out.println(xmlMapper);

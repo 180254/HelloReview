@@ -28,15 +28,15 @@ public class Form implements Serializable, RelationsAware {
     @Column(nullable = false, length = 255)
     @JsonView(FormViews.RESTPreview.class)
     @NotBlank @Length(min = 1, max = 255)
-    private String templateName;
+    private String name;
 
     @Column(nullable = false, length = 4095)
-    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank @Length(min = 1, max = 4095)
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @JsonProperty("question")
     private final List<Question> questions = new ArrayList<>(10);
@@ -48,8 +48,8 @@ public class Form implements Serializable, RelationsAware {
     Form() {
     }
 
-    public Form(String templateName, String description) {
-        this.templateName = templateName;
+    public Form(String name, String description) {
+        this.name = name;
         this.description = description;
     }
 
@@ -57,12 +57,12 @@ public class Form implements Serializable, RelationsAware {
         return id;
     }
 
-    public String getTemplateName() {
-        return templateName;
+    public String getName() {
+        return name;
     }
 
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

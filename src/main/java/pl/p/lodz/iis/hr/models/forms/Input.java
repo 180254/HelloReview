@@ -34,11 +34,11 @@ public abstract class Input implements Serializable {
     private Question question;
 
     @Column(nullable = false)
-    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     private boolean required = true;
 
     @Column(nullable = false, length = 255)
-    @JsonView({FormViews.RESTPreview.class, FormViews.XMLTemplate.class})
+    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank @Length(min = 1, max = 255)
     private String label;
 

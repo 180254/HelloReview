@@ -10,7 +10,7 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Form template name</th>
+            <th>Form name</th>
             <th><i class="fa fa-eye"></i> Preview</th>
             <th><i class="fa fa-eraser"></i> Delete</th>
         </tr>
@@ -19,7 +19,7 @@
         <tbody>
         <tr th:each="form : ${forms}">
             <td th:text="${form.id}"></td>
-            <td th:text="${form.templateName}"></td>
+            <td th:text="${form.name}"></td>
             <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">form</a>,
                 <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">xml</a></td>
             <td><a href="#"

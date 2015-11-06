@@ -58,7 +58,7 @@ public class MasterFormsController {
     @ResponseBody
     @Transactional
     public Object fAddPOST(
-            @NonNls @ModelAttribute("form-template-name") String formName,
+            @NonNls @ModelAttribute("form-name") String formName,
             @NonNls @ModelAttribute("form-xml") String formXML,
             @NonNls @ModelAttribute("action") String action,
             HttpServletResponse response) throws IOException {
@@ -72,11 +72,11 @@ public class MasterFormsController {
         }
 
         ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
-                .readerFor(Form.class).withView(FormViews.XMLTemplate.class);
+                .readerFor(Form.class).withView(FormViews.ParseXML.class);
 
         try {
             Form form = xmlReader.readValue(formXML);
-            form.setTemplateName(Strings.emptyToNull(formName));
+            form.setName(Strings.emptyToNull(formName));
             form.setTemporary(action.equals("preview"));
 
             List<String> validate = formValidator.validate(form);
@@ -142,8 +142,8 @@ public class MasterFormsController {
             throw new ResourceNotFoundException();
         }
 
-//        return new ObjectMapper().writerWithView(FormViews.XMLTemplate.class).writeValueAsString(form);
-        ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(FormViews.XMLTemplate.class);
+//        return new ObjectMapper().writerWithView(FormViews.ParseXML.class).writeValueAsString(form);
+        ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(FormViews.ParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
 
