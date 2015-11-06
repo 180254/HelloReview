@@ -75,7 +75,7 @@ public class MasterFormsController {
                 .readerFor(Form.class).withView(FormViews.ParseXML.class);
 
         try {
-            Form form = xmlReader.readValue(formXML);
+            Form form = xmlReader.readValue(formXML.trim());
             form.setName(Strings.emptyToNull(formName));
             form.setTemporary(action.equals("preview"));
 
