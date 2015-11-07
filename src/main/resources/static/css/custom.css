@@ -1,16 +1,19 @@
-/*                      noscript                    */
-#no-script-msg {
+/*                      noscript, old browser       */
+.not-for-you {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 3000;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: #000000;
     padding-top: 2em;
     font-size: 2.5em;
     color: floralwhite;
     font-weight: bold;
+
+    filter: Alpha(opacity=95);
+    opacity: 0.95;
 }
 
 /*                      header                      */

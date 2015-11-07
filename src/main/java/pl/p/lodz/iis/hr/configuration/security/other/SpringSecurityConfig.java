@@ -19,16 +19,16 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
                 .put("default-scr", "'none'")
-                .put("script-src",  "'self' maxcdn.bootstrapcdn.com cdnjs.cloudflare.com")
+                .put("script-src",  "'self' cdnjs.cloudflare.com")
              // .put("object-src",  "'none'")
 
              // style-src 'unsafe-inline' is required for xml displaying in pretty format by browser
-                .put("style-src",   "'self' 'unsafe-inline' maxcdn.bootstrapcdn.com cdnjs.cloudflare.com")
+                .put("style-src",   "'self' 'unsafe-inline' cdnjs.cloudflare.com")
 
                 .put("img-src",     "'self'")
              // .put("media-src",   "'none'")
              // .put("frame-src",   "'none'")
-                .put("font-src",    "'self' maxcdn.bootstrapcdn.com")
+                .put("font-src",    "'self' cdnjs.cloudflare.com")
                 .put("connect-src", "'self'")
 
                 .put("report-uri", "/csp-reports")
