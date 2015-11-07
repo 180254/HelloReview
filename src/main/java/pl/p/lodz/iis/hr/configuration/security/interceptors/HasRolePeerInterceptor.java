@@ -1,7 +1,7 @@
 package pl.p.lodz.iis.hr.configuration.security.interceptors;
 
-import org.eclipse.jetty.http.HttpStatus;
 import org.pac4j.oauth.client.GitHubClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.security.pac4j.Pac4jSecurityHelper;
@@ -32,7 +32,7 @@ class HasRolePeerInterceptor extends HandlerInterceptorAdapter {
             if (pac4jSecurityHelper.isPeer(appConfig)) {
                 return true;
             } else {
-                response.sendError(HttpStatus.UNAUTHORIZED_401);
+                response.sendError(HttpStatus.UNAUTHORIZED.value());
                 return false;
             }
 

@@ -10,13 +10,12 @@ import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.appconfig.General;
 import pl.p.lodz.iis.hr.configuration.appconfig.GitHubApplication;
 
-
 @Configuration
 class Pac4jSecurityConfig {
 
     @Autowired private AppConfig appConfig;
 
-    @Bean(name = "pack4jClients")
+    @Bean(name = "pac4jClients")
     public Clients clients() {
         General general = appConfig.getGeneral();
         GitHubApplication application = appConfig.getGitHub().getApplication();
@@ -25,12 +24,12 @@ class Pac4jSecurityConfig {
         return new Clients(String.format("%s/callback", general.getUrl()), git);
     }
 
-    @Bean(name = "pack4jConfig")
+    @Bean(name = "pac4jConfig")
     public Config config() {
         return new Config(clients());
     }
 
-    @Bean(name = "pack4jGitHubClient")
+    @Bean(name = "pac4jGitHubClient")
     public GitHubClient client() {
         return clients().findClient(GitHubClient.class);
     }

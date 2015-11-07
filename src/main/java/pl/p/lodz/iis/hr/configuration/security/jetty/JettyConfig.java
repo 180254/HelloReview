@@ -14,6 +14,5 @@ class JettyConfig {
     @Bean
     public EmbeddedServletContainerCustomizer customizer() {
         return new MyEmbeddedServletContainerCustomizer();
-
     }
 }

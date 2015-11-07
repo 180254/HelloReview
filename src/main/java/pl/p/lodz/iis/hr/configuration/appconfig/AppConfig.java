@@ -16,8 +16,8 @@ public final class AppConfig {
     private final GitHub gitHub;
 
     @JsonCreator
-    public AppConfig(@JsonProperty("general") General general,
-                     @JsonProperty("github") GitHub gitHub) {
+    AppConfig(@JsonProperty("general") General general,
+              @JsonProperty("github") GitHub gitHub) {
         this.general = general;
         this.gitHub = gitHub;
     }

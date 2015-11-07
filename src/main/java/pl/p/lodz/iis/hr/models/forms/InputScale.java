@@ -17,8 +17,8 @@ public class InputScale extends Input {
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @Length(min = 1, max = 255)
     @NotBlank
+    @Length(min = 1, max = 255)
     private String fromLabel;
 
     @Column(nullable = false)
@@ -28,15 +28,14 @@ public class InputScale extends Input {
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @Length(min = 1, max = 255)
     @NotBlank
+    @Length(min = 1, max = 255)
     private String toLabel;
 
     @Column(nullable = false)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotNull
     private Long toS;
-
 
     InputScale() {
     }

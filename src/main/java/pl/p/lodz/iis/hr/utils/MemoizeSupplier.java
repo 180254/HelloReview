@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 /**
  * Memoize loading Supplier on Java8
+ * Lazy (expensive) calculation, but protected against calculation multiple times.
  * Source: https://gist.github.com/taichi/6daf50919ff276aae74f
  *
  * @param <T> type

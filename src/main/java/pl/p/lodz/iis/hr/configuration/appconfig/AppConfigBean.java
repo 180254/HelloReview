@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
 
 @Configuration
-public class AppConfigBean {
+class AppConfigBean {
 
     @Autowired private XmlMapperProvider xmlMapperProvider;
 

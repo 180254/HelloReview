@@ -14,8 +14,8 @@ public final class GitHubApplication {
     private final String clientSecret;
 
     @JsonCreator
-    public GitHubApplication(@JsonProperty("clientID") String clientID,
-                             @JsonProperty("clientSecret") String clientSecret) {
+    GitHubApplication(@JsonProperty("clientID") String clientID,
+                      @JsonProperty("clientSecret") String clientSecret) {
 
         this.clientID = clientID;
         this.clientSecret = clientSecret;

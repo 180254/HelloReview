@@ -31,13 +31,16 @@ class UserInfoAppenderInterceptor extends HandlerInterceptorAdapter {
                 return;
             }
 
-            ModelMap model = modelAndView.getModelMap();
             Pac4jSecurityHelper pac4jSecurityHelper = new Pac4jSecurityHelper(gitHubClient, request, response);
+            ModelMap model = modelAndView.getModelMap();
 
-            model.addAttribute("isLoggedIn", pac4jSecurityHelper.isAuthenticated());
             if (pac4jSecurityHelper.isAuthenticated()) {
+                model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isMaster", pac4jSecurityHelper.isMaster(appConfig));
                 model.addAttribute("username", pac4jSecurityHelper.getUserProfileFromSession().getUsername());
+
+            } else {
+                model.addAttribute("isLoggedIn", false);
             }
         }
     }

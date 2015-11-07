@@ -18,7 +18,6 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = InputText.class, name = "text"),
         @JsonSubTypes.Type(value = InputScale.class, name = "scale")
 })
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class Input implements Serializable {
 
     private static final long serialVersionUID = -8117462196984682568L;
@@ -39,7 +38,8 @@ public abstract class Input implements Serializable {
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @NotBlank @Length(min = 1, max = 255)
+    @NotBlank
+    @Length(min = 1, max = 255)
     private String label;
 
     Input() {

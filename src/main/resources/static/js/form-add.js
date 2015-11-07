@@ -40,9 +40,16 @@ function formAddHandler(action) {
         }
 
     }).fail(function (jqXHR) {
-        var errors = [].concat(jQuery.parseJSON(jqXHR.responseText)),
+        var json = jQuery.parseJSON(jqXHR.responseText),
+            errors = [],
             i,
             errLen;
+
+        if (json.message === undefined) {
+            errors = errors.concat(json);
+        } else {
+            errors = errors.concat(json.message);
+        }
 
         $divErrors.fadeIn();
         $divPreview.hide();
@@ -60,9 +67,13 @@ function formAddHandler(action) {
 $(document).ready(function () {
     'use strict';
 
+    $('#form-add').submit(function () {
+        formAddHandler('preview');
+        return false;
+    });
+
     $('#form-add-preview').click(function () {
         formAddHandler('preview');
-
     });
 
     $('#form-add-add').click(function () {

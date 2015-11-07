@@ -14,8 +14,8 @@ public final class GitHubDummy {
     private final String password;
 
     @JsonCreator
-    public GitHubDummy(@JsonProperty("username") String username,
-                       @JsonProperty("password") String password) {
+    GitHubDummy(@JsonProperty("username") String username,
+                @JsonProperty("password") String password) {
 
         this.username = username;
         this.password = password;

@@ -11,7 +11,7 @@ public final class General {
     private final String url;
 
     @JsonCreator
-    public General(@JsonProperty("url") String url) {
+    General(@JsonProperty("url") String url) {
         this.url = url;
     }
 

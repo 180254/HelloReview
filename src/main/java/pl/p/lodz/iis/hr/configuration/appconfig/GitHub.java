@@ -17,9 +17,10 @@ public final class GitHub {
     private final GitHubApplication application;
 
     @JsonCreator
-    public GitHub(@JsonProperty("master") GitHubMaster master,
-                  @JsonProperty("dummy") GitHubDummy dummy,
-                  @JsonProperty("application") GitHubApplication application) {
+    GitHub(@JsonProperty("master") GitHubMaster master,
+           @JsonProperty("dummy") GitHubDummy dummy,
+           @JsonProperty("application") GitHubApplication application) {
+
         this.master = master;
         this.dummy = dummy;
         this.application = application;

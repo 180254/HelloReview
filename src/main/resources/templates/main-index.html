@@ -4,14 +4,19 @@
 <body>
 <header th:replace="fragments/header :: header"></header>
 <nav th:replace="fragments/nav :: nav"></nav>
+<noscript th:replace="fragments/header :: noscript"></noscript>
 
 <main class="container main-hello text-center">
 
     <div th:if="${isLoggedIn == false}" class="social-button1 center-block">
-        <a class="btn btn-block btn-social btn-github" href="/login">
-            <i class="fa fa-github"></i>
-            <span th:text="#{main.signin}"></span>
-        </a>
+        <form action="/login" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <button type="submit" class="btn btn-block btn-social btn-github">
+                <i class="fa fa-github"></i>
+                Sign in with GitHub
+            </button>
+        </form>
     </div>
 
     <div th:if="${isLoggedIn}" class="social-button1 center-block">

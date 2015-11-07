@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan="true">
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
         <encoder>
@@ -19,5 +19,5 @@
     <logger name="pl.p.lodz.iis.hr" level="DEBUG"/>
 
     <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type" level="TRACE"/>
+    <logger name="org.hibernate.type" level="INFO"/>
 </configuration>

@@ -13,19 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import static pl.p.lodz.iis.hr.utils.ExceptionChecker.checkNoExceptionThrown;
 
+/**
+ * /login  - pl.p.lodz.iis.hr.controllers.AuthController
+ * /logout - org.pac4j.springframework.web.ApplicationLogoutController
+ * /callback - org.pac4j.springframework.web.CallbackController
+ */
 @Controller
-public class AuthController {
-    /**
-     * /login  - pl.p.lodz.iis.hr.controllers.AuthController
-     * /logout - org.pac4j.springframework.web.ApplicationLogoutController
-     * /callback - org.pac4j.springframework.web.CallbackController
-     */
+class AuthController {
 
     @Autowired private GitHubClient gitHubClient;
 
     @RequestMapping(
             value = "/login",
-            method = RequestMethod.GET)
+            method = RequestMethod.POST)
     public String login(HttpServletRequest request,
                         HttpServletResponse response) {
 

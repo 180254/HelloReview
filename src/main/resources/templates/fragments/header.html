@@ -13,6 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
+    <link rel="shortcut icon" th:href="@{/favicon.ico?}"/>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
@@ -53,5 +55,13 @@
 </header>
 <!-- // @formatter:on  -->
 
+<noscript th:fragment="noscript">
+    <div id="no-script-msg" class="container text-center">
+        <p>
+            Please enable JavaScript in your browser.<br/>
+            This page is not working properly without JS.
+        </p>
+    </div>
+</noscript>
 </body>
 </html>

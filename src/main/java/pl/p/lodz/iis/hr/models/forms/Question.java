@@ -28,7 +28,8 @@ public class Question implements Serializable, RelationsAware {
 
     @Column(nullable = false, length = 255)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @NotBlank @Length(min = 1, max = 255)
+    @NotBlank
+    @Length(min = 1, max = 255)
     private String questionText;
 
     @Column(nullable = true, length = 4095)
@@ -38,7 +39,6 @@ public class Question implements Serializable, RelationsAware {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @JsonProperty("input")
     private final List<Input> inputs = new ArrayList<>(10);
 

@@ -15,8 +15,7 @@ import java.nio.file.Paths;
 
 class AppConfigParser {
 
-    @NonNls
-    private static final String APP_CONFIG_FILENAME = "HelloReviewConfig.xml";
+    @NonNls private static final String APP_CONFIG_FILENAME = "HelloReviewConfig.xml";
     private final XmlMapperProvider xmlMapperProvider;
     private final AppConfig appConfig;
 

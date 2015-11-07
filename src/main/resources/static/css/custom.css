@@ -1,3 +1,17 @@
+#no-script-msg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3000;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    padding-top: 2em;
+    font-size: 2.5em;
+    color: floralwhite;
+    font-weight: bold;
+}
+
 header pre {
     font-size: 9px;
 }

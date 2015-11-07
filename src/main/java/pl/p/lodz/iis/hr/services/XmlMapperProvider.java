@@ -10,15 +10,12 @@ public class XmlMapperProvider {
 
     private final XmlMapper xmlMapper;
 
-    public XmlMapperProvider() {
+    XmlMapperProvider() {
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(false);
 
         xmlMapper = new XmlMapper(module);
         xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-//        xmlMapper.enableDefaultTyping();
-//        xmlMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
     }
 
     public XmlMapper getXmlMapper() {

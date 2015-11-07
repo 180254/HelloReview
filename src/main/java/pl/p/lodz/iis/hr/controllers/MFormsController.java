@@ -26,11 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Controller
-public class MasterFormsController {
+class MFormsController {
 
     @Autowired private FormRepository formRepository;
     @Autowired private XmlMapperProvider xmlMapperProvider;
@@ -55,58 +56,50 @@ public class MasterFormsController {
     @RequestMapping(
             value = "/m/forms/add",
             method = RequestMethod.POST)
-    @ResponseBody
     @Transactional
-    public Object fAddPOST(
-            @NonNls @ModelAttribute("form-name") String formName,
-            @NonNls @ModelAttribute("form-xml") String formXML,
-            @NonNls @ModelAttribute("action") String action,
-            HttpServletResponse response) throws IOException {
+    @ResponseBody
+    public Object fAddPOST(@NonNls @ModelAttribute("form-name") String formName,
+                           @NonNls @ModelAttribute("form-xml") String formXML,
+                           @NonNls @ModelAttribute("action") String action,
+                           HttpServletResponse response) throws IOException {
 
-        boolean badAction = (action == null)
-                || (!action.equals("preview") && !action.equals("add"));
-
-        if (badAction) {
+        if (!Arrays.asList("preview", "add").contains(action)) {
             response.sendError(HttpStatus.BAD_REQUEST.value());
             return StringUtils.EMPTY;
         }
 
-        ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
-                .readerFor(Form.class).withView(FormViews.ParseXML.class);
+        Form form;
 
         try {
-            Form form = xmlReader.readValue(formXML.trim());
-            form.setName(Strings.emptyToNull(formName));
-            form.setTemporary(action.equals("preview"));
-
-            List<String> validate = formValidator.validate(form);
-            if (!validate.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return validate;
-            }
-
-            form.fixRelations();
-            formRepository.delete(formRepository.findByTemporaryTrue());
-            formRepository.save(form);
-            return form.getId();
+            ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
+                    .readerFor(Form.class).withView(FormViews.ParseXML.class);
+            form = xmlReader.readValue(formXML.trim());
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(String.format("it's not xml > exception thrown: [%s]", e.getMessage()));
-        } catch (RuntimeException e) {
-            return Collections.singletonList("internal server error occurred");
-
+            return Collections.singletonList(String.format("It's not xml! Exception thrown: [%s]", e.getMessage()));
         }
 
-    }
+        form.setName(Strings.emptyToNull(formName));
+        form.setTemporary(action.equals("preview"));
 
+        List<String> validate = formValidator.validate(form);
+        if (!validate.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return validate;
+        }
+
+        form.fixRelations();
+        formRepository.delete(formRepository.findByTemporaryTrue());
+        formRepository.save(form);
+        return form.getId();
+    }
 
     @RequestMapping(
             value = "/m/forms/preview/{formID}",
             method = RequestMethod.GET)
-    public String preview(
-            @PathVariable long formID,
-            Model model) {
+    public String preview(@PathVariable long formID,
+                          Model model) {
 
         Form form = formRepository.getOne(formID);
 
@@ -123,8 +116,7 @@ public class MasterFormsController {
             method = RequestMethod.GET,
             produces = MediaType.TEXT_XML_VALUE)
     @ResponseBody
-    public String xmlExample()
-            throws IOException {
+    public String xmlExample() throws IOException {
         URL resource = Resources.getResource("templates/m-forms-xml-example.xml");
         return Resources.toString(resource, StandardCharsets.UTF_8);
     }
@@ -142,7 +134,6 @@ public class MasterFormsController {
             throw new ResourceNotFoundException();
         }
 
-//        return new ObjectMapper().writerWithView(FormViews.ParseXML.class).writeValueAsString(form);
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(FormViews.ParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
@@ -150,11 +141,10 @@ public class MasterFormsController {
     @RequestMapping(
             value = "/m/forms/delete/{formID}",
             method = RequestMethod.POST)
-    @ResponseBody
     @Transactional
-    public String delete(
-            @PathVariable long formID,
-            HttpServletResponse response) {
+    @ResponseBody
+    public String delete(@PathVariable long formID,
+                         HttpServletResponse response) {
 
         Form form = formRepository.getOne(formID);
 

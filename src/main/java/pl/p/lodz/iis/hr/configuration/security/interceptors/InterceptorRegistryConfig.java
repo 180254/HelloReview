@@ -11,7 +11,7 @@ import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 
 @Configuration
 @ComponentScan(basePackages = "org.pac4j.springframework.web")
-@DependsOn({"pack4jConfig", "appConfig"})
+@DependsOn({"pac4jConfig", "appConfig"})
 class InterceptorRegistryConfig extends WebMvcConfigurerAdapter {
 
     @Autowired private GitHubClient gitHubClient;

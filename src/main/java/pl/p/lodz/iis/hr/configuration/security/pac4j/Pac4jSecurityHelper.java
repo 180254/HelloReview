@@ -28,6 +28,7 @@ public class Pac4jSecurityHelper {
                                HttpServletResponse response) {
 
         this.gitHubClient = gitHubClient;
+
         webContext = MemoizeSupplier.of(() -> new J2EContext(request, response));
         profileManager = MemoizeSupplier.of(() -> new ProfileManager<>(webContext.get()));
         sessionUserProfile = MemoizeSupplier.of(() -> ((GitHubProfile) profileManager.get().get(true)));

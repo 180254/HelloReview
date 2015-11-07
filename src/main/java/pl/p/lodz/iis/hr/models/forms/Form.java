@@ -27,17 +27,18 @@ public class Form implements Serializable, RelationsAware {
 
     @Column(nullable = false, length = 255)
     @JsonView(FormViews.RESTPreview.class)
-    @NotBlank @Length(min = 1, max = 255)
+    @NotBlank
+    @Length(min = 1, max = 255)
     private String name;
 
     @Column(nullable = false, length = 4095)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @NotBlank @Length(min = 1, max = 4095)
+    @NotBlank
+    @Length(min = 1, max = 4095)
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
     @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @JsonProperty("question")
     private final List<Question> questions = new ArrayList<>(10);
 
