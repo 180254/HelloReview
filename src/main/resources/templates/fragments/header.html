@@ -1,44 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head">
-    <meta charset="UTF-8"/>
-    <title th:text="'HR - ' + ${#httpServletRequest.requestURI}"></title>
-
-    <meta name="description" content="HelloReview: A system for peer review of application source code."/>
-    <meta name="author" content="180254"/>
-
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
-    <link rel="shortcut icon" th:href="@{/favicon.ico?}"/>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.10.1/bootstrap-social.css"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/css/bootstrap-slider.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
-    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/bootstrap-slider.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.13/autosize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
-
-    <script th:src="@{/js/ajax-loader.js}"></script>
-    <script th:src="@{/js/toastr-options.js}"></script>
-    <script th:src="@{/js/form-enhancer.js}"></script>
-
-    <script th:src="@{/js/form-add.js}"></script>
-    <script th:src="@{/js/form-delete.js}"></script>
-</head>
 <body>
 
 <!-- // @formatter:off  -->
@@ -55,13 +16,5 @@
 </header>
 <!-- // @formatter:on  -->
 
-<noscript th:fragment="noscript">
-    <div id="no-script-msg" class="container text-center">
-        <p>
-            Please enable JavaScript in your browser.<br/>
-            This page is not working properly without JS.
-        </p>
-    </div>
-</noscript>
 </body>
 </html>

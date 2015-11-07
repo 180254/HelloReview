@@ -1,3 +1,4 @@
+/*                      noscript                    */
 #no-script-msg {
     position: fixed;
     top: 0;
@@ -12,6 +13,7 @@
     font-weight: bold;
 }
 
+/*                      header                      */
 header pre {
     font-size: 9px;
 }
@@ -24,16 +26,7 @@ header pre {
     color: red;
 }
 
-@media (min-width: 768px) {
-    .navbar-right {
-        right: 2em;
-    }
-}
-
-main {
-    margin-top: 1em;
-}
-
+/*                      ajax-loader                 */
 #ajax-loader {
     position: fixed;
     left: 50%;
@@ -41,6 +34,20 @@ main {
     display: none;
 }
 
+/*                      navbar                      */
+
+@media (min-width: 768px) {
+    .navbar-right {
+        right: 2em;
+    }
+}
+
+/*                      general                     */
+main {
+    margin-top: 1em;
+}
+
+/*                login/github button               */
 .main-hello .social-button1 {
     width: 300px;
 }
@@ -49,6 +56,12 @@ main {
     color: rgb(203, 218, 0);
 }
 
+/*                toastr                            */
+#toast-container {
+    margin-top: 2em;
+}
+
+/*                displaying form                   */
 .form-main .form-description {
     margin-bottom: 15px;
     border: 8px solid rgba(240, 173, 78, 0.25);
@@ -56,7 +69,7 @@ main {
     padding: 1em;
 }
 
-.form-main h2.question-text {
+.form-main .question-text {
     padding-bottom: 0.5em;
     font-size: 1.3em;
     color: darkmagenta;
@@ -72,58 +85,40 @@ main {
     padding: 1em;
 }
 
-.form-main .input-3 {
-    margin-bottom: 1em;
-}
-
 .form-main .input-scale-b {
     padding-left: 1.3em;
     padding-right: 1.3em;
 }
 
-.form-submit {
+.form-main .form-submit {
     margin-top: 1em;
     margin-bottom: 10em;
 }
 
-.form-submit button {
+.form-main .form-submit button {
     width: 80%;
     font-size: 1.15em;
     padding: 0.4em;
 }
 
-.required {
+.form-main .form-required {
     color: red;
 }
 
-.form-special-tag {
-    color: darkmagenta;
-}
-
-.forms-buttons-add-preview {
+.form-main .forms-buttons-add-preview {
     font-family: monospace;
 }
 
-.forms-buttons-add-preview button {
+.form-main .forms-buttons-add-preview button {
     width: 300px;
 }
 
-code {
-    display: block;
-    unicode-bidi: embed;
-    font-family: monospace;
-    white-space: pre;
-}
-
-.form-add-ajax-info {
+.form-main .form-add-ajax-info {
     margin-top: 1em;
 }
 
-#form-add-error,
-#form-add-preview-url {
+.form-main #form-add-error,
+.form-main #form-add-preview-url {
     display: none;
 }
 
-#toast-container {
-    margin-top: 2em;
-}
