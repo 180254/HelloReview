@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import pl.p.lodz.iis.hr.configuration.appconfig.github.General;
-import pl.p.lodz.iis.hr.configuration.appconfig.github.GitHub;
 
 @JacksonXmlRootElement(localName = "hello")
 public final class AppConfig {

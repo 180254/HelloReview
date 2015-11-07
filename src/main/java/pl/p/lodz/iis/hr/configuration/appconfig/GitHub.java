@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.appconfig.github;
+package pl.p.lodz.iis.hr.configuration.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,32 +8,32 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public final class GitHub {
 
     @JsonProperty("master")
-    private final Master master;
+    private final GitHubMaster master;
 
     @JsonProperty("dummy")
-    private final Dummy dummy;
+    private final GitHubDummy dummy;
 
     @JsonProperty("application")
-    private final Application application;
+    private final GitHubApplication application;
 
     @JsonCreator
-    public GitHub(@JsonProperty("master") Master master,
-                  @JsonProperty("dummy") Dummy dummy,
-                  @JsonProperty("application") Application application) {
+    public GitHub(@JsonProperty("master") GitHubMaster master,
+                  @JsonProperty("dummy") GitHubDummy dummy,
+                  @JsonProperty("application") GitHubApplication application) {
         this.master = master;
         this.dummy = dummy;
         this.application = application;
     }
 
-    public Master getMaster() {
+    public GitHubMaster getMaster() {
         return master;
     }
 
-    public Dummy getDummy() {
+    public GitHubDummy getDummy() {
         return dummy;
     }
 
-    public Application getApplication() {
+    public GitHubApplication getApplication() {
         return application;
     }
 

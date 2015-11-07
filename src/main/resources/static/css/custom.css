@@ -109,3 +109,7 @@ code {
 #form-add-preview-url {
     display: none;
 }
+
+#toast-container {
+    margin-top: 2em;
+}

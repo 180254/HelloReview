@@ -1,11 +1,11 @@
-package pl.p.lodz.iis.hr.configuration.appconfig.github;
+package pl.p.lodz.iis.hr.configuration.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public final class Application {
+public final class GitHubApplication {
 
     @JsonProperty("clientID")
     private final String clientID;
@@ -14,8 +14,9 @@ public final class Application {
     private final String clientSecret;
 
     @JsonCreator
-    public Application(@JsonProperty("clientID") String clientID,
-                       @JsonProperty("clientSecret") String clientSecret) {
+    public GitHubApplication(@JsonProperty("clientID") String clientID,
+                             @JsonProperty("clientSecret") String clientSecret) {
+
         this.clientID = clientID;
         this.clientSecret = clientSecret;
     }

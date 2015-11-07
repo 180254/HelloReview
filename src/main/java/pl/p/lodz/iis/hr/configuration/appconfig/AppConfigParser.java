@@ -2,10 +2,10 @@ package pl.p.lodz.iis.hr.configuration.appconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.jetbrains.annotations.NonNls;
 import pl.p.lodz.iis.hr.exceptions.UnableToInitializeException;
+import pl.p.lodz.iis.hr.services.XmlMapperProvider;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,9 +17,11 @@ class AppConfigParser {
 
     @NonNls
     private static final String APP_CONFIG_FILENAME = "HelloReviewConfig.xml";
+    private final XmlMapperProvider xmlMapperProvider;
     private final AppConfig appConfig;
 
-    AppConfigParser() {
+    AppConfigParser(XmlMapperProvider xmlMapperProvider) {
+        this.xmlMapperProvider = xmlMapperProvider;
         String content = readAppConfigContentFromFile();
         appConfig = parseAppConfig(content);
     }
@@ -30,7 +32,7 @@ class AppConfigParser {
 
     private String readAppConfigContentFromFile() {
         try {
-            Path configPath = Paths.get(APP_CONFIG_FILENAME);
+            Path configPath = Paths.get(AppConfigParser.APP_CONFIG_FILENAME);
             byte[] configBytes = Files.readAllBytes(configPath);
             return new String(configBytes, StandardCharsets.UTF_8);
 
@@ -41,10 +43,7 @@ class AppConfigParser {
     }
 
     private AppConfig parseAppConfig(String content) {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-
-        XmlMapper xmlMapper = new XmlMapper(module);
+        XmlMapper xmlMapper = xmlMapperProvider.getXmlMapper();
         ObjectReader reader = xmlMapper.readerFor(AppConfig.class);
 
         try {

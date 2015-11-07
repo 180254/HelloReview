@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
-import pl.p.lodz.iis.hr.configuration.appconfig.github.Application;
-import pl.p.lodz.iis.hr.configuration.appconfig.github.General;
+import pl.p.lodz.iis.hr.configuration.appconfig.General;
+import pl.p.lodz.iis.hr.configuration.appconfig.GitHubApplication;
+
 
 @Configuration
 class Pac4jSecurityConfig {
@@ -18,7 +19,7 @@ class Pac4jSecurityConfig {
     @Bean(name = "pack4jClients")
     public Clients clients() {
         General general = appConfig.getGeneral();
-        Application application = appConfig.getGitHub().getApplication();
+        GitHubApplication application = appConfig.getGitHub().getApplication();
 
         GitHubClient git = new GitHubClient(application.getClientID(), application.getClientSecret());
         return new Clients(String.format("%s/callback", general.getUrl()), git);
