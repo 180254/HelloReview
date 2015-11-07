@@ -1,7 +1,6 @@
 package pl.p.lodz.iis.hr.configuration.security.other;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -40,7 +39,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 cspMap.entrySet().stream()
                         .map(cspEntry -> String.format("%s %s;", cspEntry.getKey(), cspEntry.getValue()))
                         .reduce((s1, s2) -> String.format("%s %s", s1, s2))
-                        .orElse(StringUtils.EMPTY);
+                        .get();
 
         return new StaticHeadersWriter("Content-Security-Policy", cspString);
     }
@@ -58,8 +57,11 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             X-XSS-Protection: 1; mode=block
             X-Frame-Options: DENY
 
-         Custom headers added:
+         Custom added:
+         - headers
             Content-Security-Policy
+         - other
+            X-UA-Compatible as IE=edge in head.html
          */
         http.headers().addHeaderWriter(getCSPHeader());
 
