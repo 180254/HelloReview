@@ -36,14 +36,13 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .build();
                 // @formatter:on
 
-        String[] cspString = {""};
+        String cspString =
+                cspMap.entrySet().stream()
+                        .map(cspEntry -> String.format("%s %s;", cspEntry.getKey(), cspEntry.getValue()))
+                        .reduce((s1, s2) -> String.format("%s %s", s1, s2))
+                        .orElse(StringUtils.EMPTY);
 
-        cspMap.entrySet().stream()
-                .map(cspEntry -> String.format("%s %s", cspEntry.getKey(), cspEntry.getValue()))
-                .reduce((s1, s2) -> String.format("%s; %s", s1, s2))
-                .orElse(StringUtils.EMPTY);
-        cspMap.forEach((key, header) -> cspString[0] = String.format("%s%s %s; ", cspString[0], key, header));
-        return new StaticHeadersWriter("Content-Security-Policy", cspString[0]);
+        return new StaticHeadersWriter("Content-Security-Policy", cspString);
     }
 
     @Override
