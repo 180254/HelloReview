@@ -17,9 +17,6 @@ import java.util.Map;
 class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private HeaderWriter getCSPHeader() {
-        /*
-
-         */
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
                 .put("default-scr", "'none'")
@@ -51,8 +48,23 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/csp-reports");
+        /*
+        Headers auto added by spring boot:
+        - cache control
+            Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+            Pragma: no-cache
+            Expires: 0
+        - other
+            X-Content-Type-Options: nosniff
+            X-XSS-Protection: 1; mode=block
+            X-Frame-Options: DENY
+
+         Custom headers added:
+            Content-Security-Policy
+         */
         http.headers().addHeaderWriter(getCSPHeader());
+
+        http.csrf().ignoringAntMatchers("/csp-reports");
         http.authorizeRequests().anyRequest().permitAll();
     }
 }
