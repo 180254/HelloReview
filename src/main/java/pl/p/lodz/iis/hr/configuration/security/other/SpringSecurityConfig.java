@@ -17,31 +17,41 @@ import java.util.Map;
 class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private HeaderWriter getCSPHeader() {
+        /*
+
+         */
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
                 .put("default-scr", "'none'")
                 .put("script-src",  "'self' maxcdn.bootstrapcdn.com cdnjs.cloudflare.com")
              // .put("object-src",  "'none'")
-                .put("style-src",   "'self' maxcdn.bootstrapcdn.com cdnjs.cloudflare.com")
+
+             // style-src 'unsafe-inline' is required for xml displaying in pretty format by browser
+                .put("style-src",   "'self' 'unsafe-inline' maxcdn.bootstrapcdn.com cdnjs.cloudflare.com")
+
                 .put("img-src",     "'self'")
              // .put("media-src",   "'none'")
              // .put("frame-src",   "'none'")
                 .put("font-src",    "'self' maxcdn.bootstrapcdn.com")
                 .put("connect-src", "'self'")
+
+                .put("report-uri", "/csp-reports")
                 .build();
-                // @formatter:off
+                // @formatter:on
 
-        String cspString =
-                cspMap.entrySet().stream()
-                        .map(cspEntry -> String.format("%s %s;", cspEntry.getKey(), cspEntry.getValue()))
-                        .reduce((s1, s2) -> String.format("%s %s", s1, s2))
-                        .orElse(StringUtils.EMPTY);
+        String[] cspString = {""};
 
-        return new StaticHeadersWriter("Content-Security-Policy", cspString);
+        cspMap.entrySet().stream()
+                .map(cspEntry -> String.format("%s %s", cspEntry.getKey(), cspEntry.getValue()))
+                .reduce((s1, s2) -> String.format("%s; %s", s1, s2))
+                .orElse(StringUtils.EMPTY);
+        cspMap.forEach((key, header) -> cspString[0] = String.format("%s%s %s; ", cspString[0], key, header));
+        return new StaticHeadersWriter("Content-Security-Policy", cspString[0]);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().ignoringAntMatchers("/csp-reports");
         http.headers().addHeaderWriter(getCSPHeader());
         http.authorizeRequests().anyRequest().permitAll();
     }
