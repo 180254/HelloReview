@@ -2,12 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
-    <!--<meta name="_csrf" th:content="${_csrf.token}" />-->
-    <!--<meta name="_csrf_header" th:content="${_csrf.headerName}" />-->
-
     <title th:text="'HR - ' + ${#httpServletRequest.requestURI}"></title>
 
+    <meta name="description" content="HelloReview: A system for peer review of application source code."/>
+    <meta name="author" content="180254"/>
+
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>

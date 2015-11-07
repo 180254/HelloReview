@@ -1,17 +1,20 @@
 /*jslint browser: true*/
-/*global $, jQuery, alert*/
+/*global $, jQuery, alert, slider, autosize */
 
-function formsTextareaLettersCounter() {
+function textareaLettersCounter($textareas) {
     'use strict';
 
-    $('.form-main').find('textarea').each(function () {
-
+    $textareas.each(function () {
         var textMax = $(this).attr('maxlength');
+
+        jQuery('<h6/>', {
+            class: 'pull-right t-letter-counter'
+        }).insertAfter($(this));
+
         $(this).next().html('0 / ' + textMax);
 
         $(this).keyup(function () {
             var textLength = $(this).val().length;
-
             $(this).next().html(textLength + ' / ' + textMax);
         });
     });
@@ -20,7 +23,9 @@ function formsTextareaLettersCounter() {
 $(document).ready(function () {
     'use strict';
 
+    var $textareas = $('textarea');
+
     $("input.slider").slider();
-    autosize($('textarea'));
-    formsTextareaLettersCounter();
+    autosize($textareas);
+    textareaLettersCounter($textareas);
 });

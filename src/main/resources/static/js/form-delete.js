@@ -3,31 +3,19 @@
 
 function deleteForm($deleteLink) {
     'use strict';
-    var $row = $deleteLink.closest('tr'),
-        id = $deleteLink.closest('tr').children('td').html();
 
-    toastr.options = {
-        'closeButton': false,
-        'debug': false,
-        'newestOnTop': false,
-        'progressBar': false,
-        'positionClass': 'toast-top-center',
-        'preventDuplicates': false,
-        'onclick': null,
-        'showDuration': '300',
-        'hideDuration': '1000',
-        'timeOut': '1500',
-        'extendedTimeOut': '1000',
-        'showEasing': 'swing',
-        'hideEasing': 'linear',
-        'showMethod': 'fadeIn',
-        'hideMethod': 'fadeOut'
-    };
+    var $row = $deleteLink.closest('tr'),
+        id = $deleteLink.closest('tr').children('td').html(),
+        ajaxHeaders = {};
+
+    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
+        $("meta[name='_csrf']").attr('content');
 
 
     $.ajax({
         type: 'POST',
-        url: '/m/forms/delete/' + id
+        url: '/m/forms/delete/' + id,
+        headers: ajaxHeaders
 
     }).done(function (data) {
         toastr.success(data);

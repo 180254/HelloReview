@@ -9,7 +9,11 @@ function formAddHandler(action) {
         $divErrors = $('#form-add-error'),
         $divPreview = $('#form-add-preview-url'),
         $previewButton = $('#form-add-preview'),
-        $addButton = $('#form-add-add');
+        $addButton = $('#form-add-add'),
+        ajaxHeaders = {};
+
+    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
+        $("meta[name='_csrf']").attr('content');
 
     $ulErrors.html('');
     $previewButton.prop('disabled', true);
@@ -18,7 +22,8 @@ function formAddHandler(action) {
     $.ajax({
         type: 'POST',
         url: '/m/forms/add',
-        data: serializedWithAction
+        data: serializedWithAction,
+        headers: ajaxHeaders
 
     }).done(function (data) {
         var url;

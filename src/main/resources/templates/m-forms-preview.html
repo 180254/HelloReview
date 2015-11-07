@@ -33,7 +33,6 @@
                      th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputText)}">
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <textarea th:id="'input' + ${input.id}" class="form-control" rows="2" maxlength="1024"></textarea>
-                    <h6 class="pull-right t-letter-counter"></h6>
                 </div>
             </div>
 
