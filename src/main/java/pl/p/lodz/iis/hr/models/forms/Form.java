@@ -10,6 +10,7 @@ import pl.p.lodz.iis.hr.models.RelationsAware;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,10 @@ public class Form implements Serializable, RelationsAware {
     @Column(nullable = false)
     @JsonView(FormViews.RESTPreview.class)
     private boolean temporary;
+
+    @Column(nullable = false)
+    @JsonView(FormViews.RESTPreview.class)
+    private final LocalDateTime created = LocalDateTime.now();
 
     Form() {
     }
@@ -84,6 +89,10 @@ public class Form implements Serializable, RelationsAware {
 
     public void setTemporary(boolean temporary) {
         this.temporary = temporary;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
     }
 
     @Override
