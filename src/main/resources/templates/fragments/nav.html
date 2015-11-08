@@ -9,7 +9,8 @@
             <a href="/">Main page</a>
         </li>
 
-        <li th:class="${#httpServletRequest.requestURI.startsWith('/m/courses/')} ? active : ''"
+        <li th:if="${isLoggedIn and isMaster}"
+            th:class="${#httpServletRequest.requestURI.startsWith('/m/courses/')} ? active : ''"
             role="presentation">
             <a href="/m/courses">Courses</a>
         </li>

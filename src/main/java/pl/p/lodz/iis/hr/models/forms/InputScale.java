@@ -55,16 +55,31 @@ public class InputScale extends Input {
         return fromLabel;
     }
 
+    void setFromLabel(String fromLabel) {
+        this.fromLabel = fromLabel;
+    }
+
     public Long getFromS() {
         return fromS;
+    }
+
+    void setFromS(Long fromS) {
+        this.fromS = fromS;
     }
 
     public String getToLabel() {
         return toLabel;
     }
 
+    void setToLabel(String toLabel) {
+        this.toLabel = toLabel;
+    }
+
     public Long getToS() {
         return toS;
     }
 
+    void setToS(Long toS) {
+        this.toS = toS;
+    }
 }

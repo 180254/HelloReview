@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public class Student implements Serializable {
+public class Participant implements Serializable {
 
     private static final long serialVersionUID = -6918665306614378792L;
 
@@ -39,10 +39,10 @@ public class Student implements Serializable {
     @JsonView
     private final LocalDateTime created = LocalDateTime.now();
 
-    Student() {
+    Participant() {
     }
 
-    public Student(Course course, String name, String gitHubName) {
+    public Participant(Course course, String name, String gitHubName) {
         this.name = name;
         this.gitHubName = gitHubName;
         this.course = course;
@@ -64,7 +64,7 @@ public class Student implements Serializable {
         return gitHubName;
     }
 
-    public void setGitHubName(String gitHubName) {
+    void setGitHubName(String gitHubName) {
         this.gitHubName = gitHubName;
     }
 
@@ -72,7 +72,7 @@ public class Student implements Serializable {
         return course;
     }
 
-    public void setCourse(Course course) {
+    void setCourse(Course course) {
         this.course = course;
     }
 

@@ -2,8 +2,8 @@ package pl.p.lodz.iis.hr.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.p.lodz.iis.hr.models.courses.Student;
+import pl.p.lodz.iis.hr.models.courses.Participant;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 }

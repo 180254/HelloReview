@@ -33,7 +33,7 @@ public class Review implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "review", orphanRemoval = true)
     @JsonView
     @JsonProperty("reviewreponse")
-    private final List<ReviewResponse> reviewResponses = new ArrayList<>(10);
+    private List<ReviewResponse> reviewResponses;
 
     @Column(nullable = false)
     @JsonView
@@ -46,6 +46,7 @@ public class Review implements Serializable {
     public Review(Course course, Form form) {
         this.course = course;
         this.form = form;
+        reviewResponses = new ArrayList<>(10);
     }
 
     public long getId() {
@@ -56,7 +57,7 @@ public class Review implements Serializable {
         return course;
     }
 
-    public void setCourse(Course course) {
+    void setCourse(Course course) {
         this.course = course;
     }
 
@@ -64,8 +65,16 @@ public class Review implements Serializable {
         return form;
     }
 
-    public void setForm(Form form) {
+    void setForm(Form form) {
         this.form = form;
+    }
+
+    public List<ReviewResponse> getReviewResponses() {
+        return reviewResponses;
+    }
+
+    void setReviewResponses(List<ReviewResponse> reviewResponses) {
+        this.reviewResponses = reviewResponses;
     }
 
     public LocalDateTime getCreated() {

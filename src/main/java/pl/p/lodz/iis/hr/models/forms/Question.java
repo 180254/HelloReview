@@ -41,7 +41,7 @@ public class Question implements Serializable, RelationsAware {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     @JsonProperty("input")
-    private final List<Input> inputs = new ArrayList<>(10);
+    private List<Input> inputs;
 
     Question() {
     }
@@ -50,6 +50,7 @@ public class Question implements Serializable, RelationsAware {
         this.questionText = questionText;
         this.additionalTips = additionalTips;
         this.form = form;
+        inputs = new ArrayList<>(10);
     }
 
     public long getId() {
@@ -81,7 +82,11 @@ public class Question implements Serializable, RelationsAware {
     }
 
     public List<Input> getInputs() {
-        return new ArrayList<>(inputs);
+        return inputs;
+    }
+
+    void setInputs(List<Input> inputs) {
+        this.inputs = inputs;
     }
 
     @Override

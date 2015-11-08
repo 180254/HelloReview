@@ -67,7 +67,7 @@ public abstract class Input implements Serializable {
         return required;
     }
 
-    void setRequired(boolean required) {
+    public void setRequired(boolean required) {
         this.required = required;
     }
 

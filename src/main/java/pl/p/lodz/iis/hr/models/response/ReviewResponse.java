@@ -3,8 +3,8 @@ package pl.p.lodz.iis.hr.models.response;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
-import pl.p.lodz.iis.hr.models.courses.Student;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class ReviewResponse implements Serializable {
 
     @Column(nullable = false, unique = true)
     @JsonView
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
@@ -33,7 +33,7 @@ public class ReviewResponse implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
-    private Student student;
+    private Participant participant;
 
     @Column(nullable = false, length = 255, unique = true)
     @JsonView
@@ -48,16 +48,15 @@ public class ReviewResponse implements Serializable {
     ReviewResponse() {
     }
 
-    public ReviewResponse(Review review, Student student) {
+    public ReviewResponse(Review review, Participant participant) {
         this.review = review;
-        this.student = student;
+        this.participant = participant;
         status = ReviewResponseStatus.CREATING;
     }
 
     public long getId() {
         return id;
     }
-
 
     public UUID getUuid() {
         return uuid;
@@ -67,23 +66,23 @@ public class ReviewResponse implements Serializable {
         return review;
     }
 
-    public void setReview(Review review) {
+    void setReview(Review review) {
         this.review = review;
     }
 
-    public Student getStudent() {
-        return student;
+    public Participant getParticipant() {
+        return participant;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    void setParticipant(Participant participant) {
+        this.participant = participant;
     }
 
     public String getGitHubUrl() {
         return gitHubUrl;
     }
 
-    public void setGitHubUrl(String gitHubUrl) {
+    void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
     }
 

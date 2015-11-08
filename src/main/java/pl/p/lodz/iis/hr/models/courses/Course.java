@@ -30,7 +30,7 @@ public class Course implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course", orphanRemoval = true)
     @JsonView
     @JsonProperty("student")
-    private final List<Student> students = new ArrayList<>(10);
+    private List<Participant> participants;
 
     @Column(nullable = false)
     @JsonView
@@ -41,6 +41,7 @@ public class Course implements Serializable {
 
     public Course(String name) {
         this.name = name;
+        participants = new ArrayList<>(10);
     }
 
     public long getId() {
@@ -55,8 +56,12 @@ public class Course implements Serializable {
         this.name = name;
     }
 
-    public List<Student> getStudents() {
-        return new ArrayList<>(students);
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    void setParticipants(List<Participant> participants) {
+        this.participants = participants;
     }
 
     public LocalDateTime getCreated() {
