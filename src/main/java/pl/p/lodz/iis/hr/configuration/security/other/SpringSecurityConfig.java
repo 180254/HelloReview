@@ -18,27 +18,33 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private HeaderWriter getCSPHeader() {
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
-                .put("default-scr", "'none'")
-                .put("script-src",  "'self' cdnjs.cloudflare.com")
-             // .put("object-src",  "'none'")
+                // Note: style-src 'unsafe-inline' is required for xml displaying in pretty format by browser
 
-             // style-src 'unsafe-inline' is required for xml displaying in pretty format by browser
-                .put("style-src",   "'self' 'unsafe-inline' cdnjs.cloudflare.com")
+                .put("default-src",     "'none'")
 
-                .put("img-src",     "'self'")
-             // .put("media-src",   "'none'")
-             // .put("frame-src",   "'none'")
-                .put("font-src",    "'self' cdnjs.cloudflare.com")
-                .put("connect-src", "'self'")
+                .put("connect-src",     "'self'")
+                .put("font-src ",       "'self' cdnjs.cloudflare.com")
+                .put("img-src ",        "'self'")
+             // .put("media-src ",      "'none'") // unnecessary - default-src
+             // .put("object-src",      "'none'") // unnecessary - default-src
+                .put("script-src",      "'self' cdnjs.cloudflare.com")
+                .put("style-src",       "'self' 'unsafe-inline' cdnjs.cloudflare.com")
+             // .put("frame-src",       "") // deprecated in CSP2, SHOULD use the child-src directive instead.
+             // .put("sandbox",         "") // unnecessary -  object-src is none
+                .put("form-action",     "'self' github.com") // necessary - form-action doesn't fall back to the default
+                .put("frame-ancestors", "'none'") // necessary - frame-ancestors doesn't fall back to the default src
+             // .put("plugin-types",    "") // unnecessary -  object-src is none
+             // .put("base-uri",        "") // just self, don't define base-uri
+             // .put("child-src",       "'none'") // unnecessary - default-src
 
-                .put("report-uri", "/csp-reports")
+                .put("report-uri ", "/csp-reports")
                 .build();
                 // @formatter:on
 
         String cspString =
                 cspMap.entrySet().stream()
-                        .map(cspEntry -> String.format("%s %s;", cspEntry.getKey(), cspEntry.getValue()))
-                        .reduce((s1, s2) -> String.format("%s %s", s1, s2))
+                        .map(cspEntry -> String.format("%s %s", cspEntry.getKey(), cspEntry.getValue()))
+                        .reduce((s1, s2) -> String.format("%s; %s", s1, s2))
                         .get();
 
         return new StaticHeadersWriter("Content-Security-Policy", cspString);
@@ -60,7 +66,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          Custom added:
          - headers
             Content-Security-Policy
-         - other
+         - meta
             X-UA-Compatible as IE=edge in head.html
          */
         http.headers().addHeaderWriter(getCSPHeader());
