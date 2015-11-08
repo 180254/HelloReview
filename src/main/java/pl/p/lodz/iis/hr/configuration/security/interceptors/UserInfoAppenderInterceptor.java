@@ -44,5 +44,4 @@ class UserInfoAppenderInterceptor extends HandlerInterceptorAdapter {
             }
         }
     }
-
 }
