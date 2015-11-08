@@ -84,6 +84,9 @@ class MFormsController {
         form.setName(Strings.emptyToNull(formName));
         form.setTemporary(action.equals("preview"));
 
+        formRepository.delete(formRepository.findByTemporaryTrue());
+        formRepository.flush();
+
         List<String> validate = formValidator.validate(form);
         if (!validate.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -91,7 +94,6 @@ class MFormsController {
         }
 
         form.fixRelations();
-        formRepository.delete(formRepository.findByTemporaryTrue());
         formRepository.save(form);
         return form.getId();
     }
@@ -157,5 +159,4 @@ class MFormsController {
         formRepository.delete(form);
         return "Done";
     }
-
 }

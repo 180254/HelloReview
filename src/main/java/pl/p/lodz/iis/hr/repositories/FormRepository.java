@@ -12,4 +12,6 @@ public interface FormRepository extends JpaRepository<Form, Long> {
     List<Form> findByTemporaryTrue();
 
     List<Form> findByTemporaryFalse();
+
+    Form findByName(String name);
 }

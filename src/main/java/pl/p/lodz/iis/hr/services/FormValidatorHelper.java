@@ -1,9 +1,11 @@
 package pl.p.lodz.iis.hr.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.models.forms.Input;
 import pl.p.lodz.iis.hr.models.forms.Question;
+import pl.p.lodz.iis.hr.repositories.FormRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +14,12 @@ import java.util.stream.Collectors;
 class FormValidatorHelper {
 
     private final Validator validator;
+    private final FormRepository formRepository;
     private final Form form;
     private final List<String> errorsList = new ArrayList<>(10);
 
-    FormValidatorHelper(Validator validator, Form form) {
+    FormValidatorHelper(Validator validator, FormRepository formRepository, Form form) {
+        this.formRepository = formRepository;
         this.validator = validator;
         this.form = form;
     }
@@ -24,6 +28,7 @@ class FormValidatorHelper {
         errorsList.clear();
         String errorPathF = "form";
 
+        validateNameIsUnique(form, errorPathF);
         validate2(form, errorPathF);
 
         List<Question> questions = form.getQuestions();
@@ -45,6 +50,16 @@ class FormValidatorHelper {
         }
 
         return new ArrayList<>(errorsList);
+    }
+
+    private void validateNameIsUnique(Form form, String errorPathF) {
+        if (StringUtils.isNotBlank(form.getName())) {
+            Form byName = formRepository.findByName(form.getName());
+            if (byName != null) {
+                errorsList.add(String.format("%s > %s: [%s]",
+                        errorPathF, "name", "must be unique"));
+            }
+        }
     }
 
     private void validate2(Object object, String errorPath) {
