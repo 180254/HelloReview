@@ -45,10 +45,10 @@ function formAddHandler(action) {
             i,
             errLen;
 
-        if (json.message === undefined) {
+        if (json.status === undefined) {
             errors = errors.concat(json);
         } else {
-            errors = errors.concat(json.message);
+            errors = errors.concat('Server error: ' + json.status + ' ' + json.error);
         }
 
         $divErrors.fadeIn();

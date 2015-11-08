@@ -11,7 +11,7 @@
 
     <div th:if="${isLoggedIn == false}" class="social-button1 center-block">
         <form action="/login" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
             <button type="submit" class="btn btn-block btn-social btn-github">
                 <i class="fa fa-github"></i>

@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.configuration.security.pac4j;
 
-
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;

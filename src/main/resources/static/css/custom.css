@@ -1,4 +1,18 @@
-/*                      noscript, old browser       */
+/*                      error                       */
+
+#sth-go-wrong .status {
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 2.5em;
+}
+
+#sth-go-wrong .message {
+    font-size: 1.2em;
+}
+#sth-go-wrong .message2 {
+    font-size: 1.9em;
+}
+
+/*                      noscript, old browser     ó  */
 .not-for-you {
     position: fixed;
     top: 0;

@@ -9,8 +9,8 @@
     <meta name="description" content="HelloReview: A system for peer review of application source code."/>
     <meta name="author" content="180254"/>
 
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
