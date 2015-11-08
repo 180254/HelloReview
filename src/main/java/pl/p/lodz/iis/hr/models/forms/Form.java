@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.RelationsAware;
 
 import javax.persistence.*;
@@ -23,32 +24,32 @@ public class Form implements Serializable, RelationsAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(FormViews.RESTPreview.class)
+    @JsonView(JSONViews.FormRESTPreview.class)
     private long id;
 
-    @Column(nullable = false, length = 255)
-    @JsonView(FormViews.RESTPreview.class)
+    @Column(nullable = false, length = 255, unique = true)
     @NotBlank
     @Length(min = 1, max = 255)
+    @JsonView(JSONViews.FormRESTPreview.class)
     private String name;
 
     @Column(nullable = false, length = 4095)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank
     @Length(min = 1, max = 4095)
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     @JsonProperty("question")
     private final List<Question> questions = new ArrayList<>(10);
 
     @Column(nullable = false)
-    @JsonView(FormViews.RESTPreview.class)
+    @JsonView(JSONViews.FormRESTPreview.class)
     private boolean temporary;
 
     @Column(nullable = false)
-    @JsonView(FormViews.RESTPreview.class)
+    @JsonView(JSONViews.FormRESTPreview.class)
     private final LocalDateTime created = LocalDateTime.now();
 
     Form() {

@@ -8,7 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.p.lodz.iis.hr.models.forms.*;
+import pl.p.lodz.iis.hr.models.JSONViews;
+import pl.p.lodz.iis.hr.models.forms.Form;
+import pl.p.lodz.iis.hr.models.forms.InputScale;
+import pl.p.lodz.iis.hr.models.forms.InputText;
+import pl.p.lodz.iis.hr.models.forms.Question;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.InputScaleRepository;
 import pl.p.lodz.iis.hr.repositories.InputTextRepository;
@@ -45,7 +49,7 @@ public class RestController {
             produces = "application/json")
     @ResponseBody
     public String forms() throws JsonProcessingException {
-        ObjectWriter objectWriter = objectMapper.writerWithView(FormViews.RESTPreview.class);
+        ObjectWriter objectWriter = objectMapper.writerWithView(JSONViews.FormRESTPreview.class);
         return objectWriter.writeValueAsString(formRepository.findAll());
     }
 

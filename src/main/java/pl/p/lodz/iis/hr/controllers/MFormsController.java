@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.models.forms.FormViews;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.FormValidator;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
@@ -72,12 +72,13 @@ class MFormsController {
 
         try {
             ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
-                    .readerFor(Form.class).withView(FormViews.ParseXML.class);
+                    .readerFor(Form.class).withView(JSONViews.FormParseXML.class);
             form = xmlReader.readValue(formXML.trim());
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(String.format("It's not xml! Exception thrown: [%s]", e.getMessage()));
+            return Collections.singletonList(
+                    String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage()));
         }
 
         form.setName(Strings.emptyToNull(formName));
@@ -134,7 +135,7 @@ class MFormsController {
             throw new ResourceNotFoundException();
         }
 
-        ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(FormViews.ParseXML.class);
+        ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
 

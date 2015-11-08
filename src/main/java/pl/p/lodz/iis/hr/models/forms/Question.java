@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.RelationsAware;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class Question implements Serializable, RelationsAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(FormViews.RESTPreview.class)
+    @JsonView(JSONViews.FormRESTPreview.class)
     private long id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
@@ -27,18 +28,18 @@ public class Question implements Serializable, RelationsAware {
     private Form form;
 
     @Column(nullable = false, length = 255)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank
     @Length(min = 1, max = 255)
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String questionText;
 
     @Column(nullable = true, length = 4095)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @Length(min = 0, max = 4095)
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String additionalTips;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     @JsonProperty("input")
     private final List<Input> inputs = new ArrayList<>(10);
 

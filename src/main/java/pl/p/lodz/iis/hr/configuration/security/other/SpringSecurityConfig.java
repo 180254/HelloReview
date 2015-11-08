@@ -19,12 +19,13 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
                 // Note: style-src 'unsafe-inline' is required for xml displaying in pretty format by browser
+                // Note: img-src data: is used by toastr.js
 
                 .put("default-src",     "'none'")
 
                 .put("connect-src",     "'self'")
                 .put("font-src ",       "'self' cdnjs.cloudflare.com")
-                .put("img-src ",        "'self'")
+                .put("img-src ",        "'self' data:")
              // .put("media-src ",      "'none'") // unnecessary - default-src
              // .put("object-src",      "'none'") // unnecessary - default-src
                 .put("script-src",      "'self' cdnjs.cloudflare.com")

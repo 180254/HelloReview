@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.models.forms;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.JSONViews;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,25 +17,25 @@ public class InputScale extends Input {
     private static final long serialVersionUID = -2230675781077172644L;
 
     @Column(nullable = false, length = 255)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank
     @Length(min = 1, max = 255)
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String fromLabel;
 
     @Column(nullable = false)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotNull
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private Long fromS;
 
     @Column(nullable = false, length = 255)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotBlank
     @Length(min = 1, max = 255)
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String toLabel;
 
     @Column(nullable = false)
-    @JsonView({FormViews.RESTPreview.class, FormViews.ParseXML.class})
     @NotNull
+    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private Long toS;
 
     InputScale() {

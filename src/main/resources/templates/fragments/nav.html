@@ -4,14 +4,19 @@
 
 <nav th:fragment="nav">
     <ul class="nav nav-tabs">
-        <li role="presentation"
-            th:class="${#httpServletRequest.requestURI.equals('/')} ? active : ''">
+        <li th:class="${#httpServletRequest.requestURI.equals('/')} ? active : ''"
+            role="presentation">
             <a href="/">Main page</a>
         </li>
 
-        <li role="presentation" class="dropdown"
-            th:if="${isLoggedIn and isMaster}"
-            th:classappend="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''">
+        <li th:class="${#httpServletRequest.requestURI.startsWith('/m/courses/')} ? active : ''"
+            role="presentation">
+            <a href="/m/courses">Courses</a>
+        </li>
+
+        <li th:if="${isLoggedIn and isMaster}"
+            th:classappend="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''"
+            role="presentation" class="dropdown">
 
             <a class="dropdown-toggle" data-toggle="dropdown"
                href="#" role="button" aria-haspopup="true" aria-expanded="false">
