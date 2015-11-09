@@ -11,6 +11,6 @@ class IndexController {
             value = "/",
             method = RequestMethod.GET)
     public String index() {
-        return "main-index";
+        return "index";
     }
 }

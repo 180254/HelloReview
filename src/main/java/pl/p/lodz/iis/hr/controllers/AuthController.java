@@ -50,6 +50,6 @@ class AuthController {
             value = "/login-issue",
             method = RequestMethod.GET)
     public String loginIssue() {
-        return "main-login-issue";
+        return "login-issue";
     }
 }
