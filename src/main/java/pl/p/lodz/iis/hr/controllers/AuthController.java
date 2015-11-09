@@ -45,4 +45,16 @@ class AuthController {
             }
         }
     }
+
+    @RequestMapping(
+            value = "/login-issue",
+            method = RequestMethod.GET)
+    public String loginIssue(HttpServletRequest request,
+                             HttpServletResponse response) {
+
+        Pac4jSecurityHelper pac4jSecurityHelper = new Pac4jSecurityHelper(gitHubClient, request, response);
+        pac4jSecurityHelper.getProfileManager().remove(true);
+
+        return "main-login-issue";
+    }
 }
