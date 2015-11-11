@@ -10,28 +10,15 @@
         </li>
 
         <li th:if="${isLoggedIn and isMaster}"
-            th:class="${#httpServletRequest.requestURI.startsWith('/m/courses/')} ? active : ''"
+            th:class="${#httpServletRequest.requestURI.startsWith('/m/courses')} ? active : ''"
             role="presentation">
-            <a href="/m/courses">Courses</a>
+            <a href="/m/courses">Courses and so on</a>
         </li>
 
         <li th:if="${isLoggedIn and isMaster}"
-            th:classappend="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''"
-            role="presentation" class="dropdown">
-
-            <a class="dropdown-toggle" data-toggle="dropdown"
-               href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                Forms <span class="caret"></span>
-            </a>
-
-            <ul class="dropdown-menu">
-                <li role="presentation">
-                    <a href="/m/forms">List existing</a>
-                </li>
-                <li role="presentation">
-                    <a href="/m/forms/add">Add new one</a>
-                </li>
-            </ul>
+            th:class="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''"
+            role="presentation">
+            <a href="/m/forms">Forms</a>
         </li>
 
         <li role="presentation"

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Course name</th>
+            <th><i class="fa fa-eye"></i> Participants</th>
+            <th><i class="fa fa-eye"></i> Reviews</th>
+            <th><i class="fa fa-eraser"></i> Delete</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <div class="add-new text-right">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#course-add">
+            Add new one
+        </button>
+    </div>
+
+    <div class="modal fade" id="course-add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Add new course</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="course-add-form">
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+
+                        <div class="form-group">
+                            <label for="course-name">Course name</label>
+                            <input type="text" class="form-control" id="course-name" placeholder="Some 2015"/>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="course-add-error" class="form-add-ajax-info alert alert-danger" role="alert">
+                    <h4>Validation errors</h4>
+                    <ul id="course-add-error-list">
+                    </ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="course-add-button-close" type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button id="course-add-button-submit" type="button" class="btn btn-primary">
+                        Add course
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

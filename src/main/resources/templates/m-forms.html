@@ -22,8 +22,8 @@
         <tr th:each="form : ${forms}">
             <td th:text="${form.id}"></td>
             <td th:text="${form.name}"></td>
-            <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">form</a>,
-                <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">xml</a></td>
+            <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">as HTML</a>,
+                <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">as XML</a></td>
             <td><a href="#"
                    class="forms-delete-link"
                    data-title="Are you sure?"
@@ -33,6 +33,10 @@
         </tr>
         </tbody>
     </table>
+
+    <div class="add-new text-right">
+        <a class="btn btn-default" th:href="@{/m/forms/add}" role="button">Add new one</a>
+    </div>
 </main>
 
 </body>

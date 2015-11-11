@@ -32,6 +32,11 @@ public class Course implements Serializable {
     @JsonProperty("student")
     private List<Participant> participants;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course", orphanRemoval = true)
+    @JsonView
+    @JsonProperty("review")
+    private List<Review> reviews;
+
     @Column(nullable = false)
     @JsonView
     private final LocalDateTime created = LocalDateTime.now();
@@ -62,6 +67,14 @@ public class Course implements Serializable {
 
     void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public LocalDateTime getCreated() {

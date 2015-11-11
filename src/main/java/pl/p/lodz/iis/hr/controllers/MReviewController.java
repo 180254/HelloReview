@@ -11,24 +11,13 @@ import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
-import java.util.List;
-
 @Controller
-class MCoursesController {
+class MReviewController {
 
     @Autowired private CourseRepository courseRepository;
 
     @RequestMapping(
-            value = "/m/courses",
-            method = RequestMethod.GET)
-    public String cList(Model model) {
-        List<Course> courses = courseRepository.findAll();
-        model.addAttribute("courses", courses);
-        return "m-courses";
-    }
-
-    @RequestMapping(
-            value = "/m/courses/{courseID}/participants",
+            value = "/m/courses/{courseID}/reviews",
             method = RequestMethod.GET)
     public String students(@PathVariable long courseID,
                            Model model) {
@@ -40,6 +29,6 @@ class MCoursesController {
         }
 
         model.addAttribute("curse", curse);
-        return "m-courses-participants";
+        return "m-courses-student";
     }
 }

@@ -8,6 +8,7 @@
 #sth-go-wrong .message {
     font-size: 1.2em;
 }
+
 #sth-go-wrong .message2 {
     font-size: 1.9em;
 }
@@ -136,5 +137,19 @@ main {
 
 .form-main #form-add-error,
 .form-main #form-add-preview-url {
+    display: none;
+}
+
+/*                displaying table                  */
+.add-new {
+    margin-right: 1rem;
+}
+
+.add-new > .btn {
+    width: 12rem;
+}
+
+/*               displaying courses                 */
+#course-add-error {
     display: none;
 }
