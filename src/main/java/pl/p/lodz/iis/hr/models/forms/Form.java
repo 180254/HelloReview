@@ -8,6 +8,8 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.RelationsAware;
+import pl.p.lodz.iis.hr.repositories.FormRepository;
+import pl.p.lodz.iis.hr.services.UniqueName;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,6 +32,7 @@ public class Form implements Serializable, RelationsAware {
     @Column(nullable = false, length = 255, unique = true)
     @NotBlank
     @Length(min = 1, max = 255)
+    @UniqueName(service = FormRepository.class)
     @JsonView(JSONViews.FormRESTPreview.class)
     private String name;
 

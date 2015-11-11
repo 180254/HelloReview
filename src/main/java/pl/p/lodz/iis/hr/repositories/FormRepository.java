@@ -7,11 +7,9 @@ import pl.p.lodz.iis.hr.models.forms.Form;
 import java.util.List;
 
 @Repository
-public interface FormRepository extends JpaRepository<Form, Long> {
+public interface FormRepository extends JpaRepository<Form, Long>, FindByNameProvider<Form> {
 
     List<Form> findByTemporaryTrue();
 
     List<Form> findByTemporaryFalse();
-
-    Form findByName(String name);
 }

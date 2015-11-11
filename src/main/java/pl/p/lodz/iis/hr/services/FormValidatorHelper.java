@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.services;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.models.forms.Input;
@@ -15,12 +14,14 @@ class FormValidatorHelper {
 
     private final Validator validator;
     private final FormRepository formRepository;
+    private final LocaleService localeService;
     private final Form form;
     private final List<String> errorsList = new ArrayList<>(10);
 
-    FormValidatorHelper(Validator validator, FormRepository formRepository, Form form) {
+    FormValidatorHelper(Validator validator, FormRepository formRepository, LocaleService localeService, Form form) {
         this.formRepository = formRepository;
         this.validator = validator;
+        this.localeService = localeService;
         this.form = form;
     }
 
@@ -28,7 +29,6 @@ class FormValidatorHelper {
         errorsList.clear();
         String errorPathF = "form";
 
-        validateNameIsUnique(form, errorPathF);
         validate2(form, errorPathF);
 
         List<Question> questions = form.getQuestions();
@@ -52,15 +52,6 @@ class FormValidatorHelper {
         return new ArrayList<>(errorsList);
     }
 
-    private void validateNameIsUnique(Form form, String errorPathF) {
-        if (StringUtils.isNotBlank(form.getName())) {
-            Form byName = formRepository.findByName(form.getName());
-            if (byName != null) {
-                errorsList.add(String.format("%s > %s: [%s]",
-                        errorPathF, "name", "must be unique"));
-            }
-        }
-    }
 
     private void validate2(Object object, String errorPath) {
         BindingResult bindingResult = new DataBinder(object).getBindingResult();
@@ -75,7 +66,7 @@ class FormValidatorHelper {
                                 String.format("%s > %s: [%s]",
                                         errorPath,
                                         ((FieldError) objectError).getField(),
-                                        objectError.getDefaultMessage()))
+                                        localeService.getMessage(objectError)))
                         .collect(Collectors.toList());
 
         errorsList.addAll(collect);
