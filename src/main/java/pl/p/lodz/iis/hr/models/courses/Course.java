@@ -25,8 +25,9 @@ public class Course implements Serializable {
 
     @Column(nullable = false, length = 255, unique = true)
     @NotBlank
+
     @Length(min = 1, max = 255)
-    @UniqueName(service = CourseRepository.class)
+    @UniqueName(service = CourseRepository.class, message = "{constraints.unique.name}")
     @JsonView
     private String name;
 

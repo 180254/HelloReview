@@ -5,6 +5,7 @@ import pl.p.lodz.iis.hr.repositories.FindByNameProvider;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+
 public class UniqueNameValidator implements ConstraintValidator<UniqueName, String> {
 
     private FindByNameProvider<?> service;

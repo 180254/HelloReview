@@ -15,31 +15,41 @@
                th:value="${_csrf.token}"/>
 
         <div class="input-2">
-            <label for="form-name">Form name <span class="form-required">*</span></label>
+            <label for="form-name">
+                <span th:text="#{m.forms.add.form.name}"></span>
+                <span class="form-required">*</span>
+            </label>
             <input type="text" class="form-control" name="form-name" id="form-name"/>
         </div>
 
         <div class="input-2">
-            <label for="form-xml">Form XML <span class="form-required">*</span></label>
-            <a href="xml/example" target="_blank">(example)</a>
+            <label for="form-xml">
+                <span th:text="#{m.forms.add.form.xml}"></span>
+                <span class="form-required">*</span>
+            </label>
+            <a href="xml/example" target="_blank" th:text="#{m.forms.add.form.example}"></a>
             <textarea class="form-control" rows="20" name="form-xml" id="form-xml" maxlength="100000"></textarea>
         </div>
 
         <div id="form-add-error" class="input-2 form-add-ajax-info alert alert-danger" role="alert">
-            <h4>Validation errors</h4>
+            <h4 th:text="#{m.forms.add.validation.header}"></h4>
             <ul id="form-add-error-list">
             </ul>
         </div>
 
         <div id="form-add-preview-url" class="input-2 form-add-ajax-info alert alert-info" role="alert">
-            Preview is available on: <a class="alert-link" href="/" target="_blank">/</a>
+            <span th:text="#{m.forms.add.validation.preview.url}"></span>
+            <a class="alert-link" href="/" target="_blank">/</a>
         </div>
     </form>
 
 
     <div class="form-submit forms-buttons-add-preview">
-        <button id="form-add-button-preview" class="btn btn-default btn-info">Preview form</button>
-        <button id="form-add-button-add" class="btn btn-default btn-primary">Add form</button>
+        <button id="form-add-button-preview" class="btn btn-default btn-info"
+                th:text="#{m.forms.add.button.preview}"></button>
+
+        <button id="form-add-button-add" class="btn btn-default btn-primary"
+                th:text="#{m.forms.add.button.add}"></button>
     </div>
 
 </main>

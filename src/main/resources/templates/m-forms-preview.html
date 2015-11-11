@@ -24,7 +24,7 @@
                     <span th:if="${input.required}" class="form-required">*</span>
 
                     <br/> <b class="input-scale-b" th:utext="${input.fromLabel}"></b>
-                    <input class="slider"
+                    <input title="" class="slider"
                            th:id="'input' + ${input.id}"
                            data-th-attr="data-slider-min=${input.fromS},
                                data-slider-max=${input.toS},
@@ -38,7 +38,8 @@
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <span th:if="${input.required}" class="form-required">*</span>
 
-                    <textarea th:id="'input' + ${input.id}" class="form-control" rows="2" maxlength="1024"></textarea>
+                    <textarea title="" th:id="'input' + ${input.id}" class="form-control" rows="2" maxlength="1024">
+                    </textarea>
                 </div>
             </div>
 

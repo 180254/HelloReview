@@ -6,19 +6,19 @@
     <ul class="nav nav-tabs">
         <li th:class="${#httpServletRequest.requestURI.equals('/')} ? active : ''"
             role="presentation">
-            <a href="/">Main page</a>
+            <a href="/" th:text="#{nav.main.page}"></a>
         </li>
 
         <li th:if="${isLoggedIn and isMaster}"
             th:class="${#httpServletRequest.requestURI.startsWith('/m/courses')} ? active : ''"
             role="presentation">
-            <a href="/m/courses">Courses and so on</a>
+            <a href="/m/courses" th:text="#{nav.m.courses}"></a>
         </li>
 
         <li th:if="${isLoggedIn and isMaster}"
             th:class="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''"
             role="presentation">
-            <a href="/m/forms">Forms</a>
+            <a href="/m/forms" th:text="#{nav.m.forms}"></a>
         </li>
 
         <li role="presentation"
@@ -30,7 +30,7 @@
         <li role="presentation"
             th:if="${isLoggedIn}"
             class="navbar-right">
-            <a href="/logout?url=/">Logout&nbsp;&nbsp;</a>
+            <a href="/logout?url=/"><span th:text="#{nav.logout}"></span>&nbsp;&nbsp;</a>
         </li>
 
     </ul>

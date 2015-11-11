@@ -12,12 +12,12 @@ import java.lang.annotation.*;
  *
  * @author February 27, 2015 by Bo Andersen, modified by me
  */
-@Target({ElementType.FIELD})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UniqueNameValidator.class)
 @Documented
 public @interface UniqueName {
-    String message() default "{unique.name.violation}";
+    String message() default "{constraints.unique.name}";
 
     Class<?>[] groups() default {};
 
