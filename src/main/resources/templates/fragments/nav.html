@@ -9,20 +9,20 @@
             <a href="/" th:text="#{nav.main.page}"></a>
         </li>
 
-        <li th:if="${isLoggedIn and isMaster}"
+        <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.startsWith('/m/courses')} ? active : ''"
             role="presentation">
             <a href="/m/courses" th:text="#{nav.m.courses}"></a>
         </li>
 
-        <li th:if="${isLoggedIn and isMaster}"
+        <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.startsWith('/m/forms')} ? active : ''"
             role="presentation">
             <a href="/m/forms" th:text="#{nav.m.forms}"></a>
         </li>
 
         <li role="presentation"
-            th:if="${isLoggedIn and !isMaster}"
+            th:if="${isPeer}"
             th:class="${#httpServletRequest.requestURI.equals('/p')} ? active : ''">
             <a href="/p">Peer</a>
         </li>

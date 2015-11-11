@@ -37,10 +37,13 @@ class UserInfoAppenderInterceptor extends HandlerInterceptorAdapter {
             if (pac4jSecurityHelper.isAuthenticated()) {
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isMaster", pac4jSecurityHelper.isMaster(appConfig));
+                model.addAttribute("isPeer", pac4jSecurityHelper.isPeer(appConfig));
                 model.addAttribute("username", pac4jSecurityHelper.getUserProfileFromSession().getUsername());
 
             } else {
                 model.addAttribute("isLoggedIn", false);
+                model.addAttribute("isMaster", false);
+                model.addAttribute("isPeer", false);
             }
         }
     }
