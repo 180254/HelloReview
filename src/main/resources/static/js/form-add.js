@@ -50,7 +50,7 @@ function formAddHandler(action) {
         $previewUrlDiv.hide();
 
         for (i = 0, errLen = errors.length; i < errLen; i += 1) {
-            $('<ul>').text(errors[i]).appendTo($errorsList);
+            $('<li>').text(errors[i]).appendTo($errorsList);
         }
 
     }).always(function () {

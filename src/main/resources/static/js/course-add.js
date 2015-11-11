@@ -37,7 +37,7 @@ function courseAddHandler() {
         $errorsDiv.fadeIn();
 
         for (i = 0, errLen = errors.length; i < errLen; i += 1) {
-            $('<ul>').text(errors[i]).appendTo($errorsList);
+            $('<li>').text(errors[i]).appendTo($errorsList);
         }
 
     }).always(function () {

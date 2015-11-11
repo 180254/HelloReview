@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.repositories.CourseRepository;
+import pl.p.lodz.iis.hr.services.UniqueName;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +26,7 @@ public class Course implements Serializable {
     @Column(nullable = false, length = 255, unique = true)
     @NotBlank
     @Length(min = 1, max = 255)
+    @UniqueName(service = CourseRepository.class)
     @JsonView
     private String name;
 

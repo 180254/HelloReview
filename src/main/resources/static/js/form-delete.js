@@ -30,7 +30,7 @@ function deleteForm($deleteLink) {
 $(document).ready(function () {
     'use strict';
 
-    $('.forms-delete-link').each(function () {
+    $('.form-delete-link').each(function () {
         var $dis = $(this);
 
         $(this).confirmation({
