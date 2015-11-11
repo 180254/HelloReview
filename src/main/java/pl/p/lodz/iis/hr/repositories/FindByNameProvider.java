@@ -1,10 +1,7 @@
 package pl.p.lodz.iis.hr.repositories;
 
-
-import javax.annotation.Resource;
-
-@Resource
+@FunctionalInterface
 public interface FindByNameProvider<T> {
-    
+
     T findByName(String name);
 }

@@ -79,6 +79,25 @@ class MCoursesController {
         } else {
             return courseRepository.save(course).getId();
         }
+    }
 
+
+    @RequestMapping(
+            value = "/m/courses/delete/{courseID}",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public String delete(@PathVariable long courseID,
+                         HttpServletResponse response) {
+
+        Course curse = courseRepository.getOne(courseID);
+
+        if (ExceptionChecker.checkExceptionThrown(curse::getId)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "Such resource doesn't exist";
+        }
+
+        courseRepository.delete(curse);
+        return "Done";
     }
 }
