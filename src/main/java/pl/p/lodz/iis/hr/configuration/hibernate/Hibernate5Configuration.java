@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.configuration.hibernate;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
