@@ -17,7 +17,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UniqueNameValidator.class)
 @Documented
 public @interface UniqueName {
-    String message() default "{constraints.unique.name}";
+
+    String message() default "";
 
     Class<?>[] groups() default {};
 

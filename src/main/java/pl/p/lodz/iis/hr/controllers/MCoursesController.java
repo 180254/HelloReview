@@ -2,7 +2,6 @@ package pl.p.lodz.iis.hr.controllers;
 
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
+import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ class MCoursesController {
 
     @Autowired private Validator validator;
     @Autowired private CourseRepository courseRepository;
-    @Autowired private MessageSource messageSource;
+    @Autowired private LocaleService localeService;
 
     @RequestMapping(
             value = "/m/courses",
@@ -72,9 +72,9 @@ class MCoursesController {
 
             List<FieldError> fieldErrors = bindingResult.getFieldErrors("name");
             return fieldErrors.stream().map(
-                    fieldError -> messageSource.getMessage(fieldError, null))
+                    fieldError -> localeService.getMessage(fieldError))
+                    .sorted()
                     .collect(Collectors.toList());
-
 
         } else {
             return courseRepository.save(course).getId();
