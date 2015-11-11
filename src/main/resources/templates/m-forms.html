@@ -11,10 +11,10 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th>#</th>
-            <th>Form name</th>
-            <th><i class="fa fa-eye"></i> Preview</th>
-            <th><i class="fa fa-eraser"></i> Delete</th>
+            <th th:text="#{m.forms.thead.id}"></th>
+            <th th:text="#{m.forms.thead.form.name}"></th>
+            <th><i class="fa fa-eye"></i> <span th:text="#{m.forms.thead.preview}"></span></th>
+            <th><i class="fa fa-eraser"></i> <span th:text="#{m.forms.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -22,14 +22,15 @@
         <tr th:each="form : ${forms}">
             <td th:text="${form.id}"></td>
             <td th:text="${form.name}"></td>
-            <td><a th:href="'/m/forms/preview/'+ ${form.id}" target="_blank">as HTML</a>,
-                <a th:href="'/m/forms/xml/'+ ${form.id}" target="_blank">as XML</a></td>
+            <td><a th:href="'/m/forms/preview/'+ ${form.id}" th:text="#{m.forms.tbody.as.html}" target="_blank"></a>,
+                <a th:href="'/m/forms/xml/'+ ${form.id}" th:text="#{m.forms.tbody.as.xml}" target="_blank"></a></td>
             <td><a href="#"
                    class="form-delete-link"
-                   data-title="Are you sure?"
-                   data-btnOkLabe="Delete"
-                   data-btnCancelLabel="Cancel"
-                   data-btnOkClass="btn btn-sm btn-danger">delete</a></td>
+                   data-th-attr="data-title=#{m.forms.delete.title},
+                           data-btnOkLabel=#{m.forms.delete.btnOkLabel},
+                           data-btnCancelLabel=#{m.forms.delete.btnCancelLabel}"
+                   data-btnOkClass="btn btn-sm btn-danger"
+                   th:text="#{m.forms.tbody.delete}"></a></td>
         </tr>
         </tbody>
     </table>
