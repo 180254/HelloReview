@@ -19,6 +19,7 @@ import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.FormValidator;
+import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
 import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
@@ -36,6 +37,7 @@ class MFormsController {
     @Autowired private FormRepository formRepository;
     @Autowired private XmlMapperProvider xmlMapperProvider;
     @Autowired private FormValidator formValidator;
+    @Autowired private LocaleService localeService;
 
     @RequestMapping(
             value = "/m/forms",
@@ -157,6 +159,6 @@ class MFormsController {
         }
 
         formRepository.delete(form);
-        return "Done";
+        return localeService.getMessage("m.forms.delete.done");
     }
 }

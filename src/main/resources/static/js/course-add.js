@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, alert*/
+/*global $, jQuery, toastr*/
 
 function courseAddHandler() {
     'use strict';
@@ -19,8 +19,13 @@ function courseAddHandler() {
         url: '/m/courses/add',
         data: serialized
 
-    }).done(function () {
-        location.reload();
+    }).done(function (data) {
+        $errorsDiv.hide();
+        toastr.success(data);
+
+        window.setTimeout(function () {
+            location.reload();
+        }, 1200);
 
     }).fail(function (jqXHR) {
         var json = jQuery.parseJSON(jqXHR.responseText),
@@ -46,6 +51,13 @@ function courseAddHandler() {
     });
 }
 
+function resetAddCourseModal() {
+    'use strict';
+
+    $('#course-add-name').val('');
+    $('#course-add-error').hide();
+}
+
 $(document).ready(function () {
     'use strict';
 
@@ -56,5 +68,9 @@ $(document).ready(function () {
 
     $('#course-add-button-submit').click(function () {
         courseAddHandler();
+    });
+
+    $('#course-add').on('show.bs.modal', function () {
+        resetAddCourseModal();
     });
 });

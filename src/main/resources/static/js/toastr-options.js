@@ -1,7 +1,8 @@
 /*jslint browser: true*/
-/*global $*/
+/*global $, toastr*/
 
 $(document).ready(function () {
+    'use strict';
 
     toastr.options = {
         'closeButton': false,

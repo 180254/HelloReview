@@ -77,7 +77,8 @@ class MCoursesController {
                     .collect(Collectors.toList());
 
         } else {
-            return courseRepository.save(course).getId();
+            courseRepository.save(course);
+            return localeService.getMessage("m.courses.add.done");
         }
     }
 
@@ -98,6 +99,6 @@ class MCoursesController {
         }
 
         courseRepository.delete(curse);
-        return "Done";
+        return localeService.getMessage("m.courses.delete.done");
     }
 }

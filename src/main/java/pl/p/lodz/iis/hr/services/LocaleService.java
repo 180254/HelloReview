@@ -21,8 +21,8 @@ public class LocaleService {
         return LocaleContextHolder.getLocale();
     }
 
-    public String getMessage(String id) {
-        return messageSource.getMessage(id, null, getLocale());
+    public String getMessage(String code) {
+        return messageSource.getMessage(code, null, getLocale());
     }
 
     public String getMessage(String code, Object[] args, String defaultMessage) {

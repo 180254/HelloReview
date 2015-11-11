@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, alert, slider, autosize */
+/*global $, jQuery, autosize */
 
 function textareaLettersCounter($textareas) {
     'use strict';
