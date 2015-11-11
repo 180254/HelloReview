@@ -1,0 +1,14 @@
+GET   /
+GET   /login
+GET   /logout?url=
+GET   /csp-reports
+
+GET   /m/forms
+GET   /m/forms/add
+POST  /m/forms/add
+GET   /m/forms/preview/1
+GET   /m/forms/xml/1
+POST  /m/forms/delete/1
+
+GET   /m/courses
+POST  /m/courses/add
