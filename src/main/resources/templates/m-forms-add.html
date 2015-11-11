@@ -10,7 +10,10 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="form-add" class="form-group" method="post">
+    <form id="form-add-form" class="form-group" method="post">
+        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
+
         <div class="input-2">
             <label for="form-name">Form name <span class="form-required">*</span></label>
             <input type="text" class="form-control" name="form-name" id="form-name"/>
@@ -35,8 +38,8 @@
 
 
     <div class="form-submit forms-buttons-add-preview">
-        <button id="form-add-preview" class="btn btn-default btn-info">Preview form</button>
-        <button id="form-add-add" class="btn btn-default btn-primary">Add form</button>
+        <button id="form-add-button-preview" class="btn btn-default btn-info">Preview form</button>
+        <button id="form-add-button-add" class="btn btn-default btn-primary">Add form</button>
     </div>
 
 </main>

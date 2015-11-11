@@ -4,26 +4,21 @@
 function formAddHandler(action) {
     'use strict';
 
-    var serializedWithAction = $('#form-add').serialize() + '&action=' + action,
-        $ulErrors = $('#form-add-error-list'),
-        $divErrors = $('#form-add-error'),
-        $divPreview = $('#form-add-preview-url'),
-        $previewButton = $('#form-add-preview'),
-        $addButton = $('#form-add-add'),
-        ajaxHeaders = {};
+    var serialized = $('#form-add-form').serialize() + '&action=' + action,
+        $errorsDiv = $('#form-add-error'),
+        $errorsList = $('#form-add-error-list'),
+        $buttonPreview = $('#form-add-button-preview'),
+        $buttonAdd = $('#form-add-button-add'),
+        $previewUrlDiv = $('#form-add-preview-url');
 
-    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
-        $("meta[name='_csrf']").attr('content');
-
-    $ulErrors.html('');
-    $previewButton.prop('disabled', true);
-    $addButton.prop('disabled', true);
+    $errorsList.html('');
+    $buttonPreview.prop('disabled', true);
+    $buttonAdd.prop('disabled', true);
 
     $.ajax({
         type: 'POST',
         url: '/m/forms/add',
-        data: serializedWithAction,
-        headers: ajaxHeaders
+        data: serialized
 
     }).done(function (data) {
         var url;
@@ -34,9 +29,9 @@ function formAddHandler(action) {
 
         } else {
             url = '/m/forms/preview/' + data;
-            $divPreview.find('a').attr('href', url).text(url);
-            $divErrors.hide();
-            $divPreview.fadeIn();
+            $previewUrlDiv.find('a').attr('href', url).text(url);
+            $errorsDiv.hide();
+            $previewUrlDiv.fadeIn();
         }
 
     }).fail(function (jqXHR) {
@@ -51,32 +46,32 @@ function formAddHandler(action) {
             errors = errors.concat('Server error: ' + json.status + ' ' + json.error);
         }
 
-        $divErrors.fadeIn();
-        $divPreview.hide();
+        $errorsDiv.fadeIn();
+        $previewUrlDiv.hide();
 
         for (i = 0, errLen = errors.length; i < errLen; i += 1) {
-            $('<ul>').text(errors[i]).appendTo($ulErrors);
+            $('<ul>').text(errors[i]).appendTo($errorsList);
         }
 
     }).always(function () {
-        $previewButton.prop('disabled', false);
-        $addButton.prop('disabled', false);
+        $buttonPreview.prop('disabled', false);
+        $buttonAdd.prop('disabled', false);
     });
 }
 
 $(document).ready(function () {
     'use strict';
 
-    $('#form-add').submit(function () {
+    $('#form-add-form').submit(function () {
         formAddHandler('preview');
         return false;
     });
 
-    $('#form-add-preview').click(function () {
+    $('#form-add-button-preview').click(function () {
         formAddHandler('preview');
     });
 
-    $('#form-add-add').click(function () {
+    $('#form-add-button-add').click(function () {
         formAddHandler('add');
     });
 });
