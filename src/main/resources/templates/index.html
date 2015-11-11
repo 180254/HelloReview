@@ -15,7 +15,7 @@
 
             <button type="submit" class="btn btn-block btn-social btn-github">
                 <i class="fa fa-github"></i>
-                Sign in with GitHub
+                <span th:text="#{index.signin}"></span>
             </button>
         </form>
     </div>
@@ -23,7 +23,8 @@
     <div th:if="${isLoggedIn}" class="social-button1 center-block">
         <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}" target="_blank">
             <i class="fa fa-github"></i>
-            Hello [<span th:text="${username}" class="username"></span>] !
+            <span th:text="#{index.hello}"></span>
+            [<span th:text="${username}" class="username"></span>] !
         </a>
     </div>
 

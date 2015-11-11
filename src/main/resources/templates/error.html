@@ -11,8 +11,8 @@
 
     <div id="sth-go-wrong">
         <span class="status" th:text="${status} + ' ' + ${error.toLowerCase()}"></span><br/>
-        <span class="message">something go wrong</span><br/>
-        <img th:src="@{/images/sth-go-wrong.png}" alt=""/><br/>
+        <span class="message" th:text="#{error.message}"></span><br/>
+        <img src="" th:src="@{/images/sth-go-wrong.png}" alt=""/><br/>
     </div>
 
 </main>
