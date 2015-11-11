@@ -10,10 +10,14 @@
 <main class="container main-hello text-center">
 
     <div id="sth-go-wrong">
-        <span class="status">Communication with GitHub failed.</span><br/>
-        <span class="message2">Please back to <a th:href="@{/}">main page.</a> and try again.</span><br/>
+        <span class="status" th:text="#{login.issue.status}"></span><br/>
+        <span class="message2">
+            <span th:text="#{login.issue.message2.part1}"></span>
+            <a th:href="@{/}" th:text="#{login.issue.message2.part2}"></a>
+            <span th:text="#{login.issue.message2.part3}"></span>
+        </span><br/>
 
-        <img th:src="@{/images/sth-go-wrong.png}" alt=""/><br/>
+        <img src="" th:src="@{/images/sth-go-wrong.png}" alt=""/><br/>
     </div>
 
 </main>
