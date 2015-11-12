@@ -21,7 +21,8 @@ public class Participant implements Serializable {
     @JsonView
     private long id;
 
-    @Column(nullable = false, length = 255, unique = true)
+    @Column(nullable = false, length = 255)
+    @JsonView
     private String name;
 
     @Column(nullable = false, length = 255, unique = true)

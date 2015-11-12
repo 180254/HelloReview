@@ -160,4 +160,11 @@ $(document).ready(function () {
     $('#course-participant-add').on('show.bs.modal', function () {
         resetAddCourseParticipantModal('course-participant-add');
     });
+
+    $('#course-participant-name,#course-participant-github-name').keyup(function (e) {
+        if (e.keyCode === 13) {
+            courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
+        }
+    });
+
 });

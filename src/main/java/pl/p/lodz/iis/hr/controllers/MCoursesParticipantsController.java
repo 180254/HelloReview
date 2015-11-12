@@ -138,6 +138,13 @@ class MCoursesParticipantsController {
             return localeService.getMessage("NoResource");
         }
 
+        Participant participant = participantRepository.getOne(participantID);
+
+        if (!participantRepository.findByCourseAndName(participant.getCourse(), newName).isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("UniqueName");
+        }
+
         Participant testParticipant = new Participant(null, newName, null);
 
         String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
@@ -147,7 +154,6 @@ class MCoursesParticipantsController {
             return nameErrors;
         }
 
-        Participant participant = participantRepository.getOne(participantID);
         participant.setName(newName);
         participantRepository.save(participant);
 
@@ -168,6 +174,13 @@ class MCoursesParticipantsController {
             return localeService.getMessage("NoResource");
         }
 
+        Participant participant = participantRepository.getOne(participantID);
+
+        if (!participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName).isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("UniqueName");
+        }
+
         Participant testParticipant = new Participant(null, null, newGitHubName);
 
         String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
@@ -177,7 +190,6 @@ class MCoursesParticipantsController {
             return gitHubNameErrors;
         }
 
-        Participant participant = participantRepository.getOne(participantID);
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
