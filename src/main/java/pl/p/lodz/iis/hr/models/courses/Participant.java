@@ -1,12 +1,15 @@
 package pl.p.lodz.iis.hr.models.courses;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.response.ReviewResponse;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Participant implements Serializable {
@@ -29,6 +32,11 @@ public class Participant implements Serializable {
     @JoinColumn(nullable = false)
     @JsonView
     private Course course;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "participant", orphanRemoval = true)
+    @JsonView
+    @JsonProperty("reviewResponse")
+    private List<ReviewResponse> reviewResponses;
 
     @Column(nullable = false)
     @JsonView

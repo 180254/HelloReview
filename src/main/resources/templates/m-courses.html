@@ -33,26 +33,28 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/participants'" target="_blank">
+                <a th:href="'/m/courses/'+ ${course.id} + '/participants'">
                     <strong th:text="${course.participants.size()}"></strong>
                     <span th:text="#{m.courses.tbody.participants}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/reviews'" target="_blank">
+                <a th:href="'/m/courses/'+ ${course.id} + '/reviews'">
                     <strong th:text="${course.reviews.size()}"></strong>
                     <span th:text="#{m.courses.tbody.reviews}"></span>
                 </a>
             </td>
 
-            <td><a href="#"
+            <td>
+                <a href="#"
                    class="course-delete-link"
                    data-th-attr="data-title=#{m.courses.delete.title},
                            data-btnOkLabel=#{m.courses.delete.btnOkLabel},
                            data-btnCancelLabel=#{m.courses.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
-                   th:text="#{m.courses.tbody.delete}"></a></td>
+                   th:text="#{m.courses.tbody.delete}"></a>
+            </td>
         </tr>
         </tbody>
     </table>

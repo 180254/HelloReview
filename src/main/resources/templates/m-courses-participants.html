@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+    <div th:replace="fragments/ajax :: ajax-loader"></div>
+
+    <h4 class="course-participant-header">
+        <a th:href="'/m/courses/'+ ${course.id}">
+            <strong th:text="${course.name}"></strong>
+        </a><span th:text="#{m.courses.participants.table.head.addon}"></span>
+    </h4>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th th:text="#{m.courses.participants.thead.id}"></th>
+            <th th:text="#{m.courses.participants.thead.name}"></th>
+            <th th:text="#{m.courses.participants.thead.github.name}"></th>
+            <th><i class="fa fa-eye"></i> <span th:text="#{m.courses.participants.thead.review.responses}"></span></th>
+            <th><i class="fa fa-eraser"></i> <span th:text="#{m.courses.participants.thead.delete}"></span></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="participant : ${participants}">
+            <td th:text="${participant.id}"></td>
+
+            <td>
+                <a href="#" class="course-participant-name-rename-link b-rename-link"
+                   data-type="text" th:text="${participant.name}"
+                   data-th-attr="data-url=@{/m/courses/participants/rename/name}, data-pk=${participant.id}">
+                </a>
+            </td>
+
+            <td>
+                <a href="#" class="course-participant-github-name-rename-link b-rename-link"
+                   data-type="text" th:text="${course.name}"
+                   data-th-attr="data-url=@{/m/courses/participants/rename/githubname}, data-pk=${participant.id}">
+                </a>
+            </td>
+
+            <td>
+                <a th:href="'/m/reviews/participants/'+ ${participant.course.id} + '/responses'">
+                    <strong th:text="${participant.reviewResponses.size()}"></strong>
+                    <span th:text="#{m.courses.participants.tbody.reviewResponses}"></span>
+                </a>
+            </td>
+
+            <td>
+                <a href="#"
+                   class="course-participant-delete-link"
+                   data-th-attr="data-title=#{m.courses.participants.delete.title},
+                           data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
+                           data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
+                   data-btnOkClass="btn btn-sm btn-danger"
+                   th:text="#{m.courses.tbody.delete}"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

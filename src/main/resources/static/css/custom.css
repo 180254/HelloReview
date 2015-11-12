@@ -157,3 +157,10 @@ main {
 .b-rename-link {
     color: black;
 }
+
+/*          displaying course participants          */
+
+.course-participant-header {
+    font-size: 16px;
+    margin-bottom: 2em;
+}

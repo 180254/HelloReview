@@ -1,33 +1,35 @@
-GET   /
-GET   /login
-GET   /logout?url=
-GET   /csp-reports
+GET     html   /
+POST    html   /login
+GET     html   /logout?url=
+GET     html   /csp-reports
 
-GET   /m/forms
-GET   /m/forms/1
-GET   /m/forms/add
-POST  /m/forms/add
-GET   /m/forms/preview/1
-GET   /m/forms/xml/1
-POST  /m/forms/delete/1
-POST  /m/forms/rename
+GET     html   /m/forms
+GET     html   /m/forms/1
+GET     html   /m/forms/add
+POST    rest   /m/forms/add
+GET     html   /m/forms/preview/1
+GET     html   /m/forms/xml/1
+POST    rest   /m/forms/delete/1
+POST    rest   /m/forms/rename
 
-GET   /m/courses
-GET   /m/courses/1
-POST  /m/courses/add
-POST  /m/courses/delete/1
-POST  /m/courses/rename
+GET     html   /m/courses
+GET     html   /m/courses/1
+POST    html   /m/courses/add
+POST    rest   /m/courses/delete/1
+POST    rest   /m/courses/rename
 
-GET   /m/courses/1/participants
-GET   /m/courses/1/participants/2
-POST  /m/courses/1/participants/add
-POST  /m/courses/1/participants/delete/1
-POST  /m/courses/1/participants/rename
+GET     html   /m/courses/1/participants
+GET     html   /m/courses/participants/2
+POST    rest   /m/courses/1/participants/add
+POST    rest   /m/courses/participants/delete/1
+POST    rest   /m/courses/participants/rename
 
-GET   /m/courses/1/reviews
-GET   /m/courses/1/reviews/2
-POST  /m/courses/1/reviews/add
-POST  /m/courses/1/reviews/delete/1
-POST  /m/courses/1/reviews/rename
+GET     html   /m/courses/1/reviews
+GET     html   /m/courses/reviews/2
+POST    rest   /m/courses/1/reviews/add
+POST    rest   /m/courses/reviews/delete/1
+POST    rest   /m/courses/reviews/rename
 
-GET   /m/reviews/1
+GET     html   /m/reviews/1
+GET     html   /m/reviews/1/responses/
+GET     html   /m/reviews/1/responses/1

@@ -22,13 +22,13 @@ class MReviewController {
     public String students(@PathVariable long courseID,
                            Model model) {
 
-        Course curse = courseRepository.getOne(courseID);
+        Course course = courseRepository.getOne(courseID);
 
-        if (ExceptionChecker.checkExceptionThrown(curse::getId)) {
+        if (ExceptionChecker.checkExceptionThrown(course::getId)) {
             throw new ResourceNotFoundException();
         }
 
-        model.addAttribute("curse", curse);
+        model.addAttribute("course", course);
         return "m-courses-student";
     }
 }
