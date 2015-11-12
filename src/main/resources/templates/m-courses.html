@@ -33,14 +33,14 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/participants'" target="_blank">
+                <a th:href="'/m/courses/participants/'+ ${course.id}" target="_blank">
                     <strong th:text="${course.participants.size()}"></strong>
                     <span th:text="#{m.courses.tbody.participants}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/reviews'" target="_blank">
+                <a th:href="'/m/courses/reviews/'+ ${course.id}" target="_blank">
                     <strong th:text="${course.reviews.size()}"></strong>
                     <span th:text="#{m.courses.tbody.reviews}"></span>
                 </a>

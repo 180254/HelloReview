@@ -9,6 +9,14 @@ POST  /m/forms/add
 GET   /m/forms/preview/1
 GET   /m/forms/xml/1
 POST  /m/forms/delete/1
+POST  /m/forms/rename
 
 GET   /m/courses
 POST  /m/courses/add
+POST  /m/courses/delete/id
+POST  /m/courses/rename
+
+GET   /m/courses/participants/1
+GET   /m/courses/reviews/1
+
+GET   /m/reviews/1
