@@ -33,14 +33,14 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/participants/'+ ${course.id}" target="_blank">
+                <a th:href="'/m/courses/'+ ${course.id} + '/participants'" target="_blank">
                     <strong th:text="${course.participants.size()}"></strong>
                     <span th:text="#{m.courses.tbody.participants}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/courses/reviews/'+ ${course.id}" target="_blank">
+                <a th:href="'/m/courses/'+ ${course.id} + '/reviews'" target="_blank">
                     <strong th:text="${course.reviews.size()}"></strong>
                     <span th:text="#{m.courses.tbody.reviews}"></span>
                 </a>
@@ -57,13 +57,13 @@
         </tbody>
     </table>
 
-    <div class="add-new text-right">
+    <div th:if="${newButton}" class="add-new text-right">
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#course-add"
                 th:text="#{m.courses.tbody.add.new.one}">
         </button>
     </div>
 
-    <div class="modal fade" id="course-add">
+    <div th:if="${newButton}" class="modal fade" id="course-add">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

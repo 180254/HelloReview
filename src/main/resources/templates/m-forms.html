@@ -42,7 +42,7 @@
         </tbody>
     </table>
 
-    <div class="add-new text-right">
+    <div th:if="${newButton}" class="add-new text-right">
         <a class="btn btn-default" th:href="@{/m/forms/add}" th:text="#{m.forms.tbody.add.new.one}" role="button"></a>
     </div>
 </main>

@@ -4,6 +4,7 @@ GET   /logout?url=
 GET   /csp-reports
 
 GET   /m/forms
+GET   /m/forms/1
 GET   /m/forms/add
 POST  /m/forms/add
 GET   /m/forms/preview/1
@@ -12,11 +13,21 @@ POST  /m/forms/delete/1
 POST  /m/forms/rename
 
 GET   /m/courses
+GET   /m/courses/1
 POST  /m/courses/add
-POST  /m/courses/delete/id
+POST  /m/courses/delete/1
 POST  /m/courses/rename
 
-GET   /m/courses/participants/1
-GET   /m/courses/reviews/1
+GET   /m/courses/1/participants
+GET   /m/courses/1/participants/2
+POST  /m/courses/1/participants/add
+POST  /m/courses/1/participants/delete/1
+POST  /m/courses/1/participants/rename
+
+GET   /m/courses/1/reviews
+GET   /m/courses/1/reviews/2
+POST  /m/courses/1/reviews/add
+POST  /m/courses/1/reviews/delete/1
+POST  /m/courses/1/reviews/rename
 
 GET   /m/reviews/1

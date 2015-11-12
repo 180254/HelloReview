@@ -22,7 +22,6 @@ import pl.p.lodz.iis.hr.services.FormValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
-import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -44,11 +43,39 @@ class MFormsController {
     @RequestMapping(
             value = "/m/forms",
             method = RequestMethod.GET)
+    @Transactional
     public String fList(Model model) {
+
         List<Form> byTemporaryFalse = formRepository.findByTemporaryFalse();
         model.addAttribute("forms", byTemporaryFalse);
+        model.addAttribute("newButton", true);
+
         return "m-forms";
     }
+
+    @RequestMapping(
+            value = "/m/forms/{formID}",
+            method = RequestMethod.GET)
+    @Transactional
+    public String fListOne(@PathVariable long formID,
+                           Model model) {
+
+        if (!formRepository.exists(formID)) {
+            throw new ResourceNotFoundException();
+        }
+
+        Form form = formRepository.getOne(formID);
+
+        if (form.isTemporary()) {
+            throw new ResourceNotFoundException();
+        }
+
+        model.addAttribute("forms", Collections.singletonList(form));
+        model.addAttribute("newButton", false);
+
+        return "m-forms";
+    }
+
 
     @RequestMapping(
             value = "/m/forms/add",
@@ -105,16 +132,17 @@ class MFormsController {
     @RequestMapping(
             value = "/m/forms/preview/{formID}",
             method = RequestMethod.GET)
+    @Transactional
     public String preview(@PathVariable long formID,
                           Model model) {
 
-        Form form = formRepository.getOne(formID);
-
-        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+        if (!formRepository.exists(formID)) {
             throw new ResourceNotFoundException();
         }
 
+        Form form = formRepository.getOne(formID);
         model.addAttribute("form", form);
+
         return "m-forms-preview";
     }
 
@@ -132,15 +160,15 @@ class MFormsController {
             value = "/m/forms/xml/{formID}",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_XML_VALUE)
+    @Transactional
     @ResponseBody
     public String xml(@PathVariable long formID) throws JsonProcessingException {
 
-        Form form = formRepository.getOne(formID);
-
-        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+        if (!formRepository.exists(formID)) {
             throw new ResourceNotFoundException();
         }
 
+        Form form = formRepository.getOne(formID);
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
@@ -153,14 +181,12 @@ class MFormsController {
     public String delete(@PathVariable long formID,
                          HttpServletResponse response) {
 
-        Form form = formRepository.getOne(formID);
-
-        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+        if (!formRepository.exists(formID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return localeService.getMessage("NoResource");
         }
 
-        formRepository.delete(form);
+        formRepository.delete(formID);
         return localeService.getMessage("m.forms.delete.done");
     }
 
@@ -173,9 +199,7 @@ class MFormsController {
                          @NonNls @ModelAttribute("pk") long formID,
                          HttpServletResponse response) {
 
-        Form form = formRepository.getOne(formID);
-
-        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+        if (formRepository.exists(formID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return localeService.getMessage("NoResource");
         }
@@ -187,7 +211,10 @@ class MFormsController {
             return nameErrors;
         }
 
+        Form form = formRepository.getOne(formID);
+        form.setName(newName);
         formRepository.save(form);
+
         return localeService.getMessage("m.form.rename.done");
     }
 }
