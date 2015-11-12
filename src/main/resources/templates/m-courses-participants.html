@@ -34,19 +34,19 @@
             <td>
                 <a href="#" class="course-participant-name-rename-link b-rename-link"
                    data-type="text" th:text="${participant.name}"
-                   data-th-attr="data-url=@{/m/courses/participants/rename-name}, data-pk=${participant.id}">
+                   data-th-attr="data-url=@{/m/courses/participants/rename/name}, data-pk=${participant.id}">
                 </a>
             </td>
 
             <td>
                 <a href="#" class="course-participant-github-name-rename-link b-rename-link"
                    data-type="text" th:text="${participant.gitHubName}"
-                   data-th-attr="data-url=@{/m/courses/participants/rename-githubname}, data-pk=${participant.id}">
+                   data-th-attr="data-url=@{/m/courses/participants/rename/githubname}, data-pk=${participant.id}">
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/reviews/participants/'+ ${participant.course.id} + '/responses'">
+                <a th:href="'/m/reviews/responses/for/participant/'+ ${participant.id}">
                     <strong th:text="${participant.reviewResponses.size()}"></strong>
                     <span th:text="#{m.courses.participants.tbody.reviewResponses}"></span>
                 </a>

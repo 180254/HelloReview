@@ -22,16 +22,12 @@
 + GET     html   /m/courses/participants/2
 + POST    rest   /m/courses/participants/add
 + POST    rest   /m/courses/participants/delete
-+ POST    rest   /m/courses/participants/rename-name
-+ POST    rest   /m/courses/participants/rename-githubname
-
-- GET     html   /m/courses/1/reviews
-- GET     html   /m/courses/reviews/2
-- POST    rest   /m/courses/1/reviews/add
-- POST    rest   /m/courses/reviews/delete
-- POST    rest   /m/courses/reviews/rename
++ POST    rest   /m/courses/participants/rename/name
++ POST    rest   /m/courses/participants/rename/githubname
 
 - GET     html   /m/reviews
 - GET     html   /m/reviews/1
+- GET     html   /m/reviews/for/course/1
 - GET     html   /m/reviews/1/responses/
-- GET     html   /m/reviews/1/responses/1
+- GET     html   /m/reviews/responses/1
+- GET     html   /m/reviews/responses/for/participant/1

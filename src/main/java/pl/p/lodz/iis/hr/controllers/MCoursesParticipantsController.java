@@ -125,7 +125,7 @@ class MCoursesParticipantsController {
     }
 
     @RequestMapping(
-            value = "/m/courses/participants/rename-name",
+            value = "/m/courses/participants/rename/name",
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
@@ -155,7 +155,7 @@ class MCoursesParticipantsController {
     }
 
     @RequestMapping(
-            value = "/m/courses/participants/rename-githubname",
+            value = "/m/courses/participants/rename/githubname",
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody

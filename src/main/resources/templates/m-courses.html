@@ -40,7 +40,7 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/reviews'">
+                <a th:href="'/m/reviews/for/course/'+ ${course.id}">
                     <strong th:text="${course.reviews.size()}"></strong>
                     <span th:text="#{m.courses.tbody.reviews}"></span>
                 </a>
