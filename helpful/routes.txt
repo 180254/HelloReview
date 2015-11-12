@@ -1,7 +1,7 @@
 GET     html   /
 POST    html   /login
 GET     html   /logout?url=
-GET     html   /csp-reports
+POST    void   /csp-reports
 
 GET     html   /m/forms
 GET     html   /m/forms/1
@@ -30,6 +30,7 @@ POST    rest   /m/courses/1/reviews/add
 POST    rest   /m/courses/reviews/delete/1
 POST    rest   /m/courses/reviews/rename
 
+GET     html   /m/reviews
 GET     html   /m/reviews/1
 GET     html   /m/reviews/1/responses/
 GET     html   /m/reviews/1/responses/1

@@ -22,7 +22,7 @@ public class Question implements Serializable, RelationsAware {
     @JsonView(JSONViews.FormRESTPreview.class)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
     private Form form;

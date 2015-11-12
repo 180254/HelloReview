@@ -61,8 +61,8 @@ class MCoursesController {
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public Object fCoursesAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
-                                  HttpServletResponse response) throws IOException {
+    public Object cAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
+                           HttpServletResponse response) throws IOException {
 
         Course course = new Course(courseName);
         List<String> nameErrors = validateService.validateField(course, "name", "course name");
@@ -81,8 +81,8 @@ class MCoursesController {
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public String delete(@PathVariable long courseID,
-                         HttpServletResponse response) {
+    public String cDelete(@PathVariable long courseID,
+                          HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -98,9 +98,9 @@ class MCoursesController {
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public Object rename(@NonNls @ModelAttribute("value") String newName,
-                         @NonNls @ModelAttribute("pk") long courseID,
-                         HttpServletResponse response) {
+    public Object cRename(@NonNls @ModelAttribute("value") String newName,
+                          @NonNls @ModelAttribute("pk") long courseID,
+                          HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

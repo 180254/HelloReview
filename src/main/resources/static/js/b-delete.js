@@ -1,7 +1,7 @@
 /*jslint browser: true*/
 /*global $, jQuery, toastr*/
 
-function deleteCourse($deleteLink) {
+function deleteB($deleteLink) {
     'use strict';
 
     var $row = $deleteLink.closest('tr'),
@@ -14,7 +14,7 @@ function deleteCourse($deleteLink) {
 
     $.ajax({
         type: 'POST',
-        url: '/m/courses/delete/' + id,
+        url: $deleteLink.attr('data-delete-url') + id,
         headers: ajaxHeaders
 
     }).done(function (data) {
@@ -30,12 +30,12 @@ function deleteCourse($deleteLink) {
 $(document).ready(function () {
     'use strict';
 
-    $('.course-delete-link').each(function () {
+    $('.b-delete-link').each(function () {
         var $dis = $(this);
 
         $(this).confirmation({
             onConfirm: function () {
-                deleteCourse($dis);
+                deleteB($dis);
             }
         });
     });

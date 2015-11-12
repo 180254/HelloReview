@@ -34,8 +34,8 @@ class MCoursesParticipantsController {
             value = "/m/courses/{courseID}/participants",
             method = RequestMethod.GET)
     @Transactional
-    public String participants(@PathVariable long courseID,
-                               Model model) {
+    public String pList(@PathVariable long courseID,
+                        Model model) {
 
         Course course = courseRepository.getOne(courseID);
 
@@ -55,10 +55,10 @@ class MCoursesParticipantsController {
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public Object fCoursesAddPOST(@NonNls @ModelAttribute("course-id") long courseID,
-                                  @NonNls @ModelAttribute("course-participant-name") String name,
-                                  @NonNls @ModelAttribute("course-participant-github-name") String gitHubName,
-                                  HttpServletResponse response) throws IOException {
+    public Object pAddPOST(@NonNls @ModelAttribute("course-id") long courseID,
+                           @NonNls @ModelAttribute("course-participant-name") String name,
+                           @NonNls @ModelAttribute("course-participant-github-name") String gitHubName,
+                           HttpServletResponse response) throws IOException {
 
         if (!courseRepository.exists(courseID)) {
             return localeService.getMessage("NoResource");
@@ -84,5 +84,22 @@ class MCoursesParticipantsController {
 
         participantRepository.save(participant);
         return localeService.getMessage("m.courses.participants.add.done");
+    }
+
+    @RequestMapping(
+            value = "/m/courses/participants/delete/{participantID}",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public String pDelete(@PathVariable long participantID,
+                          HttpServletResponse response) {
+
+        if (!participantRepository.exists(participantID)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        participantRepository.delete(participantID);
+        return localeService.getMessage("m.courses.participants.delete.done");
     }
 }

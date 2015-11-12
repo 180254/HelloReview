@@ -32,7 +32,8 @@
             <td><a th:href="'/m/forms/preview/'+ ${form.id}" th:text="#{m.forms.tbody.as.html}"></a>,
                 <a th:href="'/m/forms/xml/'+ ${form.id}" th:text="#{m.forms.tbody.as.xml}"></a></td>
             <td><a href="#"
-                   class="form-delete-link"
+                   class="form-delete-link b-delete-link"
+                   data-delete-url="/m/forms/delete/"
                    data-th-attr="data-title=#{m.forms.delete.title},
                            data-btnOkLabel=#{m.forms.delete.btnOkLabel},
                            data-btnCancelLabel=#{m.forms.delete.btnCancelLabel}"

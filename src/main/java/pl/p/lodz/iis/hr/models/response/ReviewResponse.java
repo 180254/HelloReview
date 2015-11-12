@@ -25,12 +25,12 @@ public class ReviewResponse implements Serializable {
     @JsonView
     private final UUID uuid = UUID.randomUUID();
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
     private Review review;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
     private Participant participant;

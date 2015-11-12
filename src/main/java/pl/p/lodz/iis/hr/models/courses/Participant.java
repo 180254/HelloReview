@@ -28,7 +28,7 @@ public class Participant implements Serializable {
     @JsonView
     private String gitHubName;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
     private Course course;
