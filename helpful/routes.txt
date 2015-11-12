@@ -22,7 +22,8 @@
 + GET     html   /m/courses/participants/2
 + POST    rest   /m/courses/participants/add
 + POST    rest   /m/courses/participants/delete/1
-- POST    rest   /m/courses/participants/rename
+- POST    rest   /m/courses/participants/rename-name
+- POST    rest   /m/courses/participants/rename-githubname
 
 - GET     html   /m/courses/1/reviews
 - GET     html   /m/courses/reviews/2

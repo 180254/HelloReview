@@ -72,7 +72,7 @@ public class Participant implements Serializable {
         return gitHubName;
     }
 
-    void setGitHubName(String gitHubName) {
+    public void setGitHubName(String gitHubName) {
         this.gitHubName = gitHubName;
     }
 

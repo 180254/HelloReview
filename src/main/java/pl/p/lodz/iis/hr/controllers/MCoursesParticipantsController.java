@@ -123,4 +123,64 @@ class MCoursesParticipantsController {
         participantRepository.delete(participantID);
         return localeService.getMessage("m.courses.participants.delete.done");
     }
+
+    @RequestMapping(
+            value = "/m/courses/participants/rename-name",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public Object pRenamePName(@NonNls @ModelAttribute("value") String newName,
+                               @NonNls @ModelAttribute("pk") long participantID,
+                               HttpServletResponse response) {
+
+        if (!participantRepository.exists(participantID)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        Participant testParticipant = new Participant(null, newName, null);
+
+        String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
+        List<String> nameErrors = validateService.validateField(testParticipant, "name", namePrefix);
+        if (!nameErrors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return nameErrors;
+        }
+
+        Participant participant = participantRepository.getOne(participantID);
+        participant.setName(newName);
+        participantRepository.save(participant);
+
+        return localeService.getMessage("m.courses.participants.rename.participant.name.done");
+    }
+
+    @RequestMapping(
+            value = "/m/courses/participants/rename-githubname",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public Object pRenameGitHubName(@NonNls @ModelAttribute("value") String newGitHubName,
+                                    @NonNls @ModelAttribute("pk") long participantID,
+                                    HttpServletResponse response) {
+
+        if (!participantRepository.exists(participantID)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        Participant testParticipant = new Participant(null, null, newGitHubName);
+
+        String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
+        List<String> gitHubNameErrors = validateService.validateField(testParticipant, "gitHubName", gitHubNamePrefix);
+        if (!gitHubNameErrors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return gitHubNameErrors;
+        }
+
+        Participant participant = participantRepository.getOne(participantID);
+        participant.setGitHubName(newGitHubName);
+        participantRepository.save(participant);
+
+        return localeService.getMessage("m.courses.participants.rename.participant.name.done");
+    }
 }

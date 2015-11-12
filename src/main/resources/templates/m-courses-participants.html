@@ -34,14 +34,14 @@
             <td>
                 <a href="#" class="course-participant-name-rename-link b-rename-link"
                    data-type="text" th:text="${participant.name}"
-                   data-th-attr="data-url=@{/m/courses/participants/rename/name}, data-pk=${participant.id}">
+                   data-th-attr="data-url=@{/m/courses/participants/rename-name}, data-pk=${participant.id}">
                 </a>
             </td>
 
             <td>
                 <a href="#" class="course-participant-github-name-rename-link b-rename-link"
-                   data-type="text" th:text="${course.name}"
-                   data-th-attr="data-url=@{/m/courses/participants/rename/githubname}, data-pk=${participant.id}">
+                   data-type="text" th:text="${participant.gitHubName}"
+                   data-th-attr="data-url=@{/m/courses/participants/rename-githubname}, data-pk=${participant.id}">
                 </a>
             </td>
 

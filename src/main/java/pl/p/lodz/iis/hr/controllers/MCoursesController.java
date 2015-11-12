@@ -61,8 +61,8 @@ class MCoursesController {
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public Object cAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
-                           HttpServletResponse response) throws IOException {
+    public Object fCoursesAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
+                                  HttpServletResponse response) throws IOException {
 
         Course course = new Course(courseName);
         List<String> nameErrors = validateService.validateField(course, "name", "course name");
