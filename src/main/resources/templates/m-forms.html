@@ -21,7 +21,14 @@
         <tbody>
         <tr th:each="form : ${forms}">
             <td th:text="${form.id}"></td>
-            <td th:text="${form.name}"></td>
+
+            <td>
+                <a href="#" class="form-rename-link b-rename-link"
+                   data-type="text" th:text="${form.name}"
+                   data-th-attr="data-url=@{/m/forms/rename}, data-pk=${form.id}">
+                </a>
+            </td>
+
             <td><a th:href="'/m/forms/preview/'+ ${form.id}" th:text="#{m.forms.tbody.as.html}" target="_blank"></a>,
                 <a th:href="'/m/forms/xml/'+ ${form.id}" th:text="#{m.forms.tbody.as.xml}" target="_blank"></a></td>
             <td><a href="#"

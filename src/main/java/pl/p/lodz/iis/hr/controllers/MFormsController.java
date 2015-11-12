@@ -20,6 +20,7 @@ import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.FormValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
 import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
@@ -38,6 +39,7 @@ class MFormsController {
     @Autowired private XmlMapperProvider xmlMapperProvider;
     @Autowired private FormValidator formValidator;
     @Autowired private LocaleService localeService;
+    @Autowired private ValidateService validateService;
 
     @RequestMapping(
             value = "/m/forms",
@@ -160,5 +162,32 @@ class MFormsController {
 
         formRepository.delete(form);
         return localeService.getMessage("m.forms.delete.done");
+    }
+
+    @RequestMapping(
+            value = "/m/forms/rename",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public Object rename(@NonNls @ModelAttribute("value") String newName,
+                         @NonNls @ModelAttribute("pk") long formID,
+                         HttpServletResponse response) {
+
+        Form form = formRepository.getOne(formID);
+
+        if (ExceptionChecker.checkExceptionThrown(form::getId)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        Form testForm = new Form(newName, null);
+        List<String> nameErrors = validateService.validateField(testForm, "name");
+        if (!nameErrors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return nameErrors;
+        }
+
+        formRepository.save(form);
+        return localeService.getMessage("m.form.rename.done");
     }
 }

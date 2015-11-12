@@ -6,28 +6,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 class MCoursesController {
 
-    @Autowired private Validator validator;
     @Autowired private CourseRepository courseRepository;
     @Autowired private LocaleService localeService;
+    @Autowired private ValidateService validateService;
 
     @RequestMapping(
             value = "/m/courses",
@@ -63,25 +59,17 @@ class MCoursesController {
                                   HttpServletResponse response) throws IOException {
 
         Course course = new Course(courseName);
+        List<String> nameErrors = validateService.validateField(course, "name");
 
-        BindingResult bindingResult = new DataBinder(course).getBindingResult();
-        validator.validate(course, bindingResult);
-
-        if (bindingResult.hasErrors()) {
+        if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors("name");
-            return fieldErrors.stream().map(
-                    fieldError -> localeService.getMessage(fieldError))
-                    .sorted()
-                    .collect(Collectors.toList());
-
-        } else {
-            courseRepository.save(course);
-            return localeService.getMessage("m.courses.add.done");
+            return nameErrors;
         }
-    }
 
+        courseRepository.save(course);
+        return localeService.getMessage("m.courses.add.done");
+
+    }
 
     @RequestMapping(
             value = "/m/courses/delete/{courseID}",
@@ -118,11 +106,14 @@ class MCoursesController {
             return localeService.getMessage("NoResource");
         }
 
-        if (courseRepository.findByName(newName) != null) {
+        Course testCourse = new Course(newName);
+        List<String> nameErrors = validateService.validateField(testCourse, "name");
+        if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("UniqueName");
+            return nameErrors;
         }
 
+        course.setName(newName);
         courseRepository.save(course);
         return localeService.getMessage("m.courses.rename.done");
     }
