@@ -41,7 +41,11 @@ public class Participant implements Serializable {
 
     @Column(nullable = false)
     @JsonView
-    private final LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
+
+    @Column(nullable = false)
+    @JsonView
+    private LocalDateTime updated;
 
     Participant() {
     }
@@ -95,5 +99,28 @@ public class Participant implements Serializable {
 
     public LocalDateTime getCreated() {
         return created;
+    }
+
+    void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
     }
 }

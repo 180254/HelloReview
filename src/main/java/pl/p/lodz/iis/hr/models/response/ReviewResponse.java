@@ -9,6 +9,7 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -41,6 +42,14 @@ public class ReviewResponse implements Serializable {
 
     @Column(nullable = false)
     private ReviewResponseStatus status;
+
+    @Column(nullable = false)
+    @JsonView
+    private LocalDateTime created;
+
+    @Column(nullable = false)
+    @JsonView
+    private LocalDateTime updated;
 
     ReviewResponse() {
     }
@@ -92,5 +101,32 @@ public class ReviewResponse implements Serializable {
 
     public void setStatus(ReviewResponseStatus status) {
         this.status = status;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
     }
 }

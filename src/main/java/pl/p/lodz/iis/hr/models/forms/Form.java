@@ -48,7 +48,11 @@ public class Form implements Serializable, RelationsAware {
 
     @Column(nullable = false)
     @JsonView(JSONViews.FormRESTPreview.class)
-    private final LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
+
+    @Column(nullable = false)
+    @JsonView(JSONViews.FormRESTPreview.class)
+    private LocalDateTime updated;
 
     Form() {
     }
@@ -102,6 +106,29 @@ public class Form implements Serializable, RelationsAware {
 
     public LocalDateTime getCreated() {
         return created;
+    }
+
+    void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = LocalDateTime.now();
     }
 
     @Override
