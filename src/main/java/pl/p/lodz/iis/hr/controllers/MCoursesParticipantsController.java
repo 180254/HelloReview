@@ -14,12 +14,12 @@ import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
-import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -37,18 +37,39 @@ class MCoursesParticipantsController {
     public String pList(@PathVariable long courseID,
                         Model model) {
 
-        Course course = courseRepository.getOne(courseID);
-
-        if (ExceptionChecker.checkExceptionThrown(course::getId)) {
+        if (!courseRepository.exists(courseID)) {
             throw new ResourceNotFoundException();
         }
+
+        Course course = courseRepository.getOne(courseID);
 
         model.addAttribute("newButton", true);
         model.addAttribute("course", course);
         model.addAttribute("participants", course.getParticipants());
+
         return "m-courses-participants";
     }
 
+    @RequestMapping(
+            value = "/m/courses/participants/{participantID}",
+            method = RequestMethod.GET)
+    @Transactional
+    public String pListOne(@PathVariable long participantID,
+                           Model model) {
+
+        if (!participantRepository.exists(participantID)) {
+            throw new ResourceNotFoundException();
+
+        }
+
+        Participant participant = participantRepository.getOne(participantID);
+
+        model.addAttribute("newButton", false);
+        model.addAttribute("course", participant.getCourse());
+        model.addAttribute("participants", Collections.singletonList(participant));
+
+        return "m-courses-participants";
+    }
 
     @RequestMapping(
             value = "/m/courses/participants/add",

@@ -19,7 +19,7 @@
 + POST    rest   /m/courses/rename
 
 + GET     html   /m/courses/1/participants
-- GET     html   /m/courses/participants/2
++ GET     html   /m/courses/participants/2
 + POST    rest   /m/courses/participants/add
 + POST    rest   /m/courses/participants/delete/1
 - POST    rest   /m/courses/participants/rename
