@@ -98,6 +98,14 @@ class MCoursesParticipantsController {
         allErrors.addAll(nameErrors);
         allErrors.addAll(gitHubNameErrors);
 
+        if (!participantRepository.findByCourseAndName(course, name).isEmpty()) {
+            allErrors.add(String.format("%s %s", namePrefix, localeService.getMessage("UniqueName")));
+        }
+
+        if (!participantRepository.findByCourseAndGitHubName(course, gitHubName).isEmpty()) {
+            allErrors.add(String.format("%s %s", gitHubNamePrefix, localeService.getMessage("UniqueName")));
+        }
+
         if (!allErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return allErrors;
