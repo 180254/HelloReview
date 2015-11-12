@@ -24,10 +24,6 @@ public class Course implements Serializable {
     private long id;
 
     @Column(nullable = false, length = 255, unique = true)
-    @NotBlank
-
-    @Length(min = 1, max = 255)
-    @UniqueName(service = CourseRepository.class)
     @JsonView
     private String name;
 
@@ -57,6 +53,9 @@ public class Course implements Serializable {
         return id;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
+    @UniqueName(service = CourseRepository.class)
     public String getName() {
         return name;
     }

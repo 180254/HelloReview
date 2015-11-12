@@ -28,13 +28,10 @@ public class Question implements Serializable, RelationsAware {
     private Form form;
 
     @Column(nullable = false, length = 255)
-    @NotBlank
-    @Length(min = 1, max = 255)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String questionText;
 
     @Column(nullable = true, length = 4095)
-    @Length(min = 0, max = 4095)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String additionalTips;
 
@@ -65,6 +62,8 @@ public class Question implements Serializable, RelationsAware {
         this.form = form;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getQuestionText() {
         return questionText;
     }
@@ -73,6 +72,7 @@ public class Question implements Serializable, RelationsAware {
         this.questionText = questionText;
     }
 
+    @Length(min = 0, max = 4095)
     public String getAdditionalTips() {
         return additionalTips;
     }

@@ -19,14 +19,9 @@ public class Participant implements Serializable {
     private long id;
 
     @Column(nullable = false, length = 255, unique = true)
-    @NotBlank
-    @Length(min = 1, max = 255)
-    @JsonView
     private String name;
 
     @Column(nullable = false, length = 255, unique = true)
-    @NotBlank
-    @Length(min = 1, max = 255)
     @JsonView
     private String gitHubName;
 
@@ -52,6 +47,9 @@ public class Participant implements Serializable {
         return id;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
+    @JsonView
     public String getName() {
         return name;
     }
@@ -60,6 +58,8 @@ public class Participant implements Serializable {
         this.name = name;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getGitHubName() {
         return gitHubName;
     }

@@ -17,24 +17,18 @@ public class InputScale extends Input {
     private static final long serialVersionUID = -2230675781077172644L;
 
     @Column(nullable = false, length = 255)
-    @NotBlank
-    @Length(min = 1, max = 255)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String fromLabel;
 
     @Column(nullable = false)
-    @NotNull
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private Long fromS;
 
     @Column(nullable = false, length = 255)
-    @NotBlank
-    @Length(min = 1, max = 255)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String toLabel;
 
     @Column(nullable = false)
-    @NotNull
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private Long toS;
 
@@ -51,6 +45,8 @@ public class InputScale extends Input {
         this.toS = toS;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getFromLabel() {
         return fromLabel;
     }
@@ -59,6 +55,7 @@ public class InputScale extends Input {
         this.fromLabel = fromLabel;
     }
 
+    @NotNull
     public Long getFromS() {
         return fromS;
     }
@@ -67,6 +64,8 @@ public class InputScale extends Input {
         this.fromS = fromS;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getToLabel() {
         return toLabel;
     }
@@ -75,6 +74,7 @@ public class InputScale extends Input {
         this.toLabel = toLabel;
     }
 
+    @NotNull
     public Long getToS() {
         return toS;
     }

@@ -38,8 +38,6 @@ public abstract class Input implements Serializable {
     private boolean required = true;
 
     @Column(nullable = false, length = 255)
-    @NotBlank
-    @Length(min = 1, max = 255)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String label;
 
@@ -71,6 +69,8 @@ public abstract class Input implements Serializable {
         this.required = required;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getLabel() {
         return label;
     }

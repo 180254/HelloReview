@@ -37,12 +37,9 @@ public class ReviewResponse implements Serializable {
 
     @Column(nullable = false, length = 255, unique = true)
     @JsonView
-    @NotBlank
-    @Length(min = 1, max = 255)
     private String gitHubUrl;
 
     @Column(nullable = false)
-    @NotNull
     private ReviewResponseStatus status;
 
     ReviewResponse() {
@@ -78,6 +75,8 @@ public class ReviewResponse implements Serializable {
         this.participant = participant;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
     public String getGitHubUrl() {
         return gitHubUrl;
     }
@@ -86,6 +85,7 @@ public class ReviewResponse implements Serializable {
         this.gitHubUrl = gitHubUrl;
     }
 
+    @NotNull
     public ReviewResponseStatus getStatus() {
         return status;
     }

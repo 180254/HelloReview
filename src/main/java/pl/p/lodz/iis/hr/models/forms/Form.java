@@ -30,15 +30,10 @@ public class Form implements Serializable, RelationsAware {
     private long id;
 
     @Column(nullable = false, length = 255, unique = true)
-    @NotBlank
-    @Length(min = 1, max = 255)
-    @UniqueName(service = FormRepository.class)
     @JsonView(JSONViews.FormRESTPreview.class)
     private String name;
 
     @Column(nullable = false, length = 4095)
-    @NotBlank
-    @Length(min = 1, max = 4095)
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     private String description;
 
@@ -68,6 +63,9 @@ public class Form implements Serializable, RelationsAware {
         return id;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 255)
+    @UniqueName(service = FormRepository.class)
     public String getName() {
         return name;
     }
@@ -76,6 +74,8 @@ public class Form implements Serializable, RelationsAware {
         this.name = name;
     }
 
+    @NotBlank
+    @Length(min = 1, max = 4095)
     public String getDescription() {
         return description;
     }
