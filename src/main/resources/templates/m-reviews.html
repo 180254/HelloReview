@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+    <div th:replace="fragments/ajax :: ajax-loader"></div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th th:text="#{m.reviews.thead.id}"></th>
+            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.course}"></span></th>
+            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.form}"></span></th>
+            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.responses}"></span></th>
+            <th><i class="fa fa-eraser"></i> <span th:text="#{m.reviews.thead.delete}"></span></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.id}"></td>
+
+            <td>
+                <a th:href="'/m/courses/'+ ${review.course.id}'">
+                    <span th:text="${review.course.name}"></span>
+                </a>
+            </td>
+
+            <td>
+                <a th:href="'/m/forms/'+ ${review.form.id}'">
+                    <span th:text="${review.form.name}"></span>
+                </a>
+            </td>
+
+            <td>
+                <a th:href="'/m/reviews/'+ ${review.id} + '/responses'">
+                    <strong th:text="${review.responses.size()}"></strong>
+                    <span th:text="#{m.reviews.tbody.responses}"></span>
+                </a>
+            </td>
+
+            <td>
+                <a href="#"
+                   class="review-delete-link b-delete-link"
+                   data-delete-url="/m/reviews/delete"
+                   data-th-attr="data-id=${review.id},
+                        data-title=#{m.reviews.delete.title},
+                        data-btnOkLabel=#{m.reviews.delete.btnOkLabel},
+                        data-btnCancelLabel=#{m.reviews.delete.btnCancelLabel}"
+                   data-btnOkClass="btn btn-sm btn-danger"
+                   th:text="#{m.courses.tbody.delete}"></a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

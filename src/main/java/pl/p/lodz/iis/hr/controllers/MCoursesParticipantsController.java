@@ -201,6 +201,6 @@ class MCoursesParticipantsController {
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
-        return localeService.getMessage("m.courses.participants.rename.participant.name.done");
+        return localeService.getMessage("m.courses.participants.rename.github.name.done");
     }
 }
