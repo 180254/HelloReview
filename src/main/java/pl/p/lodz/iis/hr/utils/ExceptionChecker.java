@@ -11,12 +11,20 @@ public final class ExceptionChecker {
         try {
             supplier.get();
             return false;
-        } catch (Exception ignored) {
+        } catch (RuntimeException ignored) {
             return true;
         }
     }
 
     public static <T> boolean checkNoExceptionThrown(Supplier<T> supplier) {
         return !checkExceptionThrown(supplier);
+    }
+
+    public static <T> T getOrNullIfException(Supplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (RuntimeException ignored) {
+            return null;
+        }
     }
 }

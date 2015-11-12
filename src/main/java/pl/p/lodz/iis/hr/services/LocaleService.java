@@ -6,8 +6,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import pl.p.lodz.iis.hr.utils.ExceptionChecker;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /*
     original concept: anataliocs @ http://stackoverflow.com/questions/28750292/
@@ -21,19 +23,24 @@ public class LocaleService {
         return LocaleContextHolder.getLocale();
     }
 
+    private String msgOrCode(Supplier<String> msgSupplier, String code) {
+        String msg = ExceptionChecker.getOrNullIfException(msgSupplier);
+        return (msg == null) ? code : msg;
+    }
+
     public String getMessage(String code) {
-        return messageSource.getMessage(code, null, getLocale());
+        return msgOrCode(() -> messageSource.getMessage(code, null, getLocale()), code);
     }
 
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        return messageSource.getMessage(code, args, defaultMessage, getLocale());
+        return msgOrCode(() -> messageSource.getMessage(code, args, defaultMessage, getLocale()), code);
     }
 
     public String getMessage(String code, Object[] args) {
-        return messageSource.getMessage(code, args, getLocale());
+        return msgOrCode(() -> messageSource.getMessage(code, args, getLocale()), code);
     }
 
     public String getMessage(MessageSourceResolvable resolvable) {
-        return messageSource.getMessage(resolvable, getLocale());
+        return msgOrCode(() -> messageSource.getMessage(resolvable, getLocale()), resolvable.getCodes()[0]);
     }
 }
