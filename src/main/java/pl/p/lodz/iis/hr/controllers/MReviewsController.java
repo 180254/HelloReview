@@ -11,7 +11,6 @@ import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 
 import java.util.Collections;
@@ -22,7 +21,6 @@ class MReviewsController {
 
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private CourseRepository courseRepository;
-    @Autowired private ParticipantRepository participantRepository;
 
     @RequestMapping(
             value = "/m/reviews",

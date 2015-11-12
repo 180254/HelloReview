@@ -59,6 +59,11 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${newButton}" class="add-new text-right">
+        <a class="btn btn-default" th:href="@{/m/reviews/add}"
+           th:text="#{m.reviews.tbody.add.new.one}" role="button"></a>
+    </div>
 </main>
 
 </body>
