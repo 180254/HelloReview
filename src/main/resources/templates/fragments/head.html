@@ -10,6 +10,7 @@
     <meta name="author" content="180254"/>
 
     <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_parameterName" th:content="${_csrf.parameterName}"/>
     <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -22,23 +23,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.10.1/bootstrap-social.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.5/css/bootstrap-slider.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css"/>
     <link rel="stylesheet" th:href="@{/css/custom.css}"/>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/bootstrap-slider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.13/autosize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
 
     <script                     th:src="@{/js/ajax-loader.js}"></script>
-    <script                     th:src="@{/js/toastr-options.js}"></script>
+    <script                     th:src="@{/js/plugins-options.js}"></script>
     <script                     th:src="@{/js/form-enhancer.js}"></script>
     <script th:if="${isMaster}" th:src="@{/js/form-add.js}"></script>
     <script th:if="${isMaster}" th:src="@{/js/form-delete.js}"></script>
     <script th:if="${isMaster}" th:src="@{/js/course-add.js}"></script>
     <script th:if="${isMaster}" th:src="@{/js/course-delete.js}"></script>
+    <script th:if="${isMaster}" th:src="@{/js/course-rename.js}"></script>
 
 </head>
     <!-- // @formatter:on  -->

@@ -24,7 +24,13 @@
         <tbody>
         <tr th:each="course : ${courses}">
             <td th:text="${course.id}"></td>
-            <td th:text="${course.name}"></td>
+
+            <td>
+                <a href="#" class="course-rename-link"
+                   data-type="text" th:text="${course.name}"
+                   data-th-attr="data-url=@{/m/courses/rename}, data-pk=${course.id}">
+                </a>
+            </td>
 
             <td>
                 <a th:href="'/m/courses/'+ ${course.id} + '/participants'" target="_blank">
@@ -73,8 +79,8 @@
                                th:value="${_csrf.token}"/>
 
                         <div class="form-group">
-                            <label for="course-add-name">Course name</label>
-                            <input type="text" class="form-control" id="course-add-name" name="course-name"
+                            <label for="course-name">Course name</label>
+                            <input type="text" class="form-control" id="course-name" name="course-name"
                                    th:placeholder="#{m.courses.add.placeholder}"/>
                         </div>
                     </form>

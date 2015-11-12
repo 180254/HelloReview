@@ -91,14 +91,40 @@ class MCoursesController {
     public String delete(@PathVariable long courseID,
                          HttpServletResponse response) {
 
-        Course curse = courseRepository.getOne(courseID);
+        Course course = courseRepository.getOne(courseID);
 
-        if (ExceptionChecker.checkExceptionThrown(curse::getId)) {
+        if (ExceptionChecker.checkExceptionThrown(course::getId)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "Such resource doesn't exist";
+            return localeService.getMessage("NoResource");
         }
 
-        courseRepository.delete(curse);
+        courseRepository.delete(course);
         return localeService.getMessage("m.courses.delete.done");
     }
+
+    @RequestMapping(
+            value = "/m/courses/rename",
+            method = RequestMethod.POST)
+    @Transactional
+    @ResponseBody
+    public Object rename(@NonNls @ModelAttribute("value") String newName,
+                         @NonNls @ModelAttribute("pk") long courseID,
+                         HttpServletResponse response) {
+
+        Course course = courseRepository.getOne(courseID);
+
+        if (ExceptionChecker.checkExceptionThrown(course::getId)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        if (courseRepository.findByName(newName) != null) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("UniqueName");
+        }
+
+        courseRepository.save(course);
+        return localeService.getMessage("m.courses.rename.done");
+    }
+
 }

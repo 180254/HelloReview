@@ -153,3 +153,7 @@ main {
 #course-add-error {
     display: none;
 }
+
+.course-rename-link {
+    color: black;
+}

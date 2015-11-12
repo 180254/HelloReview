@@ -4,6 +4,8 @@
 $(document).ready(function () {
     'use strict';
 
+    $.fn.editable.defaults.mode = 'popup';
+
     toastr.options = {
         'closeButton': false,
         'debug': false,

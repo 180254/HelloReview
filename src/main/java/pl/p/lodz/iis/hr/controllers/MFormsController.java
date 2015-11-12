@@ -155,7 +155,7 @@ class MFormsController {
 
         if (ExceptionChecker.checkExceptionThrown(form::getId)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "Such resource doesn't exist";
+            return localeService.getMessage("NoResource");
         }
 
         formRepository.delete(form);
