@@ -80,6 +80,14 @@ public class Participant implements Serializable {
         return course;
     }
 
+    public List<ReviewResponse> getReviewResponses() {
+        return reviewResponses;
+    }
+
+    void setReviewResponses(List<ReviewResponse> reviewResponses) {
+        this.reviewResponses = reviewResponses;
+    }
+
     void setCourse(Course course) {
         this.course = course;
     }

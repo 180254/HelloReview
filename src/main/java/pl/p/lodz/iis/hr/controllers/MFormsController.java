@@ -205,7 +205,7 @@ class MFormsController {
         }
 
         Form testForm = new Form(newName, null);
-        List<String> nameErrors = validateService.validateField(testForm, "name");
+        List<String> nameErrors = validateService.validateField(testForm, "name", "course name");
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return nameErrors;

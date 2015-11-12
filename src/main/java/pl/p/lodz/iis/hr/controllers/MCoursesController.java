@@ -65,7 +65,7 @@ class MCoursesController {
                                   HttpServletResponse response) throws IOException {
 
         Course course = new Course(courseName);
-        List<String> nameErrors = validateService.validateField(course, "name");
+        List<String> nameErrors = validateService.validateField(course, "name", "course name");
 
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -74,7 +74,6 @@ class MCoursesController {
 
         courseRepository.save(course);
         return localeService.getMessage("m.courses.add.done");
-
     }
 
     @RequestMapping(
@@ -108,9 +107,10 @@ class MCoursesController {
             return localeService.getMessage("NoResource");
         }
 
-
         Course testCourse = new Course(newName);
-        List<String> nameErrors = validateService.validateField(testCourse, "name");
+
+        String courseNamePrefix = localeService.getMessage("m.courses.add.validation.prefix.course.name");
+        List<String> nameErrors = validateService.validateField(testCourse, "name", courseNamePrefix);
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return nameErrors;

@@ -12,8 +12,8 @@
 
     <h4 class="course-participant-header">
         <a th:href="'/m/courses/'+ ${course.id}">
-            <strong th:text="${course.name}"></strong>
-        </a><span th:text="#{m.courses.participants.table.head.addon}"></span>
+            <strong th:text="${course.name}"></strong></a><span
+            th:text="#{m.courses.participants.table.head.addon}"></span>
     </h4>
 
     <table class="table table-hover">
@@ -64,6 +64,68 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${newButton}" class="add-new text-right">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#course-participant-add"
+                th:text="#{m.courses.participants.tbody.add.new.one}">
+        </button>
+    </div>
+
+    <div th:if="${newButton}" class="modal fade" id="course-participant-add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" th:text="#{m.courses.participants.add.title}"></h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="course-participant-add-form">
+                        <input type="hidden" name="course-id" th:value="${course.id}"/>
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+
+                        <div class="form-group">
+                            <label for="course-participant-name"
+                                   th:text="#{m.courses.participants.add.input.participant.name.label}">
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="course-participant-name" name="course-participant-name"
+                                   th:placeholder="#{m.courses.participants.add.input.participant.name.placeholder}"/>
+
+                            <label for="course-participant-github-name" class="form-label-padding"
+                                   th:text="#{m.courses.participants.add.input.github.name.label}">
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="course-participant-github-name" name="course-participant-github-name"
+                                   th:placeholder="#{m.courses.participants.add.input.github.name.placeholder}"/>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="course-participant-add-error" class="form-add-ajax-info alert alert-danger" role="alert">
+                    <h4 th:text="#{m.courses.participants.add.validation.header}"></h4>
+                    <ul id="course-participant-add-error-list">
+                    </ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="course-participant-add-button-close" type="button" class="btn btn-default"
+                            data-dismiss="modal"
+                            th:text="#{m.courses.participants.add.button.close}">
+                    </button>
+                    <button id="course-participant-add-button-submit" type="button" class="btn btn-primary"
+                            th:text="#{m.courses.participants.add.button.submit}">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 </body>

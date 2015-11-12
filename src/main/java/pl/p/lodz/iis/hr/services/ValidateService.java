@@ -16,14 +16,14 @@ public class ValidateService {
     @Autowired private Validator validator;
     @Autowired private LocaleService localeService;
 
-    public List<String> validateField(Object object, String fieldName) {
+    public List<String> validateField(Object object, String fieldName, String prefix) {
 
         BindingResult bindingResult = new DataBinder(object).getBindingResult();
         validator.validate(object, bindingResult);
 
         List<FieldError> fieldErrors = bindingResult.getFieldErrors(fieldName);
         return fieldErrors.stream().map(
-                fieldError -> localeService.getMessage(fieldError))
+                fieldError -> String.format("%s %s", prefix, localeService.getMessage(fieldError)))
                 .sorted()
                 .collect(Collectors.toList());
     }

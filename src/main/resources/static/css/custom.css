@@ -164,3 +164,11 @@ main {
     font-size: 16px;
     margin-bottom: 2em;
 }
+
+.form-label-padding {
+    margin-top: 1em;
+}
+
+#course-participant-add-error {
+    display: none;
+}
