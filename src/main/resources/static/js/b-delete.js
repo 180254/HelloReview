@@ -5,7 +5,7 @@ function deleteB($deleteLink) {
     'use strict';
 
     var $row = $deleteLink.closest('tr'),
-        id = $deleteLink.closest('tr').children('td').html(),
+        id = $deleteLink.attr('data-id'),
         ajaxHeaders = {};
 
     ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
@@ -14,7 +14,8 @@ function deleteB($deleteLink) {
 
     $.ajax({
         type: 'POST',
-        url: $deleteLink.attr('data-delete-url') + id,
+        url: $deleteLink.attr('data-delete-url'),
+        data: 'id=' + id,
         headers: ajaxHeaders
 
     }).done(function (data) {

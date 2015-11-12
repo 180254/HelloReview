@@ -9,26 +9,26 @@
 + POST    rest   /m/forms/add
 + GET     html   /m/forms/preview/1
 + GET     html   /m/forms/xml/1
-+ POST    rest   /m/forms/delete/1
++ POST    rest   /m/forms/delete
 + POST    rest   /m/forms/rename
 
 + GET     html   /m/courses
 + GET     html   /m/courses/1
-+ POST    html   /m/courses/add
-+ POST    rest   /m/courses/delete/1
++ POST    rest   /m/courses/add
++ POST    rest   /m/courses/delete
 + POST    rest   /m/courses/rename
 
 + GET     html   /m/courses/1/participants
 + GET     html   /m/courses/participants/2
 + POST    rest   /m/courses/participants/add
-+ POST    rest   /m/courses/participants/delete/1
-- POST    rest   /m/courses/participants/rename-name
-- POST    rest   /m/courses/participants/rename-githubname
++ POST    rest   /m/courses/participants/delete
++ POST    rest   /m/courses/participants/rename-name
++ POST    rest   /m/courses/participants/rename-githubname
 
 - GET     html   /m/courses/1/reviews
 - GET     html   /m/courses/reviews/2
 - POST    rest   /m/courses/1/reviews/add
-- POST    rest   /m/courses/reviews/delete/1
+- POST    rest   /m/courses/reviews/delete
 - POST    rest   /m/courses/reviews/rename
 
 - GET     html   /m/reviews

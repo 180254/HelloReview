@@ -77,11 +77,11 @@ class MCoursesController {
     }
 
     @RequestMapping(
-            value = "/m/courses/delete/{courseID}",
+            value = "/m/courses/delete",
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public String cDelete(@PathVariable long courseID,
+    public String cDelete(@ModelAttribute("id") long courseID,
                           HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {

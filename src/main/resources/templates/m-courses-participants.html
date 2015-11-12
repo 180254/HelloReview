@@ -55,10 +55,11 @@
             <td>
                 <a href="#"
                    class="course-participant-delete-link b-delete-link"
-                   data-delete-url="/m/courses/participants/delete/"
-                   data-th-attr="data-title=#{m.courses.participants.delete.title},
-                           data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
-                           data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
+                   data-delete-url="/m/courses/participants/delete"
+                   data-th-attr="data-id=${participant.id},
+                        data-title=#{m.courses.participants.delete.title},
+                        data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
+                        data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
                    th:text="#{m.courses.tbody.delete}"></a>
             </td>

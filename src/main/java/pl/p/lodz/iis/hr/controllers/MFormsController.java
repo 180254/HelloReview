@@ -174,11 +174,11 @@ class MFormsController {
     }
 
     @RequestMapping(
-            value = "/m/forms/delete/{formID}",
+            value = "/m/forms/delete",
             method = RequestMethod.POST)
     @Transactional
     @ResponseBody
-    public String delete(@PathVariable long formID,
+    public String delete(@ModelAttribute("id") long formID,
                          HttpServletResponse response) {
 
         if (!formRepository.exists(formID)) {
