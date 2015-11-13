@@ -2,17 +2,17 @@
 <hello>
     <general>
         <url>http://127.0.0.1:8080</url>
+        <cachedir>cache</cachedir>
     </general>
 
     <github>
         <masters>
-            <username>mto-lab</username>
             <username>180254</username>
+            <username>radamuspl</username>
         </masters>
 
         <courserepos>
             <username>mto-lab</username>
-            <username>180254</username>
         </courserepos>
 
         <dummy>

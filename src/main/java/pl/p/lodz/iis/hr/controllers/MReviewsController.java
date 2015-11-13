@@ -1,18 +1,16 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
-import pl.p.lodz.iis.hr.exceptions.CommunicationWithGitHubFailedException;
+import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
@@ -21,11 +19,10 @@ import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +34,7 @@ class MReviewsController {
     @Autowired private FormRepository formRepository;
     @Autowired private GitHubClient gitHubClient;
     @Autowired private AppConfig appConfig;
+    @Autowired private GitHub gitHub;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -92,31 +90,56 @@ class MReviewsController {
             value = "/m/reviews/add",
             method = RequestMethod.GET)
     @Transactional
-    public String rAdd(HttpServletRequest request,
-                       HttpServletResponse response,
-                       Model model) {
+    public String rAdd(Model model) {
 
         List<Course> courses = courseRepository.findAll();
         List<Form> forms = formRepository.findByTemporaryFalse();
 
-        Collection<GHRepository> ghRepositories = new ArrayList<>(10);
-
-        try {
-            GitHub gitHub = GitHub.connectAnonymously();
-            for (String courseReposUserName : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
-                ghRepositories.addAll(gitHub.getUser(courseReposUserName).listRepositories().asList());
-            }
-        } catch (IOException e) {
-            throw new CommunicationWithGitHubFailedException(e);
-        }
-
         model.addAttribute("courses", courses);
         model.addAttribute("forms", forms);
-        model.addAttribute("ghRepositories", ghRepositories);
         return "m-reviews-add";
     }
 
-    @ExceptionHandler(CommunicationWithGitHubFailedException.class)
+    @RequestMapping(
+            value = "/m/reviews/add/repolist",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Object rAddRepoList(HttpServletResponse response) {
+        List<String> repoList = new ArrayList<>(10);
+
+        try {
+            for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
+
+                gitHub.getUser(username).listRepositories()
+                        .asList().stream()
+                        .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
+                        .forEach(repoList::add);
+
+            }
+
+        } catch (FileNotFoundException ignored) {
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+            return "probably bad credentials";
+
+        } catch (IOException e) {
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+            return e.getMessage();
+
+            // oh, it may be wrapped wih Error ;/
+        } catch (Error e) {
+            if (e.getCause() instanceof IOException) {
+                response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+                return e.getCause().getMessage();
+            } else {
+                throw new Error(e);
+            }
+        }
+
+        return repoList;
+    }
+
+    @ExceptionHandler(GitHubCommunicationException.class)
     public String handleGitHubException() {
         return "redirect:/github-issue";
     }

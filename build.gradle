@@ -56,7 +56,9 @@ dependencies {
 
     compile("org.pac4j:spring-webmvc-pac4j:1.0.0")
     compile("org.pac4j:pac4j-oauth:1.8.0")
+
     compile("org.kohsuke:github-api:1.70")
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
 
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3")
     compile("org.codehaus.woodstox:woodstox-core-asl:4.4.1");

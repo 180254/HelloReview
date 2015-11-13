@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.i18n;
+package pl.p.lodz.iis.hr.configuration.other;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -42,6 +42,9 @@
     <script th:if="${isMaster}" th:src="@{/js/b-delete.js}"></script>
     <script th:if="${isMaster}" th:src="@{/js/b-rename.js}"></script>
 
+    <script th:if="${isMaster and #httpServletRequest.requestURI.contains('reviews/add')}"
+            th:src="@{/js/review-add.js}"></script>
+
 </head>
     <!-- // @formatter:on  -->
 </html>

@@ -93,8 +93,7 @@ main {
     color: darkmagenta;
 }
 
-.form-main .form-group,
-#form-review-add {
+.form-main .form-group {
     margin-bottom: 15px;
     border: 1px solid #CCC;
     padding: 1em;
@@ -124,11 +123,11 @@ main {
     color: red;
 }
 
-.form-main .forms-buttons-add-preview {
+.form-main .forms-buttons-2 {
     font-family: monospace;
 }
 
-.form-main .forms-buttons-add-preview button {
+.form-main .forms-buttons-2 button {
     width: 300px;
 }
 
