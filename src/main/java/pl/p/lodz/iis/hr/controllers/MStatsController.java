@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
-
-import java.io.IOException;
+import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 @Controller
 class MStatsController {
@@ -21,15 +20,14 @@ class MStatsController {
             value = "/m/stats",
             method = RequestMethod.GET)
     public String stats(Model model) {
-        try {
+
+        GitHubExecutor.execute(() -> {
             GHRateLimit rateLimit = gitHub.getRateLimit();
             model.addAttribute("rateLimit", rateLimit);
+        });
 
-            return "m-stats";
+        return "m-stats";
 
-        } catch (IOException e) {
-            throw new GitHubCommunicationException(e);
-        }
     }
 
     @ExceptionHandler(GitHubCommunicationException.class)

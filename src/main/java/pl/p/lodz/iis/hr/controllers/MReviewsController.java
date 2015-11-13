@@ -18,10 +18,9 @@ import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
+import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -109,31 +108,20 @@ class MReviewsController {
         List<String> repoList = new ArrayList<>(10);
 
         try {
-            for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
+            GitHubExecutor.execute(() -> {
 
-                gitHub.getUser(username).listRepositories()
-                        .asList().stream()
-                        .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
-                        .forEach(repoList::add);
+                for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
+                    gitHub.getUser(username).listRepositories()
+                            .asList().stream()
+                            .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
+                            .forEach(repoList::add);
 
-            }
+                }
+            });
 
-        } catch (FileNotFoundException ignored) {
-            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return "probably bad credentials";
-
-        } catch (IOException e) {
+        } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return e.getMessage();
-
-            // oh, it may be wrapped wih Error ;/
-        } catch (Error e) {
-            if (e.getCause() instanceof IOException) {
-                response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-                return e.getCause().getMessage();
-            } else {
-                throw new Error(e);
-            }
         }
 
         return repoList;
