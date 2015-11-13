@@ -93,7 +93,8 @@ main {
     color: darkmagenta;
 }
 
-.form-main .form-group {
+.form-main .form-group,
+#form-review-add {
     margin-bottom: 15px;
     border: 1px solid #CCC;
     padding: 1em;
@@ -163,10 +164,6 @@ main {
 .course-participant-header {
     font-size: 16px;
     margin-bottom: 2em;
-}
-
-.form-label-padding {
-    margin-top: 1em;
 }
 
 #course-participant-add-error {

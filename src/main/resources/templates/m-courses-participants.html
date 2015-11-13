@@ -56,7 +56,7 @@
                 <a href="#"
                    class="course-participant-delete-link b-delete-link"
                    data-delete-url="/m/courses/participants/delete"
-                   data-th-attr="data-id=${participant.id},
+                   th:attr="data-id=${participant.id},
                         data-title=#{m.courses.participants.delete.title},
                         data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
@@ -97,8 +97,10 @@
                                    class="form-control"
                                    id="course-participant-name" name="course-participant-name"
                                    th:placeholder="#{m.courses.participants.add.input.participant.name.placeholder}"/>
+                        </div>
 
-                            <label for="course-participant-github-name" class="form-label-padding"
+                        <div class="form-group">
+                            <label for="course-participant-github-name"
                                    th:text="#{m.courses.participants.add.input.github.name.label}">
                             </label>
                             <input type="text"

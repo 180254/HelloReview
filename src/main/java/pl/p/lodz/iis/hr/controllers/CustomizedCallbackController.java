@@ -11,7 +11,7 @@ class CustomizedCallbackController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(TechnicalException.class)
     public String handleControllerException() {
-        return "redirect:/logout?url=/login-issue";
+        return "redirect:/logout?url=/github-issue";
     }
 
 }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container form-main">
+
+    <form id="form-review-add" class="form-group">
+
+        <div class="input-2">
+            <label for="review-add-course">Course</label>
+
+            <select id="review-add-course" name="review-add-course" class="form-control">
+                <th:block th:each="course : ${courses}">
+                    <option th:value="${course.id}" th:text="${course.name}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="input-2">
+            <label for="review-add-form">Form</label>
+
+            <select id="review-add-form" name="review-add-form" class="form-control">
+                <th:block th:each="form : ${forms}">
+                    <option th:value="${form.id}" th:text="${form.name}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="input-2">
+            <label for="review-add-repository">Repository</label>
+
+            <select id="review-add-repository" name="review-add-form" class="form-control">
+                <th:block th:each="repository : ${ghRepositories}">
+                    <option th:text="${repository.ownerName} + '/' + ${repository.name}"></option>
+                </th:block>
+            </select>
+        </div>
+
+    </form>
+
+</main>
+
+</body>
+</html>
