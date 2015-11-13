@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.controllers;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -58,7 +59,8 @@ class MCoursesController {
 
     @RequestMapping(
             value = "/m/courses/add",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object fCoursesAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
@@ -78,7 +80,8 @@ class MCoursesController {
 
     @RequestMapping(
             value = "/m/courses/delete",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public String cDelete(@ModelAttribute("id") long courseID,
@@ -95,7 +98,8 @@ class MCoursesController {
 
     @RequestMapping(
             value = "/m/courses/rename",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object cRename(@NonNls @ModelAttribute("value") String newName,

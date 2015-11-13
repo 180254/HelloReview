@@ -27,6 +27,11 @@
             <a href="/m/reviews" th:text="#{nav.m.reviews}"></a>
         </li>
 
+        <li th:if="${isMaster}"
+            th:class="${#httpServletRequest.requestURI.startsWith('/m/stats')} ? active : ''"
+            role="presentation">
+            <a href="/m/stats" th:text="#{nav.m.stats}"></a>
+        </li>
         <li role="presentation"
             th:if="${isPeer}"
             th:class="${#httpServletRequest.requestURI.equals('/p')} ? active : ''">

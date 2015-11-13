@@ -86,7 +86,8 @@ class MFormsController {
 
     @RequestMapping(
             value = "/m/forms/add",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object fAddPOST(@NonNls @ModelAttribute("form-name") String formName,
@@ -175,7 +176,8 @@ class MFormsController {
 
     @RequestMapping(
             value = "/m/forms/delete",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public String delete(@ModelAttribute("id") long formID,
@@ -192,7 +194,8 @@ class MFormsController {
 
     @RequestMapping(
             value = "/m/forms/rename",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object rename(@NonNls @ModelAttribute("value") String newName,

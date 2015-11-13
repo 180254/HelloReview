@@ -3,6 +3,9 @@
 + GET     html   /logout?url=
 + POST    void   /csp-reports
 
++ GET     html   /github-issue
++ POST    html   /github-issue
+
 + GET     html   /m/forms
 + GET     html   /m/forms/1
 + GET     html   /m/forms/add
@@ -29,6 +32,7 @@
 + GET     html   /m/reviews/1
 + GET     html   /m/reviews/for/course/1
 - GET     html   /m/reviews/add
+- GET     html   /m/reviews/add/repolist
 
 - GET     html   /m/reviews/1/responses/
 - GET     html   /m/reviews/responses/1

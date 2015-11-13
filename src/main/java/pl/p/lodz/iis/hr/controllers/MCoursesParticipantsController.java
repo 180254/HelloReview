@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.controllers;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -73,7 +74,8 @@ class MCoursesParticipantsController {
 
     @RequestMapping(
             value = "/m/courses/participants/add",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object pAddPOST(@NonNls @ModelAttribute("course-id") long courseID,
@@ -117,7 +119,8 @@ class MCoursesParticipantsController {
 
     @RequestMapping(
             value = "/m/courses/participants/delete",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public String pDelete(@ModelAttribute("id") long participantID,
@@ -134,7 +137,8 @@ class MCoursesParticipantsController {
 
     @RequestMapping(
             value = "/m/courses/participants/rename/name",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object pRenamePName(@NonNls @ModelAttribute("value") String newName,
@@ -170,7 +174,8 @@ class MCoursesParticipantsController {
 
     @RequestMapping(
             value = "/m/courses/participants/rename/githubname",
-            method = RequestMethod.POST)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
     public Object pRenameGitHubName(@NonNls @ModelAttribute("value") String newGitHubName,
