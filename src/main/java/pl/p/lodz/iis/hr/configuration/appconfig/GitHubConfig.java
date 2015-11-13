@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Immutable;
 
-public final class GitHub {
+@Immutable
+public final class GitHubConfig {
 
-    @JsonProperty("master")
-    private final GitHubMaster master;
+    @JsonProperty("masters")
+    private final GitHubMasters masters;
+
+    @JsonProperty("courserepos")
+    private final GitHubCourseRepos courseRepos;
 
     @JsonProperty("dummy")
     private final GitHubDummy dummy;
@@ -17,17 +22,23 @@ public final class GitHub {
     private final GitHubApplication application;
 
     @JsonCreator
-    GitHub(@JsonProperty("master") GitHubMaster master,
-           @JsonProperty("dummy") GitHubDummy dummy,
-           @JsonProperty("application") GitHubApplication application) {
+    GitHubConfig(@JsonProperty("masters") GitHubMasters masters,
+                 @JsonProperty("courserepos") GitHubCourseRepos courseRepos,
+                 @JsonProperty("dummy") GitHubDummy dummy,
+                 @JsonProperty("application") GitHubApplication application) {
 
-        this.master = master;
+        this.masters = masters;
+        this.courseRepos = courseRepos;
         this.dummy = dummy;
         this.application = application;
     }
 
-    public GitHubMaster getMaster() {
-        return master;
+    public GitHubMasters getMasters() {
+        return masters;
+    }
+
+    public GitHubCourseRepos getCourseRepos() {
+        return courseRepos;
     }
 
     public GitHubDummy getDummy() {

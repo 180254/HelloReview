@@ -6,19 +6,22 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.Immutable;
 
-@Immutable
-public final class General {
+import java.util.ArrayList;
+import java.util.List;
 
-    @JsonProperty("url")
-    private final String url;
+@Immutable
+public class GitHubCourseRepos {
+
+    @JsonProperty("username")
+    private final List<String> userNames;
 
     @JsonCreator
-    General(@JsonProperty("url") String url) {
-        this.url = url;
+    GitHubCourseRepos(@JsonProperty("username") List<String> userNames) {
+        this.userNames = new ArrayList<>(userNames);
     }
 
-    public String getUrl() {
-        return url;
+    public List<String> getUserNames() {
+        return new ArrayList<>(userNames);
     }
 
     @Override

@@ -5,29 +5,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Immutable;
 
 @JacksonXmlRootElement(localName = "hello")
+@Immutable
 public final class AppConfig {
 
     @JsonProperty("general")
     private final General general;
 
     @JsonProperty("github")
-    private final GitHub gitHub;
+    private final GitHubConfig gitHubConfig;
 
     @JsonCreator
     AppConfig(@JsonProperty("general") General general,
-              @JsonProperty("github") GitHub gitHub) {
+              @JsonProperty("github") GitHubConfig gitHubConfig) {
         this.general = general;
-        this.gitHub = gitHub;
+        this.gitHubConfig = gitHubConfig;
     }
 
     public General getGeneral() {
         return general;
     }
 
-    public GitHub getGitHub() {
-        return gitHub;
+    public GitHubConfig getGitHubConfig() {
+        return gitHubConfig;
     }
 
     @Override

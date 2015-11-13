@@ -4,19 +4,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Immutable;
 
-public final class GitHubMaster {
+import java.util.ArrayList;
+import java.util.List;
+
+@Immutable
+public final class GitHubMasters {
 
     @JsonProperty("username")
-    private final String username;
+    private final List<String> userNames;
 
     @JsonCreator
-    GitHubMaster(@JsonProperty("username") String username) {
-        this.username = username;
+    GitHubMasters(@JsonProperty("username") List<String> userNames) {
+        this.userNames = new ArrayList<>(userNames);
     }
 
-    public String getUsername() {
-        return username;
+    public List<String> getUserNames() {
+        return new ArrayList<>(userNames);
     }
 
     @Override

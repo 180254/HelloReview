@@ -59,8 +59,9 @@ public class Pac4jSecurityHelper {
     }
 
     public boolean isMaster(AppConfig appConfig) {
-        return sessionUserProfile.get().getUsername()
-                .equals(appConfig.getGitHub().getMaster().getUsername());
+        return appConfig.getGitHubConfig().getMasters().getUserNames().contains(
+                sessionUserProfile.get().getUsername()
+        );
     }
 
     public boolean isPeer(AppConfig appConfig) {

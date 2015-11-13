@@ -20,7 +20,7 @@ class Pac4jSecurityConfig {
     @Bean(name = "pac4jClients")
     public Clients clients() {
         General general = appConfig.getGeneral();
-        GitHubApplication application = appConfig.getGitHub().getApplication();
+        GitHubApplication application = appConfig.getGitHubConfig().getApplication();
 
         GitHubClient git = new GitHubClient(application.getClientID(), application.getClientSecret());
         return new Clients(String.format("%s/callback", general.getUrl()), git);

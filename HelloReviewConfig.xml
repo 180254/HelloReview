@@ -5,9 +5,15 @@
     </general>
 
     <github>
-        <master>
+        <masters>
+            <username>mto-lab</username>
             <username>180254</username>
-        </master>
+        </masters>
+
+        <courserepos>
+            <username>mto-lab</username>
+            <username>180254</username>
+        </courserepos>
 
         <dummy>
             <username>peerreview70</username>
