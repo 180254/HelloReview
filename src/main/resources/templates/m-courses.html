@@ -15,9 +15,9 @@
         <tr>
             <th th:text="#{m.courses.thead.id}"></th>
             <th th:text="#{m.courses.thead.course.name}"></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.courses.thead.participants}"></span></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.courses.thead.reviews}"></span></th>
-            <th><i class="fa fa-eraser"></i> <span th:text="#{m.courses.thead.delete}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.thead.participants}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.thead.reviews}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.courses.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -26,7 +26,8 @@
             <td th:text="${course.id}"></td>
 
             <td>
-                <a href="#" class="course-rename-link b-rename-link"
+                <a href="#"
+                   class="course-rename-link b-rename-link"
                    data-type="text" th:text="${course.name}"
                    data-th-attr="data-url=@{/m/courses/rename}, data-pk=${course.id}">
                 </a>
@@ -49,8 +50,9 @@
             <td>
                 <a href="#"
                    class="course-delete-link b-delete-link"
-                   data-delete-url="/m/courses/delete"
-                   th:attr="data-id=${course.id},
+                   th:attr="
+                        data-delete-url=@{/m/courses/delete},
+                        data-id=${course.id},
                         data-title=#{m.courses.delete.title},
                         data-btnOkLabel=#{m.courses.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.courses.delete.btnCancelLabel}"
@@ -70,6 +72,7 @@
     <div th:if="${newButton}" class="modal fade" id="course-add">
         <div class="modal-dialog">
             <div class="modal-content">
+
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

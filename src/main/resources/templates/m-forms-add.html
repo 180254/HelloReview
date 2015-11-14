@@ -10,9 +10,8 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="form-add-form" method="post">
-        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}"/>
+    <form id="form-add-form">
+        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
         <div id="form-add-form-body" class="form-group">
 

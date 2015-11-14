@@ -22,8 +22,8 @@
             <th th:text="#{m.courses.participants.thead.id}"></th>
             <th th:text="#{m.courses.participants.thead.name}"></th>
             <th th:text="#{m.courses.participants.thead.github.name}"></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.courses.participants.thead.review.responses}"></span></th>
-            <th><i class="fa fa-eraser"></i> <span th:text="#{m.courses.participants.thead.delete}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.participants.thead.responses}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.courses.participants.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -48,15 +48,16 @@
             <td>
                 <a th:href="'/m/reviews/responses/for/participant/'+ ${participant.id}">
                     <strong th:text="${participant.reviewResponses.size()}"></strong>
-                    <span th:text="#{m.courses.participants.tbody.reviewResponses}"></span>
+                    <span th:text="#{m.courses.participants.tbody.responses}"></span>
                 </a>
             </td>
 
             <td>
                 <a href="#"
                    class="course-participant-delete-link b-delete-link"
-                   data-delete-url="/m/courses/participants/delete"
-                   th:attr="data-id=${participant.id},
+                   th:attr="
+                        data-delete-url=@{/m/courses/participants/delete},
+                        data-id=${participant.id},
                         data-title=#{m.courses.participants.delete.title},
                         data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
@@ -75,6 +76,7 @@
 
     <div th:if="${newButton}" class="modal fade" id="course-participant-add">
         <div class="modal-dialog">
+
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -122,6 +124,7 @@
                             data-dismiss="modal"
                             th:text="#{m.courses.participants.add.button.close}">
                     </button>
+
                     <button id="course-participant-add-button-submit" type="button" class="btn btn-primary"
                             th:text="#{m.courses.participants.add.button.submit}">
                     </button>

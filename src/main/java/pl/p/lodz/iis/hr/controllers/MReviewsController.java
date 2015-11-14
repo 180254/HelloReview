@@ -194,4 +194,23 @@ class MReviewsController {
             return singletonList(e.toString());
         }
     }
+
+    @RequestMapping(
+            value = "/m/reviews/delete",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    @ResponseBody
+    public List<String> delete(@ModelAttribute("id") long reviewID,
+                               HttpServletResponse response) {
+
+        if (!reviewRepository.exists(reviewID)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.getMessage("NoResource"));
+        }
+
+        reviewRepository.delete(reviewID);
+        return singletonList(localeService.getMessage("m.reviews.delete.done"));
+    }
+
 }

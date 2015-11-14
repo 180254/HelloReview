@@ -32,15 +32,16 @@
             role="presentation">
             <a href="/m/stats" th:text="#{nav.m.stats}"></a>
         </li>
-        <li role="presentation"
-            th:if="${isPeer}"
-            th:class="${#httpServletRequest.requestURI.equals('/p')} ? active : ''">
+
+        <li th:if="${isPeer}"
+            th:class="${#httpServletRequest.requestURI.equals('/p')} ? active : ''"
+            role="presentation">
             <a href="/p">Peer</a>
         </li>
 
-        <li role="presentation"
-            th:if="${isLoggedIn}"
-            class="navbar-right">
+        <li th:if="${isLoggedIn}"
+            class="navbar-right"
+            role="presentation">
             <a href="/logout?url=/"><span th:text="#{nav.logout}"></span>&nbsp;&nbsp;</a>
         </li>
 

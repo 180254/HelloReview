@@ -11,18 +11,7 @@
 
     <div id="sth-go-wrong">
         <span class="status" th:text="#{github.issue.status}"></span><br/>
-
-        <div class="message2">
-            <th:block th:if="${message != null}">
-                <span th:text="#{github.issue.reason}"></span>
-                <strong th:text="${message}"></strong>
-                <br/>
-            </th:block>
-
-            <span th:text=" #{github.issue.message2}"></span>
-        </div>
-        <br/>
-
+        <span class="message2" th:text="#{github.issue.message2}"></span><br/>
         <img src="" th:src="@{/images/sth-go-wrong.png}" alt=""/><br/>
     </div>
 

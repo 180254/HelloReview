@@ -166,12 +166,14 @@ function courseParticipantAddHandler(prefix, url) {
         data: serialized
 
     }).done(function (data) {
+        var reloadAfter = 1200;
+
         $errorsDiv.hide();
         toastr.success(data[0]);
 
         window.setTimeout(function () {
             location.reload();
-        }, 1200);
+        }, reloadAfter);
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),

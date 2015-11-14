@@ -10,7 +10,8 @@
 <main class="container main-hello text-center">
 
     <div th:if="${isLoggedIn == false}" class="social-button1 center-block">
-        <form action="/login" method="post">
+
+        <form th:action="@{/login}" method="post">
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
             <button type="submit" class="btn btn-block btn-social btn-github">
@@ -18,14 +19,17 @@
                 <span th:text="#{index.signin}"></span>
             </button>
         </form>
+
     </div>
 
     <div th:if="${isLoggedIn}" class="social-button1 center-block">
-        <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}" target="_blank">
+
+        <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}">
             <i class="fa fa-github"></i>
             <span th:text="#{index.hello}"></span>
             [<span th:text="${username}" class="username"></span>] !
         </a>
+
     </div>
 
 </main>

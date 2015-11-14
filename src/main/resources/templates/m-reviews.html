@@ -14,10 +14,10 @@
         <thead>
         <tr>
             <th th:text="#{m.reviews.thead.id}"></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.course}"></span></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.form}"></span></th>
-            <th><i class="fa fa-eye"></i> <span th:text="#{m.reviews.thead.responses}"></span></th>
-            <th><i class="fa fa-eraser"></i> <span th:text="#{m.reviews.thead.delete}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.course}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.form}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.responses}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.reviews.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -47,8 +47,9 @@
             <td>
                 <a href="#"
                    class="review-delete-link b-delete-link"
-                   data-delete-url="/m/reviews/delete"
-                   th:attr="data-id=${review.id},
+                   th:attr="
+                        data-delete-url=@{/m/reviews/delete},
+                        data-id=${review.id},
                         data-title=#{m.reviews.delete.title},
                         data-btnOkLabel=#{m.reviews.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.reviews.delete.btnCancelLabel}"
