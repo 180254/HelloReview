@@ -145,6 +145,14 @@ main {
     margin-right: 1rem;
 }
 
+.table {
+    table-layout: fixed;
+}
+
+.table th:first-child {
+    width: 10%;
+}
+
 .add-new > .btn {
     width: 12rem;
 }
