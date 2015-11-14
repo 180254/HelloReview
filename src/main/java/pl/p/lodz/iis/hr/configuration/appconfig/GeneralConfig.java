@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.Immutable;
 
 @Immutable
-public final class General {
+public final class GeneralConfig {
 
     @JsonProperty("url")
     private final String url;
@@ -16,8 +16,8 @@ public final class General {
     private final String cacheDir;
 
     @JsonCreator
-    General(@JsonProperty("url") String url,
-            @JsonProperty("cachedir") String cacheDir) {
+    GeneralConfig(@JsonProperty("url") String url,
+                  @JsonProperty("cachedir") String cacheDir) {
 
         this.url = url;
         this.cacheDir = cacheDir;

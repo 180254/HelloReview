@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <hello>
-    <general>
+    <generalConfig>
         <url>http://127.0.0.1:8080</url>
         <cachedir>cache</cachedir>
-    </general>
+    </generalConfig>
 
     <github>
         <masters>

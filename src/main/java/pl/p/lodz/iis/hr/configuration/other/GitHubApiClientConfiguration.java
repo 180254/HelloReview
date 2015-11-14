@@ -31,7 +31,7 @@ public class GitHubApiClientConfiguration {
     @Bean
     public GitHub gitHub() {
         try {
-            String cacheDir = appConfig.getGeneral().getCacheDir();
+            String cacheDir = appConfig.getGeneralConfig().getCacheDir();
             Cache cache = new Cache(new File(cacheDir), Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB)));
 
             OkHttpClient okHttpClient = new OkHttpClient().setCache(cache);

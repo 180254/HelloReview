@@ -11,21 +11,21 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 public final class AppConfig {
 
-    @JsonProperty("general")
-    private final General general;
+    @JsonProperty("generalConfig")
+    private final GeneralConfig generalConfig;
 
     @JsonProperty("github")
     private final GitHubConfig gitHubConfig;
 
     @JsonCreator
-    AppConfig(@JsonProperty("general") General general,
+    AppConfig(@JsonProperty("general") GeneralConfig generalConfig,
               @JsonProperty("github") GitHubConfig gitHubConfig) {
-        this.general = general;
+        this.generalConfig = generalConfig;
         this.gitHubConfig = gitHubConfig;
     }
 
-    public General getGeneral() {
-        return general;
+    public GeneralConfig getGeneralConfig() {
+        return generalConfig;
     }
 
     public GitHubConfig getGitHubConfig() {

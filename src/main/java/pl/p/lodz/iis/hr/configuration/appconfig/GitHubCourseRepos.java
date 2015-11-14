@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Immutable
@@ -21,7 +22,7 @@ public class GitHubCourseRepos {
     }
 
     public List<String> getUserNames() {
-        return new ArrayList<>(userNames);
+        return Collections.unmodifiableList(userNames);
     }
 
     @Override

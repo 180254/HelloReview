@@ -116,7 +116,7 @@ class MReviewsController {
         List<String> repoList = new ArrayList<>(10);
 
         try {
-            GitHubExecutor.execute(() -> {
+            GitHubExecutor.<Void>ex(() -> {
 
                 for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
                     gitHub.getUser(username).listRepositories()
@@ -159,7 +159,7 @@ class MReviewsController {
         GHRepository ghRepository;
 
         try {
-            ghRepository = GitHubExecutor.execute(() -> gitHub.getRepository(repository));
+            ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return Collections.singletonList(localeService.getMessage("NoResource"));
@@ -168,7 +168,7 @@ class MReviewsController {
         try {
             Course course = courseRepository.getOne(courseID);
             Form form = formRepository.getOne(formID);
-            List<GHRepository> forks = GitHubExecutor.execute(() -> ghRepository.listForks().asList());
+            List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
 
             Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));

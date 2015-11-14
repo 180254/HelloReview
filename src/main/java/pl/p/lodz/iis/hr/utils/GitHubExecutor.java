@@ -10,7 +10,7 @@ public final class GitHubExecutor {
     private GitHubExecutor() {
     }
 
-    public static <T> T execute(GitHubExecutorFI<T> executor) {
+    public static <T> T ex(GitHubExecutorFI<T> executor) {
 
         try {
             return executor.execute();
@@ -26,5 +26,12 @@ public final class GitHubExecutor {
                 throw new Error(e);
             }
         }
+    }
+
+    public static void ex(GitHubExecutorFI2 executor) {
+        GitHubExecutor.<Void>ex(() -> {
+            executor.execute();
+            return null;
+        });
     }
 }

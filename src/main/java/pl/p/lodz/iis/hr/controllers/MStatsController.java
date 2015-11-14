@@ -21,7 +21,7 @@ class MStatsController {
             method = RequestMethod.GET)
     public String stats(Model model) {
 
-        GitHubExecutor.execute(() -> {
+        GitHubExecutor.ex(() -> {
             GHRateLimit rateLimit = gitHub.getRateLimit();
             model.addAttribute("rateLimit", rateLimit);
             return null;
