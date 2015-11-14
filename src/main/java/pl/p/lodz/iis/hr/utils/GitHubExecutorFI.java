@@ -3,7 +3,7 @@ package pl.p.lodz.iis.hr.utils;
 import java.io.IOException;
 
 @FunctionalInterface
-public interface GitHubExecutorFI {
+public interface GitHubExecutorFI<T> {
 
-    void execute() throws IOException;
+    T execute() throws IOException;
 }

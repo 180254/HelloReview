@@ -1,5 +1,7 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.jetbrains.annotations.NonNls;
+import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +15,33 @@ import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
+import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
+import pl.p.lodz.iis.hr.models.response.ReviewResponse;
+import pl.p.lodz.iis.hr.models.response.ReviewResponseStatus;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
+import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
+import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 class MReviewsController {
 
     @Autowired private ReviewRepository reviewRepository;
+    @Autowired private ReviewResponseRepository reviewResponseRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
     @Autowired private GitHubClient gitHubClient;
     @Autowired private AppConfig appConfig;
     @Autowired private GitHub gitHub;
+    @Autowired private LocaleService localeService;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -117,6 +125,8 @@ class MReviewsController {
                             .forEach(repoList::add);
 
                 }
+
+                return null;
             });
 
         } catch (GitHubCommunicationException e) {
@@ -125,6 +135,60 @@ class MReviewsController {
         }
 
         return repoList;
+    }
+
+    @RequestMapping(
+            value = "/m/reviews/add",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    @ResponseBody
+    public Object mAddPOST(@NonNls @ModelAttribute("review-add-course") long courseID,
+                           @NonNls @ModelAttribute("review-add-form") long formID,
+                           @NonNls @ModelAttribute("review-add-repository") String repository,
+                           HttpServletResponse response) throws IOException {
+
+        if (!courseRepository.exists(courseID)
+                || !formRepository.exists(formID)
+                || !repository.contains("/")) {
+
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        GHRepository ghRepository;
+
+        try {
+            ghRepository = GitHubExecutor.execute(() -> gitHub.getRepository(repository));
+        } catch (GitHubCommunicationException ignored) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getMessage("NoResource");
+        }
+
+        Course course = courseRepository.getOne(courseID);
+        Form form = formRepository.getOne(formID);
+        List<GHRepository> forks = GitHubExecutor.execute(() -> ghRepository.listForks().asList());
+
+        Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
+        forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
+
+        Review review = new Review(course, form);
+        List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
+
+        for (Participant participant : course.getParticipants()) {
+            ReviewResponse reviewResponse = new ReviewResponse(review, participant);
+
+            reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
+                    ? ReviewResponseStatus.NOT_FORKED
+                    : ReviewResponseStatus.PROCESSING);
+
+            reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
+            reviewResponses.add(reviewResponse);
+        }
+
+        reviewRepository.save(review);
+        reviewResponseRepository.save(reviewResponses);
+        return "X";
     }
 
     @ExceptionHandler(GitHubCommunicationException.class)

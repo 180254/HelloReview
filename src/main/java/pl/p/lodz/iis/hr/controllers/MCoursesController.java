@@ -75,7 +75,7 @@ class MCoursesController {
         }
 
         courseRepository.save(course);
-        return localeService.getMessage("m.courses.add.done");
+        return Collections.singletonList(localeService.getMessage("m.courses.add.done"));
     }
 
     @RequestMapping(

@@ -33,6 +33,7 @@
 + GET     html   /m/reviews/for/course/1
 - GET     html   /m/reviews/add
 - GET     html   /m/reviews/add/repolist
++ POST    rest   /m/reviews/add
 
 - GET     html   /m/reviews/1/responses/
 - GET     html   /m/reviews/responses/1

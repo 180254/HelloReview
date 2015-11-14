@@ -79,7 +79,7 @@ function courseParticipantAddHandler(prefix, url) {
 
     }).done(function (data) {
         $errorsDiv.hide();
-        toastr.success(data);
+        toastr.success(data[0]);
 
         window.setTimeout(function () {
             location.reload();

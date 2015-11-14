@@ -57,7 +57,7 @@ public class ReviewResponse implements Serializable {
     public ReviewResponse(Review review, Participant participant) {
         this.review = review;
         this.participant = participant;
-        status = ReviewResponseStatus.CREATING;
+        status = ReviewResponseStatus.PROCESSING;
     }
 
     public long getId() {
@@ -90,7 +90,7 @@ public class ReviewResponse implements Serializable {
         return gitHubUrl;
     }
 
-    void setGitHubUrl(String gitHubUrl) {
+    public void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
     }
 

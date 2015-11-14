@@ -26,20 +26,20 @@
             <td th:text="${review.id}"></td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${review.course.id}'">
+                <a th:href="'/m/courses/'+ ${review.course.id}">
                     <span th:text="${review.course.name}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/forms/'+ ${review.form.id}'">
+                <a th:href="'/m/forms/'+ ${review.form.id}">
                     <span th:text="${review.form.name}"></span>
                 </a>
             </td>
 
             <td>
                 <a th:href="'/m/reviews/'+ ${review.id} + '/responses'">
-                    <strong th:text="${review.responses.size()}"></strong>
+                    <strong th:text="${review.reviewResponses.size()}"></strong>
                     <span th:text="#{m.reviews.tbody.responses}"></span>
                 </a>
             </td>
