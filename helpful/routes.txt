@@ -1,10 +1,8 @@
 + GET     html   /
 + POST    html   /login
 + GET     html   /logout?url=
-+ POST    void   /csp-reports
-
 + GET     html   /github-issue
-+ POST    html   /github-issue
++ POST    void   /csp-reports
 
 + GET     html   /m/forms
 + GET     html   /m/forms/1
@@ -31,9 +29,10 @@
 + GET     html   /m/reviews
 + GET     html   /m/reviews/1
 + GET     html   /m/reviews/for/course/1
-- GET     html   /m/reviews/add
-- GET     html   /m/reviews/add/repolist
++ GET     html   /m/reviews/add
++ GET     rest   /m/reviews/add/repolist
 + POST    rest   /m/reviews/add
++ POST    rest   /m/reviews/delete
 
 - GET     html   /m/reviews/1/responses/
 - GET     html   /m/reviews/responses/1
