@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
@@ -33,14 +34,14 @@ class MCoursesParticipantsController {
             value = "/m/courses/{courseID}/participants",
             method = RequestMethod.GET)
     @Transactional
-    public String list(@PathVariable long courseID,
+    public String list(@PathVariable Long2 courseID,
                        Model model) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Course course = courseRepository.getOne(courseID);
+        Course course = courseRepository.getOne(courseID.get());
 
         model.addAttribute("newButton", true);
         model.addAttribute("course", course);
@@ -53,14 +54,14 @@ class MCoursesParticipantsController {
             value = "/m/courses/participants/{participantID}",
             method = RequestMethod.GET)
     @Transactional
-    public String listOne(@PathVariable long participantID,
+    public String listOne(@PathVariable Long2 participantID,
                           Model model) {
 
-        if (!participantRepository.exists(participantID)) {
+        if (!participantRepository.exists(participantID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Participant participant = participantRepository.getOne(participantID);
+        Participant participant = participantRepository.getOne(participantID.get());
 
         model.addAttribute("newButton", false);
         model.addAttribute("course", participant.getCourse());
@@ -75,16 +76,16 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPOST(@ModelAttribute("course-id") long courseID,
+    public List<String> kAddPOST(@ModelAttribute("course-id") Long2 courseID,
                                  @ModelAttribute("course-participant-name") String name,
                                  @ModelAttribute("course-participant-github-name") String gitHubName,
                                  HttpServletResponse response) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Course course = courseRepository.getOne(courseID);
+        Course course = courseRepository.getOne(courseID.get());
         Participant participant = new Participant(course, name, gitHubName);
 
         String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
@@ -120,15 +121,15 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") long participantID,
+    public List<String> delete(@ModelAttribute("id") Long2 participantID,
                                HttpServletResponse response) {
 
-        if (!participantRepository.exists(participantID)) {
+        if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        participantRepository.delete(participantID);
+        participantRepository.delete(participantID.get());
         return singletonList(localeService.getMessage("m.courses.participants.delete.done"));
     }
 
@@ -139,15 +140,15 @@ class MCoursesParticipantsController {
     @Transactional
     @ResponseBody
     public List<String> renameName(@ModelAttribute("value") String newName,
-                                   @ModelAttribute("pk") long participantID,
+                                   @ModelAttribute("pk") Long2 participantID,
                                    HttpServletResponse response) {
 
-        if (!participantRepository.exists(participantID)) {
+        if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Participant participant = participantRepository.getOne(participantID);
+        Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -177,15 +178,15 @@ class MCoursesParticipantsController {
     @Transactional
     @ResponseBody
     public List<String> renameGitHubName(@ModelAttribute("value") String newGitHubName,
-                                         @ModelAttribute("pk") long participantID,
+                                         @ModelAttribute("pk") Long2 participantID,
                                          HttpServletResponse response) {
 
-        if (!participantRepository.exists(participantID)) {
+        if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Participant participant = participantRepository.getOne(participantID);
+        Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

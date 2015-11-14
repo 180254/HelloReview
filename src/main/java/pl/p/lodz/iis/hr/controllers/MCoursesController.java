@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -42,14 +43,14 @@ class MCoursesController {
             value = "/m/courses/{courseID}",
             method = RequestMethod.GET)
     @Transactional
-    public String listOne(@PathVariable long courseID,
+    public String listOne(@PathVariable Long2 courseID,
                           Model model) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Course course = courseRepository.findOne(courseID);
+        Course course = courseRepository.findOne(courseID.get());
         model.addAttribute("courses", singletonList(course));
         model.addAttribute("newButton", false);
 
@@ -83,15 +84,15 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") long courseID,
+    public List<String> delete(@ModelAttribute("id") Long2 courseID,
                                HttpServletResponse response) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        courseRepository.delete(courseID);
+        courseRepository.delete(courseID.get());
         return singletonList(localeService.getMessage("m.courses.delete.done"));
     }
 
@@ -102,10 +103,10 @@ class MCoursesController {
     @Transactional
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
-                               @ModelAttribute("pk") long courseID,
+                               @ModelAttribute("pk") Long2 courseID,
                                HttpServletResponse response) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
@@ -120,7 +121,7 @@ class MCoursesController {
             return nameErrors;
         }
 
-        Course course = courseRepository.getOne(courseID);
+        Course course = courseRepository.getOne(courseID.get());
         course.setName(newName);
         courseRepository.save(course);
 

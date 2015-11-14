@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.forms.Form;
@@ -57,14 +58,14 @@ class MFormsController {
             value = "/m/forms/{formID}",
             method = RequestMethod.GET)
     @Transactional
-    public String listOne(@PathVariable long formID,
+    public String listOne(@PathVariable Long2 formID,
                           Model model) {
 
-        if (!formRepository.exists(formID)) {
+        if (!formRepository.exists(formID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Form form = formRepository.getOne(formID);
+        Form form = formRepository.getOne(formID.get());
 
         if (form.isTemporary()) {
             throw new ResourceNotFoundException();
@@ -134,14 +135,14 @@ class MFormsController {
             value = "/m/forms/preview/{formID}",
             method = RequestMethod.GET)
     @Transactional
-    public String preview(@PathVariable long formID,
+    public String preview(@PathVariable Long2 formID,
                           Model model) {
 
-        if (!formRepository.exists(formID)) {
+        if (!formRepository.exists(formID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Form form = formRepository.getOne(formID);
+        Form form = formRepository.getOne(formID.get());
         model.addAttribute("form", form);
 
         return "m-forms-preview";
@@ -163,13 +164,13 @@ class MFormsController {
             produces = MediaType.APPLICATION_XML_VALUE)
     @Transactional
     @ResponseBody
-    public String xml(@PathVariable long formID) throws JsonProcessingException {
+    public String xml(@PathVariable Long2 formID) throws JsonProcessingException {
 
-        if (!formRepository.exists(formID)) {
+        if (!formRepository.exists(formID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Form form = formRepository.getOne(formID);
+        Form form = formRepository.getOne(formID.get());
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
@@ -180,15 +181,15 @@ class MFormsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") long formID,
+    public List<String> delete(@ModelAttribute("id") Long2 formID,
                                HttpServletResponse response) {
 
-        if (!formRepository.exists(formID)) {
+        if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        formRepository.delete(formID);
+        formRepository.delete(formID.get());
         return singletonList(localeService.getMessage("m.forms.delete.done"));
     }
 
@@ -199,10 +200,10 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
-                               @ModelAttribute("pk") long formID,
+                               @ModelAttribute("pk") Long2 formID,
                                HttpServletResponse response) {
 
-        if (formRepository.exists(formID)) {
+        if (formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
@@ -215,7 +216,7 @@ class MFormsController {
             return nameErrors;
         }
 
-        Form form = formRepository.getOne(formID);
+        Form form = formRepository.getOne(formID.get());
         form.setName(newName);
         formRepository.save(form);
 

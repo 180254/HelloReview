@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
+import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
@@ -58,14 +59,14 @@ class MReviewsController {
             value = "/m/reviews/{reviewID}",
             method = RequestMethod.GET)
     @Transactional
-    public String listOne(@PathVariable long reviewID,
+    public String listOne(@PathVariable Long2 reviewID,
                           Model model) {
 
-        if (!reviewRepository.exists(reviewID)) {
+        if (!reviewRepository.exists(reviewID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Review review = reviewRepository.findOne(reviewID);
+        Review review = reviewRepository.findOne(reviewID.get());
         model.addAttribute("reviews", singletonList(review));
         model.addAttribute("newButton", false);
 
@@ -76,14 +77,14 @@ class MReviewsController {
             value = "/m/reviews/for/course/{courseID}",
             method = RequestMethod.GET)
     @Transactional
-    public String listForCourse(@PathVariable long courseID,
+    public String listForCourse(@PathVariable Long2 courseID,
                                 Model model) {
 
-        if (!courseRepository.exists(courseID)) {
+        if (!courseRepository.exists(courseID.get())) {
             throw new ResourceNotFoundException();
         }
 
-        Course course = courseRepository.findOne(courseID);
+        Course course = courseRepository.findOne(courseID.get());
 
         model.addAttribute("reviews", course.getReviews());
         model.addAttribute("newButton", false);
@@ -140,14 +141,14 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPOST(@ModelAttribute("review-add-course") long courseID,
-                                 @ModelAttribute("review-add-form") long formID,
-                                 @ModelAttribute("review-add-repository") String repository,
+    public List<String> kAddPOST(@RequestParam("review-add-course") Long2 courseID,
+                                 @RequestParam("review-add-form") Long2 formID,
+                                 @RequestParam("review-add-repository") String repository,
                                  HttpServletResponse response) {
 
 
-        if (!courseRepository.exists(courseID)
-                || !formRepository.exists(formID)
+        if (!courseRepository.exists(courseID.get())
+                || !formRepository.exists(formID.get())
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -164,8 +165,8 @@ class MReviewsController {
         }
 
         try {
-            Course course = courseRepository.getOne(courseID);
-            Form form = formRepository.getOne(formID);
+            Course course = courseRepository.getOne(courseID.get());
+            Form form = formRepository.getOne(formID.get());
             List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
 
             Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
@@ -201,15 +202,15 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") long reviewID,
+    public List<String> delete(@ModelAttribute("id") Long2 reviewID,
                                HttpServletResponse response) {
 
-        if (!reviewRepository.exists(reviewID)) {
+        if (!reviewRepository.exists(reviewID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        reviewRepository.delete(reviewID);
+        reviewRepository.delete(reviewID.get());
         return singletonList(localeService.getMessage("m.reviews.delete.done"));
     }
 
