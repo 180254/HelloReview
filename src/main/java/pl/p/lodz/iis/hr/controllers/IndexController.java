@@ -13,4 +13,11 @@ class IndexController {
     public String index() {
         return "index";
     }
+
+    @RequestMapping(
+            value = "/github-issue",
+            method = RequestMethod.GET)
+    public String gitHubIssue() {
+        return "github-issue";
+    }
 }

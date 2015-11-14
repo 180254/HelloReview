@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.boot.autoconfigure.web.BasicErrorController;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -24,14 +25,12 @@ class CustomizedErrorController extends BasicErrorController {
 
     @Override
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
-        return super.error(request);
-//        ResponseEntity<Map<String, Object>> error = super.error(request);
-//
-//        Map<String, Object> body = new HashedMap<>(2);
-//        body.put("error", error.getBody().get("error"));
-//        body.put("status", error.getBody().get("status"));
-//
-//        return new ResponseEntity<>(body, error.getStatusCode());
+        ResponseEntity<Map<String, Object>> error = super.error(request);
 
+        Map<String, Object> body = new HashedMap<>(2);
+        body.put("error", error.getBody().get("error"));
+        body.put("status", error.getBody().get("status"));
+
+        return new ResponseEntity<>(body, error.getStatusCode());
     }
 }

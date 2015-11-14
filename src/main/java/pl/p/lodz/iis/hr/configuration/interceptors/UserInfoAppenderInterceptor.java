@@ -1,11 +1,11 @@
-package pl.p.lodz.iis.hr.configuration.security.interceptors;
+package pl.p.lodz.iis.hr.configuration.interceptors;
 
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
-import pl.p.lodz.iis.hr.configuration.security.pac4j.Pac4jSecurityHelper;
+import pl.p.lodz.iis.hr.configuration.pac4j.Pac4jSecurityHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

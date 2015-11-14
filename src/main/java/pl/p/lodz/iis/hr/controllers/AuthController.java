@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.p.lodz.iis.hr.configuration.security.pac4j.Pac4jSecurityHelper;
+import pl.p.lodz.iis.hr.configuration.pac4j.Pac4jSecurityHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

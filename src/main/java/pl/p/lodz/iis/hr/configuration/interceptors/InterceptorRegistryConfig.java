@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.security.interceptors;
+package pl.p.lodz.iis.hr.configuration.interceptors;
 
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;

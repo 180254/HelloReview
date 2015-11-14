@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,9 +14,9 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Controller
 class MCoursesController {
@@ -51,7 +50,7 @@ class MCoursesController {
         }
 
         Course course = courseRepository.findOne(courseID);
-        model.addAttribute("courses", Collections.singletonList(course));
+        model.addAttribute("courses", singletonList(course));
         model.addAttribute("newButton", false);
 
         return "m-courses";
@@ -63,8 +62,8 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object fCoursesAddPOST(@NonNls @ModelAttribute("course-name") String courseName,
-                                  HttpServletResponse response) throws IOException {
+    public List<String> cAddPOST(@ModelAttribute("course-name") String courseName,
+                                 HttpServletResponse response) {
 
         Course course = new Course(courseName);
         List<String> nameErrors = validateService.validateField(course, "name", "course name");
@@ -75,7 +74,7 @@ class MCoursesController {
         }
 
         courseRepository.save(course);
-        return Collections.singletonList(localeService.getMessage("m.courses.add.done"));
+        return singletonList(localeService.getMessage("m.courses.add.done"));
     }
 
     @RequestMapping(
@@ -84,16 +83,16 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public String cDelete(@ModelAttribute("id") long courseID,
-                          HttpServletResponse response) {
+    public List<String> cDelete(@ModelAttribute("id") long courseID,
+                                HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         courseRepository.delete(courseID);
-        return localeService.getMessage("m.courses.delete.done");
+        return singletonList(localeService.getMessage("m.courses.delete.done"));
     }
 
     @RequestMapping(
@@ -102,19 +101,20 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object cRename(@NonNls @ModelAttribute("value") String newName,
-                          @NonNls @ModelAttribute("pk") long courseID,
-                          HttpServletResponse response) {
+    public List<String> cRename(@ModelAttribute("value") String newName,
+                                @ModelAttribute("pk") long courseID,
+                                HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         Course testCourse = new Course(newName);
 
         String courseNamePrefix = localeService.getMessage("m.courses.add.validation.prefix.course.name");
         List<String> nameErrors = validateService.validateField(testCourse, "name", courseNamePrefix);
+
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return nameErrors;
@@ -124,7 +124,7 @@ class MCoursesController {
         course.setName(newName);
         courseRepository.save(course);
 
-        return localeService.getMessage("m.courses.rename.done");
+        return singletonList(localeService.getMessage("m.courses.rename.done"));
     }
 
 }

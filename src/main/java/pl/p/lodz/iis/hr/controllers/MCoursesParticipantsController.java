@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,11 +16,10 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Controller
 class MCoursesParticipantsController {
@@ -60,14 +58,13 @@ class MCoursesParticipantsController {
 
         if (!participantRepository.exists(participantID)) {
             throw new ResourceNotFoundException();
-
         }
 
         Participant participant = participantRepository.getOne(participantID);
 
         model.addAttribute("newButton", false);
         model.addAttribute("course", participant.getCourse());
-        model.addAttribute("participants", Collections.singletonList(participant));
+        model.addAttribute("participants", singletonList(participant));
 
         return "m-courses-participants";
     }
@@ -78,13 +75,13 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object pAddPOST(@NonNls @ModelAttribute("course-id") long courseID,
-                           @NonNls @ModelAttribute("course-participant-name") String name,
-                           @NonNls @ModelAttribute("course-participant-github-name") String gitHubName,
-                           HttpServletResponse response) throws IOException {
+    public List<String> pAddPOST(@ModelAttribute("course-id") long courseID,
+                                 @ModelAttribute("course-participant-name") String name,
+                                 @ModelAttribute("course-participant-github-name") String gitHubName,
+                                 HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         Course course = courseRepository.getOne(courseID);
@@ -96,15 +93,15 @@ class MCoursesParticipantsController {
         List<String> nameErrors = validateService.validateField(participant, "name", namePrefix);
         List<String> gitHubNameErrors = validateService.validateField(participant, "gitHubName", gitHubNamePrefix);
 
-        Collection<String> allErrors = new ArrayList<>(nameErrors.size() + gitHubNameErrors.size());
+        List<String> allErrors = new ArrayList<>(nameErrors.size() + gitHubNameErrors.size());
         allErrors.addAll(nameErrors);
         allErrors.addAll(gitHubNameErrors);
 
-        if (!participantRepository.findByCourseAndName(course, name).isEmpty()) {
+        if (participantRepository.findByCourseAndName(course, name) != null) {
             allErrors.add(String.format("%s %s", namePrefix, localeService.getMessage("UniqueName")));
         }
 
-        if (!participantRepository.findByCourseAndGitHubName(course, gitHubName).isEmpty()) {
+        if (participantRepository.findByCourseAndGitHubName(course, gitHubName) != null) {
             allErrors.add(String.format("%s %s", gitHubNamePrefix, localeService.getMessage("UniqueName")));
         }
 
@@ -114,7 +111,7 @@ class MCoursesParticipantsController {
         }
 
         participantRepository.save(participant);
-        return localeService.getMessage("m.courses.participants.add.done");
+        return singletonList(localeService.getMessage("m.courses.participants.add.done"));
     }
 
     @RequestMapping(
@@ -123,16 +120,16 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public String pDelete(@ModelAttribute("id") long participantID,
-                          HttpServletResponse response) {
+    public List<String> pDelete(@ModelAttribute("id") long participantID,
+                                HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         participantRepository.delete(participantID);
-        return localeService.getMessage("m.courses.participants.delete.done");
+        return singletonList(localeService.getMessage("m.courses.participants.delete.done"));
     }
 
     @RequestMapping(
@@ -141,26 +138,27 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object pRenamePName(@NonNls @ModelAttribute("value") String newName,
-                               @NonNls @ModelAttribute("pk") long participantID,
-                               HttpServletResponse response) {
+    public List<String> pRenamePName(@ModelAttribute("value") String newName,
+                                     @ModelAttribute("pk") long participantID,
+                                     HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID);
 
-        if (!participantRepository.findByCourseAndName(participant.getCourse(), newName).isEmpty()) {
+        if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("UniqueName");
+            return singletonList(localeService.getMessage("UniqueName"));
         }
 
         Participant testParticipant = new Participant(null, newName, null);
 
         String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
         List<String> nameErrors = validateService.validateField(testParticipant, "name", namePrefix);
+
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return nameErrors;
@@ -169,7 +167,7 @@ class MCoursesParticipantsController {
         participant.setName(newName);
         participantRepository.save(participant);
 
-        return localeService.getMessage("m.courses.participants.rename.participant.name.done");
+        return singletonList(localeService.getMessage("m.courses.participants.rename.participant.name.done"));
     }
 
     @RequestMapping(
@@ -178,26 +176,27 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object pRenameGitHubName(@NonNls @ModelAttribute("value") String newGitHubName,
-                                    @NonNls @ModelAttribute("pk") long participantID,
-                                    HttpServletResponse response) {
+    public List<String> pRenameGitHubName(@ModelAttribute("value") String newGitHubName,
+                                          @ModelAttribute("pk") long participantID,
+                                          HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID);
 
-        if (!participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName).isEmpty()) {
+        if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("UniqueName");
+            return singletonList(localeService.getMessage("UniqueName"));
         }
 
         Participant testParticipant = new Participant(null, null, newGitHubName);
 
         String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
         List<String> gitHubNameErrors = validateService.validateField(testParticipant, "gitHubName", gitHubNamePrefix);
+
         if (!gitHubNameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return gitHubNameErrors;
@@ -206,6 +205,6 @@ class MCoursesParticipantsController {
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
-        return localeService.getMessage("m.courses.participants.rename.github.name.done");
+        return singletonList(localeService.getMessage("m.courses.participants.rename.github.name.done"));
     }
 }

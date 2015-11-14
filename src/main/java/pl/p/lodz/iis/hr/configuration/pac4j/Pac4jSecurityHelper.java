@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.security.pac4j;
+package pl.p.lodz.iis.hr.configuration.pac4j;
 
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;

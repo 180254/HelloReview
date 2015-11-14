@@ -174,16 +174,9 @@ function courseParticipantAddHandler(prefix, url) {
         }, 1200);
 
     }).fail(function (jqXHR) {
-        var json = jQuery.parseJSON(jqXHR.responseText),
-            errors = [],
+        var errors = jqXHRFailToArray(jqXHR),
             i,
             errLen;
-
-        if (json.status === undefined) {
-            errors = errors.concat(json);
-        } else {
-            errors = errors.concat('Server error: ' + json.status + ' ' + json.error);
-        }
 
         $errorsDiv.fadeIn();
 

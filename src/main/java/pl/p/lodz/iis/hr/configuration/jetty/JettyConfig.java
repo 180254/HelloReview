@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.security.jetty;
+package pl.p.lodz.iis.hr.configuration.jetty;
 
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.context.annotation.Bean;

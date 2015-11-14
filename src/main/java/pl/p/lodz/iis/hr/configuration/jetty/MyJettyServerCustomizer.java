@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.configuration.security.jetty;
+package pl.p.lodz.iis.hr.configuration.jetty;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConnectionFactory;
