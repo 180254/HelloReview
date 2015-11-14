@@ -3,7 +3,6 @@ package pl.p.lodz.iis.hr.controllers;
 import org.jetbrains.annotations.NonNls;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
-import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +37,6 @@ class MReviewsController {
     @Autowired private ReviewResponseRepository reviewResponseRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
-    @Autowired private GitHubClient gitHubClient;
     @Autowired private AppConfig appConfig;
     @Autowired private GitHub gitHub;
     @Autowired private LocaleService localeService;
@@ -47,7 +45,7 @@ class MReviewsController {
             value = "/m/reviews",
             method = RequestMethod.GET)
     @Transactional
-    public String rList(Model model) {
+    public String list(Model model) {
 
         List<Review> reviews = reviewRepository.findAll();
         model.addAttribute("reviews", reviews);
@@ -60,8 +58,8 @@ class MReviewsController {
             value = "/m/reviews/{reviewID}",
             method = RequestMethod.GET)
     @Transactional
-    public String rListOne(@PathVariable long reviewID,
-                           Model model) {
+    public String listOne(@PathVariable long reviewID,
+                          Model model) {
 
         if (!reviewRepository.exists(reviewID)) {
             throw new ResourceNotFoundException();
@@ -78,8 +76,8 @@ class MReviewsController {
             value = "/m/reviews/for/course/{courseID}",
             method = RequestMethod.GET)
     @Transactional
-    public String rListForCourse(@PathVariable long courseID,
-                                 Model model) {
+    public String listForCourse(@PathVariable long courseID,
+                                Model model) {
 
         if (!courseRepository.exists(courseID)) {
             throw new ResourceNotFoundException();
@@ -104,6 +102,7 @@ class MReviewsController {
 
         model.addAttribute("courses", courses);
         model.addAttribute("forms", forms);
+
         return "m-reviews-add";
     }
 
@@ -116,7 +115,7 @@ class MReviewsController {
         List<String> repoList = new ArrayList<>(10);
 
         try {
-            GitHubExecutor.<Void>ex(() -> {
+            GitHubExecutor.ex(() -> {
 
                 for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
                     gitHub.getUser(username).listRepositories()
@@ -125,8 +124,6 @@ class MReviewsController {
                             .forEach(repoList::add);
 
                 }
-
-                return null;
             });
 
         } catch (GitHubCommunicationException e) {

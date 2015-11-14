@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 @Controller
 class MFormsController {
 
@@ -44,7 +44,7 @@ class MFormsController {
             value = "/m/forms",
             method = RequestMethod.GET)
     @Transactional
-    public String fList(Model model) {
+    public String list(Model model) {
 
         List<Form> byTemporaryFalse = formRepository.findByTemporaryFalse();
         model.addAttribute("forms", byTemporaryFalse);
@@ -57,8 +57,8 @@ class MFormsController {
             value = "/m/forms/{formID}",
             method = RequestMethod.GET)
     @Transactional
-    public String fListOne(@PathVariable long formID,
-                           Model model) {
+    public String listOne(@PathVariable long formID,
+                          Model model) {
 
         if (!formRepository.exists(formID)) {
             throw new ResourceNotFoundException();
@@ -70,7 +70,7 @@ class MFormsController {
             throw new ResourceNotFoundException();
         }
 
-        model.addAttribute("forms", Collections.singletonList(form));
+        model.addAttribute("forms", singletonList(form));
         model.addAttribute("newButton", false);
 
         return "m-forms";
@@ -80,7 +80,7 @@ class MFormsController {
     @RequestMapping(
             value = "/m/forms/add",
             method = RequestMethod.GET)
-    public String fAddGET() {
+    public String kAdd() {
         return "m-forms-add";
     }
 
@@ -90,14 +90,14 @@ class MFormsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object fAddPOST(@NonNls @ModelAttribute("form-name") String formName,
-                           @NonNls @ModelAttribute("form-xml") String formXML,
-                           @NonNls @ModelAttribute("action") String action,
-                           HttpServletResponse response) throws IOException {
+    public List<String> kAddPOST(@ModelAttribute("form-name") String formName,
+                                 @ModelAttribute("form-xml") String formXML,
+                                 @ModelAttribute("action") String action,
+                                 HttpServletResponse response) {
 
         if (!Arrays.asList("preview", "add").contains(action)) {
-            response.sendError(HttpStatus.BAD_REQUEST.value());
-            return StringUtils.EMPTY;
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return Collections.emptyList();
         }
 
         Form form;
@@ -109,8 +109,7 @@ class MFormsController {
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(
-                    String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage()));
+            return singletonList(String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage()));
         }
 
         form.setName(Strings.emptyToNull(formName));
@@ -127,7 +126,8 @@ class MFormsController {
 
         form.fixRelations();
         formRepository.save(form);
-        return form.getId();
+
+        return singletonList(String.valueOf(form.getId()));
     }
 
     @RequestMapping(
@@ -150,7 +150,7 @@ class MFormsController {
     @RequestMapping(
             value = "/m/forms/xml/example",
             method = RequestMethod.GET,
-            produces = MediaType.TEXT_XML_VALUE)
+            produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String xmlExample() throws IOException {
         URL resource = Resources.getResource("templates/m-forms-xml-example.xml");
@@ -160,7 +160,7 @@ class MFormsController {
     @RequestMapping(
             value = "/m/forms/xml/{formID}",
             method = RequestMethod.GET,
-            produces = MediaType.TEXT_XML_VALUE)
+            produces = MediaType.APPLICATION_XML_VALUE)
     @Transactional
     @ResponseBody
     public String xml(@PathVariable long formID) throws JsonProcessingException {
@@ -180,16 +180,16 @@ class MFormsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public String delete(@ModelAttribute("id") long formID,
-                         HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") long formID,
+                               HttpServletResponse response) {
 
         if (!formRepository.exists(formID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         formRepository.delete(formID);
-        return localeService.getMessage("m.forms.delete.done");
+        return singletonList(localeService.getMessage("m.forms.delete.done"));
     }
 
     @RequestMapping(
@@ -198,17 +198,18 @@ class MFormsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object rename(@NonNls @ModelAttribute("value") String newName,
-                         @NonNls @ModelAttribute("pk") long formID,
-                         HttpServletResponse response) {
+    public List<String> rename(@ModelAttribute("value") String newName,
+                               @ModelAttribute("pk") long formID,
+                               HttpServletResponse response) {
 
         if (formRepository.exists(formID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         Form testForm = new Form(newName, null);
         List<String> nameErrors = validateService.validateField(testForm, "name", "course name");
+
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return nameErrors;
@@ -218,6 +219,6 @@ class MFormsController {
         form.setName(newName);
         formRepository.save(form);
 
-        return localeService.getMessage("m.form.rename.done");
+        return singletonList(localeService.getMessage("m.form.rename.done"));
     }
 }

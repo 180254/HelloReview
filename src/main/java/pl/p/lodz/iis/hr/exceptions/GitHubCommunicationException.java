@@ -1,6 +1,6 @@
 package pl.p.lodz.iis.hr.exceptions;
 
-public class GitHubCommunicationException extends RuntimeException {
+public class GitHubCommunicationException extends Exception {
 
     private static final long serialVersionUID = 5485100320644397773L;
 

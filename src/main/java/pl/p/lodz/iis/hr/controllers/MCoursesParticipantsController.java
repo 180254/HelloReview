@@ -33,8 +33,8 @@ class MCoursesParticipantsController {
             value = "/m/courses/{courseID}/participants",
             method = RequestMethod.GET)
     @Transactional
-    public String pList(@PathVariable long courseID,
-                        Model model) {
+    public String list(@PathVariable long courseID,
+                       Model model) {
 
         if (!courseRepository.exists(courseID)) {
             throw new ResourceNotFoundException();
@@ -53,8 +53,8 @@ class MCoursesParticipantsController {
             value = "/m/courses/participants/{participantID}",
             method = RequestMethod.GET)
     @Transactional
-    public String pListOne(@PathVariable long participantID,
-                           Model model) {
+    public String listOne(@PathVariable long participantID,
+                          Model model) {
 
         if (!participantRepository.exists(participantID)) {
             throw new ResourceNotFoundException();
@@ -75,7 +75,7 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> pAddPOST(@ModelAttribute("course-id") long courseID,
+    public List<String> kAddPOST(@ModelAttribute("course-id") long courseID,
                                  @ModelAttribute("course-participant-name") String name,
                                  @ModelAttribute("course-participant-github-name") String gitHubName,
                                  HttpServletResponse response) {
@@ -120,8 +120,8 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> pDelete(@ModelAttribute("id") long participantID,
-                                HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") long participantID,
+                               HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -138,9 +138,9 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> pRenamePName(@ModelAttribute("value") String newName,
-                                     @ModelAttribute("pk") long participantID,
-                                     HttpServletResponse response) {
+    public List<String> renameName(@ModelAttribute("value") String newName,
+                                   @ModelAttribute("pk") long participantID,
+                                   HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -176,9 +176,9 @@ class MCoursesParticipantsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> pRenameGitHubName(@ModelAttribute("value") String newGitHubName,
-                                          @ModelAttribute("pk") long participantID,
-                                          HttpServletResponse response) {
+    public List<String> renameGitHubName(@ModelAttribute("value") String newGitHubName,
+                                         @ModelAttribute("pk") long participantID,
+                                         HttpServletResponse response) {
 
         if (!participantRepository.exists(participantID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

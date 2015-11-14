@@ -29,7 +29,7 @@ class MCoursesController {
             value = "/m/courses",
             method = RequestMethod.GET)
     @Transactional
-    public String cList(Model model) {
+    public String list(Model model) {
 
         List<Course> courses = courseRepository.findAll();
         model.addAttribute("courses", courses);
@@ -42,8 +42,8 @@ class MCoursesController {
             value = "/m/courses/{courseID}",
             method = RequestMethod.GET)
     @Transactional
-    public String cListOne(@PathVariable long courseID,
-                           Model model) {
+    public String listOne(@PathVariable long courseID,
+                          Model model) {
 
         if (!courseRepository.exists(courseID)) {
             throw new ResourceNotFoundException();
@@ -62,7 +62,7 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> cAddPOST(@ModelAttribute("course-name") String courseName,
+    public List<String> kAddPost(@ModelAttribute("course-name") String courseName,
                                  HttpServletResponse response) {
 
         Course course = new Course(courseName);
@@ -83,8 +83,8 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> cDelete(@ModelAttribute("id") long courseID,
-                                HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") long courseID,
+                               HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -101,9 +101,9 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> cRename(@ModelAttribute("value") String newName,
-                                @ModelAttribute("pk") long courseID,
-                                HttpServletResponse response) {
+    public List<String> rename(@ModelAttribute("value") String newName,
+                               @ModelAttribute("pk") long courseID,
+                               HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

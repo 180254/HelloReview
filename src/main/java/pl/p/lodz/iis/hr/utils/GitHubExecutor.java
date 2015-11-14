@@ -10,7 +10,7 @@ public final class GitHubExecutor {
     private GitHubExecutor() {
     }
 
-    public static <T> T ex(GitHubExecutorFI<T> executor) {
+    public static <T> T ex(GitHubExecutorFI<T> executor) throws GitHubCommunicationException {
 
         try {
             return executor.execute();
@@ -28,7 +28,7 @@ public final class GitHubExecutor {
         }
     }
 
-    public static void ex(GitHubExecutorFI2 executor) {
+    public static void ex(GitHubExecutorFI2 executor) throws GitHubCommunicationException {
         GitHubExecutor.<Void>ex(() -> {
             executor.execute();
             return null;
