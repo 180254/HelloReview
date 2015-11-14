@@ -14,6 +14,7 @@
         <thead>
         <tr>
             <th th:text="#{m.reviews.thead.id}"></th>
+            <th th:text="#{m.reviews.thead.name}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.course}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.form}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.responses}"></span></th>
@@ -24,6 +25,13 @@
         <tbody>
         <tr th:each="review : ${reviews}">
             <td th:text="${review.id}"></td>
+
+            <td>
+                <a href="#" class="form-rename-link b-rename-link"
+                   data-type="text" th:text="${review.name}"
+                   data-th-attr="data-url=@{/m/reviews/rename}, data-pk=${review.id}">
+                </a>
+            </td>
 
             <td>
                 <a th:href="'/m/courses/'+ ${review.course.id}">

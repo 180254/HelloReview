@@ -220,6 +220,6 @@ class MFormsController {
         form.setName(newName);
         formRepository.save(form);
 
-        return singletonList(localeService.getMessage("m.form.rename.done"));
+        return singletonList(localeService.getMessage("m.forms.rename.done"));
     }
 }

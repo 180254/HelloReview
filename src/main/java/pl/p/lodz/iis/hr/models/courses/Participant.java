@@ -62,7 +62,6 @@ public class Participant implements Serializable {
 
     @NotBlank
     @Length(min = 1, max = 255)
-    @JsonView
     public String getName() {
         return name;
     }

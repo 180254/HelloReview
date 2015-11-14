@@ -24,6 +24,7 @@ import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ class MReviewsController {
     @Autowired private AppConfig appConfig;
     @Autowired private GitHub gitHub;
     @Autowired private LocaleService localeService;
+    @Autowired private ValidateService validateService;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -141,7 +143,8 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPOST(@RequestParam("review-add-course") Long2 courseID,
+    public List<String> kAddPOST(@RequestParam("review-add-name") String name,
+                                 @RequestParam("review-add-course") Long2 courseID,
                                  @RequestParam("review-add-form") Long2 formID,
                                  @RequestParam("review-add-repository") String repository,
                                  HttpServletResponse response) {
@@ -152,7 +155,7 @@ class MReviewsController {
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return singletonList(localeService.getMessage("NoResources"));
         }
 
         GHRepository ghRepository;
@@ -161,7 +164,16 @@ class MReviewsController {
             ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return singletonList(localeService.getMessage("NoResources"));
+        }
+
+        Review testReview = new Review(name, null, null);
+        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
+        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
+
+        if (!nameErrors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return nameErrors;
         }
 
         try {
@@ -172,7 +184,7 @@ class MReviewsController {
             Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
 
-            Review review = new Review(course, form);
+            Review review = new Review(name, course, form);
             List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
 
             for (Participant participant : course.getParticipants()) {
@@ -212,6 +224,37 @@ class MReviewsController {
 
         reviewRepository.delete(reviewID.get());
         return singletonList(localeService.getMessage("m.reviews.delete.done"));
+    }
+
+    @RequestMapping(
+            value = "/m/reviews/rename",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    @ResponseBody
+    public List<String> rename(@ModelAttribute("value") String newName,
+                               @ModelAttribute("pk") Long2 reviewID,
+                               HttpServletResponse response) {
+
+        if (!reviewRepository.exists(reviewID.get())) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.getMessage("NoResource"));
+        }
+
+        Review testReview = new Review(newName, null, null);
+        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
+        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
+
+        if (!nameErrors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return nameErrors;
+        }
+
+        Review review = reviewRepository.getOne(reviewID.get());
+        review.setName(newName);
+        reviewRepository.save(review);
+
+        return singletonList(localeService.getMessage("m.reviews.rename.done"));
     }
 
 }

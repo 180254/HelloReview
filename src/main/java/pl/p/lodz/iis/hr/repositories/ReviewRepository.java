@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.p.lodz.iis.hr.models.courses.Review;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Long>, FindByNameProvider<Review> {
 }

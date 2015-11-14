@@ -67,7 +67,8 @@ class MCoursesController {
                                  HttpServletResponse response) {
 
         Course course = new Course(courseName);
-        List<String> nameErrors = validateService.validateField(course, "name", "course name");
+        String courseNamePrefix = localeService.getMessage("m.courses.add.validation.prefix.course.name");
+        List<String> nameErrors = validateService.validateField(course, "name", courseNamePrefix);
 
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

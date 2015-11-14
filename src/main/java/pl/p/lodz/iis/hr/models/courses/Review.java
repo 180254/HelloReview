@@ -2,8 +2,12 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.models.response.ReviewResponse;
+import pl.p.lodz.iis.hr.repositories.ReviewRepository;
+import pl.p.lodz.iis.hr.services.UniqueName;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +23,10 @@ public class Review implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView
     private long id;
+
+    @Column(nullable = false, length = 255)
+    @JsonView
+    private String name;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
@@ -43,11 +51,11 @@ public class Review implements Serializable {
     @JsonView
     private LocalDateTime updated;
 
-
     Review() {
     }
 
-    public Review(Course course, Form form) {
+    public Review(String name, Course course, Form form) {
+        this.name = name;
         this.course = course;
         this.form = form;
         reviewResponses = new ArrayList<>(10);
@@ -55,6 +63,17 @@ public class Review implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    @NotBlank
+    @Length(min = 1, max = 255)
+    @UniqueName(service = ReviewRepository.class)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Course getCourse() {
