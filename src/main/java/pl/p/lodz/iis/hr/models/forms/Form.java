@@ -27,37 +27,37 @@ public class Form implements Serializable, RelationsAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private long id;
 
     @Column(nullable = false, length = 255, unique = true)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private String name;
 
     @Column(nullable = false, length = 4095)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("question")
     private List<Question> questions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @JsonView()
+    @JsonView
     @JsonProperty("reviews")
     private List<Review> reviews;
 
     @Column(nullable = false)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private boolean temporary;
 
     @Column(nullable = false)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private LocalDateTime created;
 
     @Column(nullable = false)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private LocalDateTime updated;
 
     Form() {

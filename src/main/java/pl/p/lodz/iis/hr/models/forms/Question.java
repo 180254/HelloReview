@@ -19,7 +19,7 @@ public class Question implements Serializable, RelationsAware {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
@@ -28,15 +28,15 @@ public class Question implements Serializable, RelationsAware {
     private Form form;
 
     @Column(nullable = false, length = 255)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String questionText;
 
     @Column(nullable = true, length = 4095)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String additionalTips;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("input")
     private List<Input> inputs;
 

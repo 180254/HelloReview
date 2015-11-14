@@ -25,7 +25,7 @@ public abstract class Input implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(JSONViews.FormRESTPreview.class)
+    @JsonView
     private long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
@@ -34,11 +34,11 @@ public abstract class Input implements Serializable {
     private Question question;
 
     @Column(nullable = false)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private boolean required = true;
 
     @Column(nullable = false, length = 255)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String label;
 
     Input() {

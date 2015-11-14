@@ -17,19 +17,19 @@ public class InputScale extends Input {
     private static final long serialVersionUID = -2230675781077172644L;
 
     @Column(nullable = false, length = 255)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String fromLabel;
 
     @Column(nullable = false)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private Long fromS;
 
     @Column(nullable = false, length = 255)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private String toLabel;
 
     @Column(nullable = false)
-    @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
+    @JsonView(JSONViews.FormParseXML.class)
     private Long toS;
 
     InputScale() {
