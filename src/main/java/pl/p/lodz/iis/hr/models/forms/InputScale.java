@@ -51,7 +51,7 @@ public class InputScale extends Input {
         return fromLabel;
     }
 
-    void setFromLabel(String fromLabel) {
+    /* package */ void setFromLabel(String fromLabel) {
         this.fromLabel = fromLabel;
     }
 
@@ -60,7 +60,7 @@ public class InputScale extends Input {
         return fromS;
     }
 
-    void setFromS(Long fromS) {
+    /* package */ void setFromS(Long fromS) {
         this.fromS = fromS;
     }
 
@@ -70,7 +70,7 @@ public class InputScale extends Input {
         return toLabel;
     }
 
-    void setToLabel(String toLabel) {
+    /* package */ void setToLabel(String toLabel) {
         this.toLabel = toLabel;
     }
 
@@ -79,7 +79,7 @@ public class InputScale extends Input {
         return toS;
     }
 
-    void setToS(Long toS) {
+    /* package */ void setToS(Long toS) {
         this.toS = toS;
     }
 }

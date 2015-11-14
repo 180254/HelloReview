@@ -57,7 +57,7 @@ public abstract class Input implements Serializable {
         return question;
     }
 
-    void setQuestion(Question question) {
+    /* package */ void setQuestion(Question question) {
         this.question = question;
     }
 
@@ -75,7 +75,7 @@ public abstract class Input implements Serializable {
         return label;
     }
 
-    void setLabel(String label) {
+    /* package */  void setLabel(String label) {
         this.label = label;
     }
 }

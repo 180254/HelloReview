@@ -58,7 +58,7 @@ public class Question implements Serializable, RelationsAware {
         return form;
     }
 
-    void setForm(Form form) {
+    /* package */ void setForm(Form form) {
         this.form = form;
     }
 
@@ -68,7 +68,7 @@ public class Question implements Serializable, RelationsAware {
         return questionText;
     }
 
-    void setQuestionText(String questionText) {
+    /* package */ void setQuestionText(String questionText) {
         this.questionText = questionText;
     }
 
@@ -77,7 +77,7 @@ public class Question implements Serializable, RelationsAware {
         return additionalTips;
     }
 
-    void setAdditionalTips(String additionalTips) {
+    /* package */ void setAdditionalTips(String additionalTips) {
         this.additionalTips = additionalTips;
     }
 
@@ -85,7 +85,7 @@ public class Question implements Serializable, RelationsAware {
         return inputs;
     }
 
-    void setInputs(List<Input> inputs) {
+    /* package */ void setInputs(List<Input> inputs) {
         this.inputs = inputs;
     }
 

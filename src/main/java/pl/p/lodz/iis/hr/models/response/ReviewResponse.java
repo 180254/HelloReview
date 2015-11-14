@@ -24,7 +24,7 @@ public class ReviewResponse implements Serializable {
 
     @Column(nullable = false, unique = true)
     @JsonView
-    private final UUID uuid = UUID.randomUUID();
+    private UUID uuid;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
@@ -34,13 +34,23 @@ public class ReviewResponse implements Serializable {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
-    private Participant participant;
+    private Participant assessed;
 
-    @Column(nullable = false, length = 255, unique = true)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false)
     @JsonView
-    private String gitHubUrl;
+    private Participant assessor;
+
+    @Column(nullable = false, length = 255, unique = false)
+    @JsonView
+    private String assessedGhUrl;
+
+    @Column(nullable = true, length = 255, unique = true)
+    @JsonView
+    private String ghUrl;
 
     @Column(nullable = false)
+    @JsonView
     private ReviewResponseStatus status;
 
     @Column(nullable = false)
@@ -54,9 +64,11 @@ public class ReviewResponse implements Serializable {
     ReviewResponse() {
     }
 
-    public ReviewResponse(Review review, Participant participant) {
-        this.review = review;
-        this.participant = participant;
+    public ReviewResponse(Participant assessed, Participant assessor, String assessedGhUrl) {
+        uuid = UUID.randomUUID();
+        this.assessed = assessed;
+        this.assessor = assessor;
+        this.assessedGhUrl = assessedGhUrl;
         status = ReviewResponseStatus.PROCESSING;
     }
 
@@ -68,30 +80,52 @@ public class ReviewResponse implements Serializable {
         return uuid;
     }
 
+    /* package */ void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public Review getReview() {
         return review;
     }
 
-    void setReview(Review review) {
+    /* package */ void setReview(Review review) {
         this.review = review;
     }
 
-    public Participant getParticipant() {
-        return participant;
+    public Participant getAssessed() {
+        return assessed;
     }
 
-    void setParticipant(Participant participant) {
-        this.participant = participant;
+    /* package */ void setAssessed(Participant assessed) {
+        this.assessed = assessed;
+    }
+
+    public Participant getAssessor() {
+        return assessor;
+    }
+
+    /* package */ void setAssessor(Participant assessor) {
+        this.assessor = assessor;
     }
 
     @NotBlank
     @Length(min = 1, max = 255)
-    public String getGitHubUrl() {
-        return gitHubUrl;
+    public String getAssessedGhUrl() {
+        return assessedGhUrl;
     }
 
-    public void setGitHubUrl(String gitHubUrl) {
-        this.gitHubUrl = gitHubUrl;
+    /* package */ void setAssessedGhUrl(String assessedGhUrl) {
+        this.assessedGhUrl = assessedGhUrl;
+    }
+
+    @NotBlank
+    @Length(min = 1, max = 255)
+    public String getGhUrl() {
+        return ghUrl;
+    }
+
+    public void setGhUrl(String ghUrl) {
+        this.ghUrl = ghUrl;
     }
 
     @NotNull
@@ -107,7 +141,7 @@ public class ReviewResponse implements Serializable {
         return created;
     }
 
-    void setCreated(LocalDateTime created) {
+    /* package */ void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -115,7 +149,7 @@ public class ReviewResponse implements Serializable {
         return updated;
     }
 
-    void setUpdated(LocalDateTime updated) {
+    /* package */ void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

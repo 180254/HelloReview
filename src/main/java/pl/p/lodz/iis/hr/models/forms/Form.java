@@ -90,7 +90,7 @@ public class Form implements Serializable, RelationsAware {
         return description;
     }
 
-    void setDescription(String description) {
+    /* package */ void setDescription(String description) {
         this.description = description;
     }
 
@@ -98,7 +98,7 @@ public class Form implements Serializable, RelationsAware {
         return questions;
     }
 
-    void setQuestions(List<Question> questions) {
+    /* package */ void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 
@@ -106,7 +106,7 @@ public class Form implements Serializable, RelationsAware {
         return reviews;
     }
 
-    void setReviews(List<Review> reviews) {
+    /* package */ void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 
@@ -122,7 +122,7 @@ public class Form implements Serializable, RelationsAware {
         return created;
     }
 
-    void setCreated(LocalDateTime created) {
+    /* package */ void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -130,7 +130,7 @@ public class Form implements Serializable, RelationsAware {
         return updated;
     }
 
-    void setUpdated(LocalDateTime updated) {
+    /* package */ void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

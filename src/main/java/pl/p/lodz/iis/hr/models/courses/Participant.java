@@ -88,11 +88,11 @@ public class Participant implements Serializable {
         return reviewResponses;
     }
 
-    void setReviewResponses(List<ReviewResponse> reviewResponses) {
+    /* package */ void setReviewResponses(List<ReviewResponse> reviewResponses) {
         this.reviewResponses = reviewResponses;
     }
 
-    void setCourse(Course course) {
+    /* package */ void setCourse(Course course) {
         this.course = course;
     }
 
@@ -100,7 +100,7 @@ public class Participant implements Serializable {
         return created;
     }
 
-    void setCreated(LocalDateTime created) {
+    /* package */ void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -108,7 +108,7 @@ public class Participant implements Serializable {
         return updated;
     }
 
-    void setUpdated(LocalDateTime updated) {
+    /* package */ void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

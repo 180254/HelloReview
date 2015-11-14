@@ -88,7 +88,7 @@ public class Review implements Serializable {
         return respPerPeer;
     }
 
-    void setRespPerPeer(long respPerPeer) {
+    /* package */ void setRespPerPeer(long respPerPeer) {
         this.respPerPeer = respPerPeer;
     }
 
@@ -96,7 +96,7 @@ public class Review implements Serializable {
         return course;
     }
 
-    void setCourse(Course course) {
+    /* package */ void setCourse(Course course) {
         this.course = course;
     }
 
@@ -104,7 +104,7 @@ public class Review implements Serializable {
         return form;
     }
 
-    void setForm(Form form) {
+    /* package */ void setForm(Form form) {
         this.form = form;
     }
 
@@ -112,7 +112,7 @@ public class Review implements Serializable {
         return reviewResponses;
     }
 
-    void setReviewResponses(List<ReviewResponse> reviewResponses) {
+    /* package */ void setReviewResponses(List<ReviewResponse> reviewResponses) {
         this.reviewResponses = reviewResponses;
     }
 
@@ -120,7 +120,7 @@ public class Review implements Serializable {
         return created;
     }
 
-    void setCreated(LocalDateTime created) {
+    /* package */ void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -128,7 +128,7 @@ public class Review implements Serializable {
         return updated;
     }
 
-    void setUpdated(LocalDateTime updated) {
+    /* package */ void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
