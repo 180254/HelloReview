@@ -10,11 +10,11 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="form-review-add" th:action="@{/m/reviews/add}" method="post">
+    <form id="review-add-form" th:action="@{/m/reviews/add}" method="post">
         <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
                th:value="${_csrf.token}"/>
 
-        <div id="form-review-body" class="form-group">
+        <div id="review-add-form-body" class="form-group">
             <div class="input-2">
                 <label for="review-add-course">Course</label>
 
@@ -27,9 +27,9 @@
             </div>
 
             <div class="input-2">
-                <label for="review-add-form">Form</label>
+                <label for="review-add-form-2">Form</label>
 
-                <select id="review-add-form" name="review-add-form" class="form-control">
+                <select id="review-add-form-2" name="review-add-form" class="form-control">
                     <option th:each="form : ${forms}"
                             th:value="${form.id}"
                             th:text="${form.name}">
@@ -44,11 +44,18 @@
                 </select>
             </div>
 
+            <div id="review-add-error" class="course-add-ajax-info alert alert-danger" role="alert">
+                <h4>Fatal errors <a class="refresh" href="#">(try refresh):</a></h4>
+                <ul id="review-add-error-list">
+                </ul>
+            </div>
+
         </div>
 
         <div class="form-submit forms-buttons-2">
             <button id="review-add-submit" type="submit" class="btn btn-default btn-primary">Create review</button>
         </div>
+
     </form>
 </main>
 

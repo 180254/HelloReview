@@ -1,6 +1,22 @@
 /*jslint browser: true*/
 /*global $, jQuery, toastr*/
 
+function jqXHRFailToArray(jqXHR) {
+    'use strict';
+
+    var json = jQuery.parseJSON(jqXHR.responseText),
+        errors = [];
+
+    if (json.status === undefined) {
+        errors = errors.concat(json);
+    } else {
+        errors = errors.concat('Server error: ' + json.status + ' ' + json.error);
+    }
+
+    return errors;
+}
+
+/*                  form                              */
 function formAddHandler(action) {
     'use strict';
 
@@ -35,16 +51,9 @@ function formAddHandler(action) {
         }
 
     }).fail(function (jqXHR) {
-        var json = jQuery.parseJSON(jqXHR.responseText),
-            errors = [],
+        var errors = jqXHRFailToArray(jqXHR),
             i,
             errLen;
-
-        if (json.status === undefined) {
-            errors = errors.concat(json);
-        } else {
-            errors = errors.concat('Server error: ' + json.status + ' ' + json.error);
-        }
 
         $errorsDiv.fadeIn();
         $previewUrlDiv.hide();
@@ -58,6 +67,85 @@ function formAddHandler(action) {
         $buttonAdd.prop('disabled', false);
     });
 }
+
+/*                  review                          */
+
+function reviewDownloadRepoList() {
+    'use strict';
+
+    var $select = $('#review-add-repository'),
+        $button = $('#review-add-submit'),
+        $errorsDiv = $('#review-add-error'),
+        $errorsList = $('#review-add-error-list');
+
+    $button.prop('disabled', true);
+
+    $.ajax({
+        type: 'GET',
+        url: '/m/reviews/add/repolist'
+
+    }).done(function (data) {
+        var i, len;
+
+        for (i = 0, len = data.length; i < len; i += 1) {
+            $('<option>', {
+                value: data[i],
+                text: data[i]
+            }).appendTo($select);
+        }
+
+        $button.prop('disabled', false);
+
+    }).fail(function (jqXHR) {
+        var errors = jqXHRFailToArray(jqXHR),
+            i,
+            errLen;
+
+        $errorsDiv.fadeIn();
+
+        for (i = 0, errLen = errors.length; i < errLen; i += 1) {
+            $('<li>').text(errors[i]).appendTo($errorsList);
+        }
+
+    });
+}
+
+function reviewAddHandler() {
+    'use strict';
+
+    var serialized = $('#review-add-form').serialize(),
+        $button = $('#review-add-submit'),
+        $errorsDiv = $('#review-add-error'),
+        $errorsList = $('#review-add-error-list');
+
+    $errorsList.html('');
+    $button.prop('disabled', true);
+
+    $.ajax({
+        type: 'POST',
+        url: '/m/reviews/add',
+        data: serialized
+
+    }).done(function () {
+        window.location = '/m/reviews';
+
+
+    }).fail(function (jqXHR) {
+        var errors = jqXHRFailToArray(jqXHR),
+            i,
+            errLen;
+
+        $errorsDiv.fadeIn();
+
+        for (i = 0, errLen = errors.length; i < errLen; i += 1) {
+            $('<li>').text(errors[i]).appendTo($errorsList);
+        }
+
+    }).always(function () {
+        $button.prop('disabled', false);
+    });
+}
+/*             course + participants                */
 
 function courseParticipantAddHandler(prefix, url) {
     'use strict';
@@ -165,6 +253,21 @@ $(document).ready(function () {
         if (e.keyCode === 13) {
             courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
         }
+    });
+
+    //review
+
+    $('.refresh').click(function () {
+        location.reload();
+    });
+
+    if ($('#review-add-repository')[0] !== undefined) {
+        reviewDownloadRepoList();
+    }
+
+    $("#review-add-form").submit(function () {
+        reviewAddHandler();
+        return false;
     });
 
 });

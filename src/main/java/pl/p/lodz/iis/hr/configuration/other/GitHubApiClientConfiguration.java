@@ -40,7 +40,7 @@ public class GitHubApiClientConfiguration {
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
 
             return new GitHubBuilder()
-                    .withConnector(okHttpConnector)
+//                    .withConnector(okHttpConnector)
                     .withRateLimitHandler(RateLimitHandler.FAIL)
                     .withPassword(dummy.getUsername(), dummy.getPassword())
                     .build();

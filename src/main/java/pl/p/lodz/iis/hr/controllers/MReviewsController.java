@@ -112,7 +112,7 @@ class MReviewsController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Object rAddRepoList(HttpServletResponse response) {
+    public List<String> rAddRepoList(HttpServletResponse response) {
         List<String> repoList = new ArrayList<>(10);
 
         try {
@@ -131,7 +131,7 @@ class MReviewsController {
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return e.getMessage();
+            return Collections.singletonList(e.toString());
         }
 
         return repoList;
@@ -143,17 +143,17 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public Object mAddPOST(@NonNls @ModelAttribute("review-add-course") long courseID,
-                           @NonNls @ModelAttribute("review-add-form") long formID,
-                           @NonNls @ModelAttribute("review-add-repository") String repository,
-                           HttpServletResponse response) throws IOException {
+    public List<String> mAddPOST(@NonNls @ModelAttribute("review-add-course") long courseID,
+                                 @NonNls @ModelAttribute("review-add-form") long formID,
+                                 @NonNls @ModelAttribute("review-add-repository") String repository,
+                                 HttpServletResponse response) throws IOException {
 
         if (!courseRepository.exists(courseID)
                 || !formRepository.exists(formID)
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
         GHRepository ghRepository;
@@ -162,37 +162,38 @@ class MReviewsController {
             ghRepository = GitHubExecutor.execute(() -> gitHub.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getMessage("NoResource");
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
-        Course course = courseRepository.getOne(courseID);
-        Form form = formRepository.getOne(formID);
-        List<GHRepository> forks = GitHubExecutor.execute(() -> ghRepository.listForks().asList());
+        try {
+            Course course = courseRepository.getOne(courseID);
+            Form form = formRepository.getOne(formID);
+            List<GHRepository> forks = GitHubExecutor.execute(() -> ghRepository.listForks().asList());
 
-        Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
-        forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
+            Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
+            forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
 
-        Review review = new Review(course, form);
-        List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
+            Review review = new Review(course, form);
+            List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
 
-        for (Participant participant : course.getParticipants()) {
-            ReviewResponse reviewResponse = new ReviewResponse(review, participant);
+            for (Participant participant : course.getParticipants()) {
+                ReviewResponse reviewResponse = new ReviewResponse(review, participant);
 
-            reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
-                    ? ReviewResponseStatus.NOT_FORKED
-                    : ReviewResponseStatus.PROCESSING);
+                reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
+                        ? ReviewResponseStatus.NOT_FORKED
+                        : ReviewResponseStatus.PROCESSING);
 
-            reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
-            reviewResponses.add(reviewResponse);
+                reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
+                reviewResponses.add(reviewResponse);
+            }
+
+            reviewRepository.save(review);
+            reviewResponseRepository.save(reviewResponses);
+
+            return Collections.singletonList(String.valueOf(review.getId()));
+        } catch (GitHubCommunicationException e) {
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+            return Collections.singletonList(e.toString());
         }
-
-        reviewRepository.save(review);
-        reviewResponseRepository.save(reviewResponses);
-        return "X";
-    }
-
-    @ExceptionHandler(GitHubCommunicationException.class)
-    public String handleGitHubException() {
-        return "redirect:/github-issue";
     }
 }

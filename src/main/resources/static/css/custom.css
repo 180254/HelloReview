@@ -168,3 +168,12 @@ main {
 #course-participant-add-error {
     display: none;
 }
+
+/*                displaying review                  */
+#review-add-error {
+    display: none;
+}
+
+.refresh {
+    font-size: 0.7em;
+}

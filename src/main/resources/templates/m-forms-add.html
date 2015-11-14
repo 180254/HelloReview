@@ -10,47 +10,49 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="form-add-form" class="form-group" method="post">
+    <form id="form-add-form" method="post">
         <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
                th:value="${_csrf.token}"/>
 
-        <div class="input-2">
-            <label for="form-name">
-                <span th:text="#{m.forms.add.form.name}"></span>
-                <span class="form-required">*</span>
-            </label>
-            <input type="text" class="form-control" name="form-name" id="form-name"/>
+        <div id="form-add-form-body" class="form-group">
+
+            <div class="input-2">
+                <label for="form-name">
+                    <span th:text="#{m.forms.add.form.name}"></span>
+                    <span class="form-required">*</span>
+                </label>
+                <input type="text" class="form-control" name="form-name" id="form-name"/>
+            </div>
+
+            <div class="input-2">
+                <label for="form-xml">
+                    <span th:text="#{m.forms.add.form.xml}"></span>
+                    <span class="form-required">*</span>
+                </label>
+                <a href="xml/example" th:text="#{m.forms.add.form.example}"></a>
+                <textarea class="form-control" rows="20" name="form-xml" id="form-xml" maxlength="100000"></textarea>
+            </div>
+
+            <div id="form-add-error" class="input-2 form-add-ajax-info alert alert-danger" role="alert">
+                <h4 th:text="#{m.forms.add.validation.header}"></h4>
+                <ul id="form-add-error-list">
+                </ul>
+            </div>
+
+            <div id="form-add-preview-url" class="input-2 form-add-ajax-info alert alert-info" role="alert">
+                <span th:text="#{m.forms.add.validation.preview.url}"></span>
+                <a class="alert-link" href="/">/</a>
+            </div>
         </div>
 
-        <div class="input-2">
-            <label for="form-xml">
-                <span th:text="#{m.forms.add.form.xml}"></span>
-                <span class="form-required">*</span>
-            </label>
-            <a href="xml/example" th:text="#{m.forms.add.form.example}"></a>
-            <textarea class="form-control" rows="20" name="form-xml" id="form-xml" maxlength="100000"></textarea>
-        </div>
+        <div class="form-submit forms-buttons-add-preview">
+            <button id="form-add-button-preview" class="btn btn-default btn-info"
+                    th:text="#{m.forms.add.button.preview}"></button>
 
-        <div id="form-add-error" class="input-2 form-add-ajax-info alert alert-danger" role="alert">
-            <h4 th:text="#{m.forms.add.validation.header}"></h4>
-            <ul id="form-add-error-list">
-            </ul>
-        </div>
-
-        <div id="form-add-preview-url" class="input-2 form-add-ajax-info alert alert-info" role="alert">
-            <span th:text="#{m.forms.add.validation.preview.url}"></span>
-            <a class="alert-link" href="/">/</a>
+            <button id="form-add-button-add" class="btn btn-default btn-primary"
+                    th:text="#{m.forms.add.button.add}"></button>
         </div>
     </form>
-
-
-    <div class="form-submit forms-buttons-add-preview">
-        <button id="form-add-button-preview" class="btn btn-default btn-info"
-                th:text="#{m.forms.add.button.preview}"></button>
-
-        <button id="form-add-button-add" class="btn btn-default btn-primary"
-                th:text="#{m.forms.add.button.add}"></button>
-    </div>
 
 </main>
 
