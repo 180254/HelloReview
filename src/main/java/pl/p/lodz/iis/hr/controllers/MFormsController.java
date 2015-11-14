@@ -203,7 +203,7 @@ class MFormsController {
                                @ModelAttribute("pk") Long2 formID,
                                HttpServletResponse response) {
 
-        if (formRepository.exists(formID.get())) {
+        if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.getMessage("NoResource"));
         }

@@ -158,77 +158,6 @@ class MReviewsController {
     }
 
     @RequestMapping(
-            value = "/m/reviews/add",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
-    @ResponseBody
-    public List<String> kAddPOST(@RequestParam("review-add-name") String name,
-                                 @RequestParam("review-add-course") Long2 courseID,
-                                 @RequestParam("review-add-form") Long2 formID,
-                                 @RequestParam("review-add-repository") String repository,
-                                 HttpServletResponse response) {
-
-
-        if (!courseRepository.exists(courseID.get())
-                || !formRepository.exists(formID.get())
-                || !repository.contains("/")) {
-
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResources"));
-        }
-
-        GHRepository ghRepository;
-
-        try {
-            ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
-        } catch (GitHubCommunicationException ignored) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResources"));
-        }
-
-        Review testReview = new Review(name, null, null);
-        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
-        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
-
-        if (!nameErrors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return nameErrors;
-        }
-
-        try {
-            Course course = courseRepository.getOne(courseID.get());
-            Form form = formRepository.getOne(formID.get());
-            List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
-
-            Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
-            forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
-
-            Review review = new Review(name, course, form);
-            List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
-
-            for (Participant participant : course.getParticipants()) {
-                ReviewResponse reviewResponse = new ReviewResponse(review, participant);
-
-                reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
-                        ? ReviewResponseStatus.NOT_FORKED
-                        : ReviewResponseStatus.PROCESSING);
-
-                reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
-                reviewResponses.add(reviewResponse);
-            }
-
-            reviewRepository.save(review);
-            reviewResponseRepository.save(reviewResponses);
-
-            return singletonList(String.valueOf(review.getId()));
-        } catch (GitHubCommunicationException e) {
-            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return singletonList(e.toString());
-        }
-    }
-
-    @RequestMapping(
             value = "/m/reviews/delete",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -261,7 +190,7 @@ class MReviewsController {
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Review testReview = new Review(newName, null, null);
+        Review testReview = new Review(newName, 0L, null, null);
         String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
         List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
 
@@ -275,6 +204,86 @@ class MReviewsController {
         reviewRepository.save(review);
 
         return singletonList(localeService.getMessage("m.reviews.rename.done"));
+    }
+
+    @RequestMapping(
+            value = "/m/reviews/add",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    @ResponseBody
+    public List<String> kAddPOST(@RequestParam("review-add-name") String name,
+                                 @RequestParam("review-add-resp-per-peer") Long2 respPerPeer,
+                                 @RequestParam("review-add-course") Long2 courseID,
+                                 @RequestParam("review-add-form") Long2 formID,
+                                 @RequestParam("review-add-repository") String repository,
+                                 HttpServletResponse response) {
+
+        if (!courseRepository.exists(courseID.get())
+                || !formRepository.exists(formID.get())
+                || !repository.contains("/")) {
+
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.getMessage("NoResources"));
+        }
+
+        GHRepository ghRepository;
+
+        try {
+            ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
+        } catch (GitHubCommunicationException ignored) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.getMessage("NoResources"));
+        }
+
+        Review testReview = new Review(name, respPerPeer.get(), null, null);
+        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
+        String reviewRespPerPrefix = localeService.getMessage("m.reviews.add.validation.prefix.resp.per.peer");
+
+        List<String> errors = new ArrayList<>(10);
+        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
+        List<String> respPerPeerErrors = validateService.validateField(testReview, "respPerPeer", reviewRespPerPrefix);
+
+        errors.addAll(nameErrors);
+        errors.addAll(respPerPeerErrors);
+
+        if (!errors.isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return errors;
+        }
+
+        //
+
+        try {
+            Course course = courseRepository.getOne(courseID.get());
+            Form form = formRepository.getOne(formID.get());
+            List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
+
+            Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
+            forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
+
+            Review review = new Review(name, respPerPeer.get(), course, form);
+            List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
+
+            for (Participant participant : course.getParticipants()) {
+                ReviewResponse reviewResponse = new ReviewResponse(review, participant);
+
+                reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
+                        ? ReviewResponseStatus.NOT_FORKED
+                        : ReviewResponseStatus.PROCESSING);
+
+                reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
+                reviewResponses.add(reviewResponse);
+            }
+
+            reviewRepository.save(review);
+            reviewResponseRepository.save(reviewResponses);
+
+            return singletonList(String.valueOf(review.getId()));
+        } catch (GitHubCommunicationException e) {
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+            return singletonList(e.toString());
+        }
     }
 
 }
