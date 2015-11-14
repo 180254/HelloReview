@@ -5,7 +5,6 @@ import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
@@ -21,18 +20,18 @@ class MStatsController {
             method = RequestMethod.GET)
     public String stats(Model model) {
 
-        GitHubExecutor.ex(() -> {
-            GHRateLimit rateLimit = gitHub.getRateLimit();
-            model.addAttribute("rateLimit", rateLimit);
-            return null;
-        });
+        try {
+
+            GitHubExecutor.ex(() -> {
+                GHRateLimit rateLimit = gitHub.getRateLimit();
+                model.addAttribute("rateLimit", rateLimit);
+            });
+
+        } catch (GitHubCommunicationException e) {
+            model.addAttribute("rateLimit", e);
+        }
 
         return "m-stats";
 
-    }
-
-    @ExceptionHandler(GitHubCommunicationException.class)
-    public String handleGitHubException() {
-        return "redirect:/github-issue";
     }
 }

@@ -17,7 +17,7 @@ public class MemoizeSupplier<T> implements Supplier<T> {
     private final Supplier<T> delegate;
     private final Map<Class<?>, T> map = new ConcurrentHashMap<>(1);
 
-    public MemoizeSupplier(Supplier<T> delegate) {
+    MemoizeSupplier(Supplier<T> delegate) {
         this.delegate = delegate;
     }
 

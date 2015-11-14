@@ -18,6 +18,10 @@ public class XmlMapperProvider {
         xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
 
+    /*
+        it cannot be bean, as XmlMapper extends ObjectMapper.
+        already have bean with type ObjectMapper
+     */
     public XmlMapper getXmlMapper() {
         return xmlMapper;
     }

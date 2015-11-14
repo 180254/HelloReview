@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.jetbrains.annotations.NonNls;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,9 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
+
+import static java.util.Collections.singletonList;
 
 @Controller
 class MReviewsController {
@@ -66,7 +66,7 @@ class MReviewsController {
         }
 
         Review review = reviewRepository.findOne(reviewID);
-        model.addAttribute("reviews", Collections.singletonList(review));
+        model.addAttribute("reviews", singletonList(review));
         model.addAttribute("newButton", false);
 
         return "m-reviews";
@@ -95,7 +95,7 @@ class MReviewsController {
             value = "/m/reviews/add",
             method = RequestMethod.GET)
     @Transactional
-    public String rAdd(Model model) {
+    public String kAdd(Model model) {
 
         List<Course> courses = courseRepository.findAll();
         List<Form> forms = formRepository.findByTemporaryFalse();
@@ -111,7 +111,7 @@ class MReviewsController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> rAddRepoList(HttpServletResponse response) {
+    public List<String> kAddRepoList(HttpServletResponse response) {
         List<String> repoList = new ArrayList<>(10);
 
         try {
@@ -128,7 +128,7 @@ class MReviewsController {
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return Collections.singletonList(e.toString());
+            return singletonList(e.toString());
         }
 
         return repoList;
@@ -140,17 +140,18 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> mAddPOST(@NonNls @ModelAttribute("review-add-course") long courseID,
-                                 @NonNls @ModelAttribute("review-add-form") long formID,
-                                 @NonNls @ModelAttribute("review-add-repository") String repository,
-                                 HttpServletResponse response) throws IOException {
+    public List<String> kAddPOST(@ModelAttribute("review-add-course") long courseID,
+                                 @ModelAttribute("review-add-form") long formID,
+                                 @ModelAttribute("review-add-repository") String repository,
+                                 HttpServletResponse response) {
+
 
         if (!courseRepository.exists(courseID)
                 || !formRepository.exists(formID)
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         GHRepository ghRepository;
@@ -159,7 +160,7 @@ class MReviewsController {
             ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return singletonList(localeService.getMessage("NoResource"));
         }
 
         try {
@@ -187,10 +188,10 @@ class MReviewsController {
             reviewRepository.save(review);
             reviewResponseRepository.save(reviewResponses);
 
-            return Collections.singletonList(String.valueOf(review.getId()));
+            return singletonList(String.valueOf(review.getId()));
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return Collections.singletonList(e.toString());
+            return singletonList(e.toString());
         }
     }
 }

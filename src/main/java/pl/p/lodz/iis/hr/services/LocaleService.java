@@ -25,7 +25,9 @@ public class LocaleService {
 
     private String msgOrCode(Supplier<String> msgSupplier, String code) {
         String msg = ExceptionChecker.getOrNullIfException(msgSupplier);
-        return (msg == null) ? code : msg;
+        return (msg == null)
+                ? String.format("??%s%s??", code, getLocale().toString())
+                : msg;
     }
 
     public String getMessage(String code) {

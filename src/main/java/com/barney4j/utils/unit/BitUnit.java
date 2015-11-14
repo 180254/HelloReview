@@ -1,4 +1,4 @@
-package pl.p.lodz.iis.hr.utils;
+package com.barney4j.utils.unit;
 
 
 /*
@@ -18,8 +18,6 @@ package pl.p.lodz.iis.hr.utils;
  */
 
 /**
- * https://github.com/fabian-barney/Utils/tree/master/utils/src/com/barney4j/utils/unit
- *
  * @author Fabian Barney
  */
 public enum BitUnit {
@@ -245,9 +243,9 @@ public enum BitUnit {
 
 
 
-	/*
-     * Komfort-Methoden f�r Cross-Konvertierung
-	 */
+    /*
+     * Komfort-Methoden for Cross-Konvertierung
+     */
 
     public final double toBytes(double d) {
         return ByteUnit.BYTE.convert(d, this);
