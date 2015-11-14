@@ -67,12 +67,16 @@ class MCoursesController {
                                  HttpServletResponse response) {
 
         Course course = new Course(courseName);
-        String courseNamePrefix = localeService.getMessage("m.courses.add.validation.prefix.course.name");
-        List<String> nameErrors = validateService.validateField(course, "name", courseNamePrefix);
 
-        if (!nameErrors.isEmpty()) {
+        List<String> errors = validateService.validateField(
+                course,
+                "name",
+                localeService.getMessage("m.courses.add.validation.prefix.course.name")
+        );
+
+        if (!errors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return nameErrors;
+            return errors;
         }
 
         courseRepository.save(course);
@@ -112,14 +116,15 @@ class MCoursesController {
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Course testCourse = new Course(newName);
+        List<String> errors = validateService.validateField(
+                new Course(newName),
+                "name",
+                localeService.getMessage("m.courses.add.validation.prefix.course.name")
+        );
 
-        String courseNamePrefix = localeService.getMessage("m.courses.add.validation.prefix.course.name");
-        List<String> nameErrors = validateService.validateField(testCourse, "name", courseNamePrefix);
-
-        if (!nameErrors.isEmpty()) {
+        if (!errors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return nameErrors;
+            return errors;
         }
 
         Course course = courseRepository.getOne(courseID.get());

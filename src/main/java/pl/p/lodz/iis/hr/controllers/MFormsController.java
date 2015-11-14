@@ -208,8 +208,11 @@ class MFormsController {
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Form testForm = new Form(newName, null);
-        List<String> nameErrors = validateService.validateField(testForm, "name", "course name");
+        List<String> nameErrors = validateService.validateField(
+                new Form(newName, null),
+                "name",
+                localeService.getMessage("m.forms.rename.validation.prefix.name")
+        );
 
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

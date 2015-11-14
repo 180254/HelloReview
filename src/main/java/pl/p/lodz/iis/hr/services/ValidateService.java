@@ -7,6 +7,7 @@ import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,5 +27,15 @@ public class ValidateService {
                 fieldError -> String.format("%s %s", prefix, localeService.getMessage(fieldError)))
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    public List<String> validateFields(Object object, String[] fieldNames, String[] prefixes) {
+        List<String> errors = new ArrayList<>(10);
+
+        for (int i = 0, len = fieldNames.length; i < len; i++) {
+            errors.addAll(validateField(object, fieldNames[i], prefixes[i]));
+        }
+
+        return errors;
     }
 }

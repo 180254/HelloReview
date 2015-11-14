@@ -190,9 +190,11 @@ class MReviewsController {
             return singletonList(localeService.getMessage("NoResource"));
         }
 
-        Review testReview = new Review(newName, 0L, null, null);
-        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
-        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
+        List<String> nameErrors = validateService.validateField(
+                new Review(newName, 0L, null, null),
+                "name",
+                localeService.getMessage("m.reviews.add.validation.prefix.name")
+        );
 
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -236,16 +238,16 @@ class MReviewsController {
             return singletonList(localeService.getMessage("NoResources"));
         }
 
-        Review testReview = new Review(name, respPerPeer.get(), null, null);
-        String reviewNamePrefix = localeService.getMessage("m.reviews.add.validation.prefix.name");
-        String reviewRespPerPrefix = localeService.getMessage("m.reviews.add.validation.prefix.resp.per.peer");
-
-        List<String> errors = new ArrayList<>(10);
-        List<String> nameErrors = validateService.validateField(testReview, "name", reviewNamePrefix);
-        List<String> respPerPeerErrors = validateService.validateField(testReview, "respPerPeer", reviewRespPerPrefix);
-
-        errors.addAll(nameErrors);
-        errors.addAll(respPerPeerErrors);
+        List<String> errors = validateService.validateFields(
+                new Review(name, respPerPeer.get(), null, null),
+                new String[]{
+                        "name",
+                        "respPerPeer"
+                }, new String[]{
+                        localeService.getMessage("m.reviews.add.validation.prefix.name"),
+                        localeService.getMessage("m.reviews.add.validation.prefix.resp.per.peer")
+                }
+        );
 
         if (!errors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());

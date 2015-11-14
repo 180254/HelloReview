@@ -17,7 +17,6 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -91,12 +90,16 @@ class MCoursesParticipantsController {
         String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
         String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
 
-        List<String> nameErrors = validateService.validateField(participant, "name", namePrefix);
-        List<String> gitHubNameErrors = validateService.validateField(participant, "gitHubName", gitHubNamePrefix);
-
-        List<String> allErrors = new ArrayList<>(nameErrors.size() + gitHubNameErrors.size());
-        allErrors.addAll(nameErrors);
-        allErrors.addAll(gitHubNameErrors);
+        List<String> allErrors = validateService.validateFields(
+                participant,
+                new String[]{
+                        "name",
+                        "gitHubName"
+                }, new String[]{
+                        namePrefix,
+                        gitHubNamePrefix
+                }
+        );
 
         if (participantRepository.findByCourseAndName(course, name) != null) {
             allErrors.add(String.format("%s %s", namePrefix, localeService.getMessage("UniqueName")));
@@ -155,10 +158,11 @@ class MCoursesParticipantsController {
             return singletonList(localeService.getMessage("UniqueName"));
         }
 
-        Participant testParticipant = new Participant(null, newName, null);
-
-        String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
-        List<String> nameErrors = validateService.validateField(testParticipant, "name", namePrefix);
+        List<String> nameErrors = validateService.validateField(
+                new Participant(null, newName, null),
+                "name",
+                localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name")
+        );
 
         if (!nameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -193,10 +197,11 @@ class MCoursesParticipantsController {
             return singletonList(localeService.getMessage("UniqueName"));
         }
 
-        Participant testParticipant = new Participant(null, null, newGitHubName);
-
-        String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
-        List<String> gitHubNameErrors = validateService.validateField(testParticipant, "gitHubName", gitHubNamePrefix);
+        List<String> gitHubNameErrors = validateService.validateField(
+                new Participant(null, null, newGitHubName),
+                "gitHubName",
+                localeService.getMessage("m.courses.participants.add.validation.prefix.github.name")
+        );
 
         if (!gitHubNameErrors.isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
