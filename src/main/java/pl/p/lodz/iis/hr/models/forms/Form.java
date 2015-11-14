@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.RelationsAware;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.UniqueName;
 
@@ -41,6 +42,11 @@ public class Form implements Serializable, RelationsAware {
     @JsonView({JSONViews.FormRESTPreview.class, JSONViews.FormParseXML.class})
     @JsonProperty("question")
     private List<Question> questions;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
+    @JsonView()
+    @JsonProperty("reviews")
+    private List<Review> reviews;
 
     @Column(nullable = false)
     @JsonView(JSONViews.FormRESTPreview.class)
@@ -94,6 +100,14 @@ public class Form implements Serializable, RelationsAware {
 
     void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public boolean isTemporary() {

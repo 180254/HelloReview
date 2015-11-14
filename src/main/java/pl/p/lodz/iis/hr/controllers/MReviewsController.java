@@ -94,6 +94,26 @@ class MReviewsController {
         return "m-reviews";
     }
 
+
+    @RequestMapping(
+            value = "/m/reviews/for/form/{formID}",
+            method = RequestMethod.GET)
+    @Transactional
+    public String listForForm(@PathVariable Long2 formID,
+                              Model model) {
+
+        if (!formRepository.exists(formID.get())) {
+            throw new ResourceNotFoundException();
+        }
+
+        Form form = formRepository.getOne(formID.get());
+
+        model.addAttribute("reviews", form.getReviews());
+        model.addAttribute("newButton", false);
+
+        return "m-reviews";
+    }
+
     @RequestMapping(
             value = "/m/reviews/add",
             method = RequestMethod.GET)

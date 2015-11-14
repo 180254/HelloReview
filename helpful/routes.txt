@@ -29,6 +29,7 @@
 + GET     html   /m/reviews
 + GET     html   /m/reviews/1
 + GET     html   /m/reviews/for/course/1
++ GET     html   /m/reviews/for/form/1
 + GET     html   /m/reviews/add
 + GET     rest   /m/reviews/add/repolist
 + POST    rest   /m/reviews/add
