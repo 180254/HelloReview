@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.annotations.Immutable;
 
 @JacksonXmlRootElement(localName = "hello")
-@Immutable
 public final class AppConfig {
 
     @JsonProperty("generalConfig")

@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Immutable
 public final class GitHubMasters {
 
     @JsonProperty("username")
