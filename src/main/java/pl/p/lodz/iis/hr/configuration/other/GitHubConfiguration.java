@@ -30,19 +30,21 @@ class GitHubConfiguration {
 
     @Autowired private AppConfig appConfig;
 
-    @Bean
-    public GitHub gitHub() {
-        try {
-            String cacheDir = appConfig.getGeneralConfig().getCacheDir();
-            Cache cache = new Cache(new File(cacheDir), Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB)));
+    @Bean(name = "okHttpConnector")
+    public HttpConnector okHttpConnector() {
+        String cacheDir = appConfig.getGeneralConfig().getCacheDir();
+        Cache cache = new Cache(new File(cacheDir), Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB)));
+        OkHttpClient okHttpClient = new OkHttpClient().setCache(cache);
+        return new OkHttpConnector(new OkUrlFactory(okHttpClient));
+    }
 
-            OkHttpClient okHttpClient = new OkHttpClient().setCache(cache);
-            HttpConnector okHttpConnector = new OkHttpConnector(new OkUrlFactory(okHttpClient));
+    @Bean(name = "gitHubFail")
+    public GitHub gitHubFail() {
+        try {
 
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
-
             return new GitHubBuilder()
-//                    .withConnector(okHttpConnector)
+                    .withConnector(okHttpConnector())
                     .withRateLimitHandler(RateLimitHandler.FAIL)
                     .withPassword(dummy.getUsername(), dummy.getPassword())
                     .build();
@@ -53,6 +55,25 @@ class GitHubConfiguration {
                     "Unable to initialize GitHub api client.", e);
         }
     }
+
+    @Bean(name = "gitHubWait")
+    public GitHub gitHubWait() {
+        try {
+
+            GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
+            return new GitHubBuilder()
+                    .withConnector(okHttpConnector())
+                    .withRateLimitHandler(RateLimitHandler.WAIT)
+                    .withPassword(dummy.getUsername(), dummy.getPassword())
+                    .build();
+
+        } catch (IOException e) {
+
+            throw new UnableToInitializeException(GitHubConfiguration.class,
+                    "Unable to initialize GitHub api client.", e);
+        }
+    }
+
 
     @Bean
     public CredentialsProvider jGitCredentials() {

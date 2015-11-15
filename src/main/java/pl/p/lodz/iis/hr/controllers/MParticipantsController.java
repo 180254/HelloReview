@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Controller
-class MCoursesParticipantsController {
+class MParticipantsController {
 
     @Autowired private CourseRepository courseRepository;
     @Autowired private ParticipantRepository participantRepository;
@@ -45,7 +45,7 @@ class MCoursesParticipantsController {
         model.addAttribute("course", course);
         model.addAttribute("participants", course.getParticipants());
 
-        return "m-courses-participants";
+        return "m-participants";
     }
 
     @RequestMapping(
@@ -65,7 +65,7 @@ class MCoursesParticipantsController {
         model.addAttribute("course", participant.getCourse());
         model.addAttribute("participants", Collections.singletonList(participant));
 
-        return "m-courses-participants";
+        return "m-participants";
     }
 
     @RequestMapping(
@@ -75,8 +75,8 @@ class MCoursesParticipantsController {
     @Transactional
     @ResponseBody
     public List<String> kAddPOST(@ModelAttribute("course-id") Long2 courseID,
-                                 @ModelAttribute("course-participant-name") String name,
-                                 @ModelAttribute("course-participant-github-name") String gitHubName,
+                                 @ModelAttribute("participant-name") String name,
+                                 @ModelAttribute("participant-github-name") String gitHubName,
                                  HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID.get())) {
@@ -86,8 +86,8 @@ class MCoursesParticipantsController {
         Course course = courseRepository.getOne(courseID.get());
         Participant participant = new Participant(course, name, gitHubName);
 
-        String namePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name");
-        String gitHubNamePrefix = localeService.getMessage("m.courses.participants.add.validation.prefix.github.name");
+        String namePrefix = localeService.getMessage("m.participants.add.validation.prefix.participant.name");
+        String gitHubNamePrefix = localeService.getMessage("m.participants.add.validation.prefix.github.name");
 
         List<String> allErrors = validateService.validateFields(
                 participant,
@@ -114,7 +114,7 @@ class MCoursesParticipantsController {
         }
 
         participantRepository.save(participant);
-        return Collections.singletonList(localeService.getMessage("m.courses.participants.add.done"));
+        return Collections.singletonList(localeService.getMessage("m.participants.add.done"));
     }
 
     @RequestMapping(
@@ -132,7 +132,7 @@ class MCoursesParticipantsController {
         }
 
         participantRepository.delete(participantID.get());
-        return Collections.singletonList(localeService.getMessage("m.courses.participants.delete.done"));
+        return Collections.singletonList(localeService.getMessage("m.participants.delete.done"));
     }
 
     @RequestMapping(
@@ -160,7 +160,7 @@ class MCoursesParticipantsController {
         List<String> nameErrors = validateService.validateField(
                 new Participant(null, newName, null),
                 "name",
-                localeService.getMessage("m.courses.participants.add.validation.prefix.participant.name")
+                localeService.getMessage("m.participants.add.validation.prefix.participant.name")
         );
 
         if (!nameErrors.isEmpty()) {
@@ -171,7 +171,7 @@ class MCoursesParticipantsController {
         participant.setName(newName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.getMessage("m.courses.participants.rename.participant.name.done"));
+        return Collections.singletonList(localeService.getMessage("m.participants.rename.participant.name.done"));
     }
 
     @RequestMapping(
@@ -199,7 +199,7 @@ class MCoursesParticipantsController {
         List<String> gitHubNameErrors = validateService.validateField(
                 new Participant(null, null, newGitHubName),
                 "gitHubName",
-                localeService.getMessage("m.courses.participants.add.validation.prefix.github.name")
+                localeService.getMessage("m.participants.add.validation.prefix.github.name")
         );
 
         if (!gitHubNameErrors.isEmpty()) {
@@ -210,6 +210,6 @@ class MCoursesParticipantsController {
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.getMessage("m.courses.participants.rename.github.name.done"));
+        return Collections.singletonList(localeService.getMessage("m.participants.rename.github.name.done"));
     }
 }

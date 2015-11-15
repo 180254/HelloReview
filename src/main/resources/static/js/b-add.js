@@ -278,7 +278,7 @@ $(document).ready(function () {
         resetAddCourseParticipantModal('course-participant-add');
     });
 
-    $('#course-participant-name,#course-participant-github-name').keyup(function (e) {
+    $('#participant-name,#participant-github-name').keyup(function (e) {
         if (e.keyCode === 13) {
             courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
         }

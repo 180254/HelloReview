@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.models.response.ReviewResponse;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.UniqueName;
 
@@ -32,7 +31,7 @@ public class Review implements Serializable {
 
     @Column(nullable = false)
     @JsonView
-    private long respPerPeer;
+    private long commPerPeer;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
@@ -46,8 +45,8 @@ public class Review implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "review", orphanRemoval = true)
     @JsonView
-    @JsonProperty("reviewreponse")
-    private List<ReviewResponse> reviewResponses;
+    @JsonProperty("commission")
+    private List<Commission> commissions;
 
     @Column(nullable = false)
     @JsonView
@@ -60,12 +59,12 @@ public class Review implements Serializable {
     Review() {
     }
 
-    public Review(String name, long respPerPeer, Course course, Form form) {
+    public Review(String name, long commPerPeer, Course course, Form form) {
         this.name = name;
-        this.respPerPeer = respPerPeer;
+        this.commPerPeer = commPerPeer;
         this.course = course;
         this.form = form;
-        reviewResponses = new ArrayList<>(10);
+        commissions = new ArrayList<>(10);
     }
 
     public long getId() {
@@ -84,12 +83,12 @@ public class Review implements Serializable {
     }
 
     @Range(min = 1, max = 10)
-    public long getRespPerPeer() {
-        return respPerPeer;
+    public long getCommPerPeer() {
+        return commPerPeer;
     }
 
-    /* package */ void setRespPerPeer(long respPerPeer) {
-        this.respPerPeer = respPerPeer;
+    /* package */ void setCommPerPeer(long commPerPeer) {
+        this.commPerPeer = commPerPeer;
     }
 
     public Course getCourse() {
@@ -108,12 +107,12 @@ public class Review implements Serializable {
         this.form = form;
     }
 
-    public List<ReviewResponse> getReviewResponses() {
-        return reviewResponses;
+    public List<Commission> getCommissions() {
+        return commissions;
     }
 
-    /* package */ void setReviewResponses(List<ReviewResponse> reviewResponses) {
-        this.reviewResponses = reviewResponses;
+    /* package */ void setCommissions(List<Commission> commissions) {
+        this.commissions = commissions;
     }
 
     public LocalDateTime getCreated() {

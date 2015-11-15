@@ -36,6 +36,6 @@
 + POST    rest   /m/reviews/delete
 + POST    rest   /m/reviews/rename
 
-- GET     html   /m/reviews/1/responses/
-- GET     html   /m/reviews/responses/1
-- GET     html   /m/reviews/responses/for/participant/1
+- GET     html   /m/reviews/1/commissions/
+- GET     html   /m/reviews/commissions/1
+- GET     html   /m/reviews/commissions/for/participant/1

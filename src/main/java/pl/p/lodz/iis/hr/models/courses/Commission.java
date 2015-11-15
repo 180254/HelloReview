@@ -1,19 +1,18 @@
-package pl.p.lodz.iis.hr.models.response;
+package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.courses.Participant;
-import pl.p.lodz.iis.hr.models.courses.Review;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class ReviewResponse implements Serializable {
+public class Commission implements Serializable {
 
     private static final long serialVersionUID = 7967942829146568225L;
 
@@ -51,7 +50,7 @@ public class ReviewResponse implements Serializable {
 
     @Column(nullable = false)
     @JsonView
-    private ReviewResponseStatus status;
+    private CommissionStatus status;
 
     @Column(nullable = false)
     @JsonView
@@ -61,16 +60,20 @@ public class ReviewResponse implements Serializable {
     @JsonView
     private LocalDateTime updated;
 
-    ReviewResponse() {
+    Commission() {
     }
 
-    public ReviewResponse(Review review, Participant assessed, Participant assessor, String assessedGhUrl) {
+    public Commission(Review review, Participant assessed, Participant assessor, URL assessedGhUrl) {
+        this(review, assessed, assessor, assessedGhUrl.toString());
+    }
+
+    public Commission(Review review, Participant assessed, Participant assessor, String assessedGhUrl) {
         uuid = UUID.randomUUID();
         this.review = review;
         this.assessed = assessed;
         this.assessor = assessor;
         this.assessedGhUrl = assessedGhUrl;
-        status = ReviewResponseStatus.PROCESSING;
+        status = CommissionStatus.PROCESSING;
     }
 
     public long getId() {
@@ -130,11 +133,11 @@ public class ReviewResponse implements Serializable {
     }
 
     @NotNull
-    public ReviewResponseStatus getStatus() {
+    public CommissionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ReviewResponseStatus status) {
+    public void setStatus(CommissionStatus status) {
         this.status = status;
     }
 

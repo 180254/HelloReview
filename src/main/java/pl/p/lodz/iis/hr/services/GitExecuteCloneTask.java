@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.appconfig.GitHubDummy;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
-import pl.p.lodz.iis.hr.models.response.ReviewResponse;
-import pl.p.lodz.iis.hr.models.response.ReviewResponseStatus;
-import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
+import pl.p.lodz.iis.hr.models.courses.Commission;
+import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
+import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
@@ -25,20 +25,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-public class GitCloneTask implements Runnable {
+class GitExecuteCloneTask implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitCloneTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitExecuteCloneTask.class);
 
     private final String intNo;
-
-    private final AppConfig appConfig;
-    private final GitHub gitHub;
-    private final CredentialsProvider jGitCredentials;
-    private final ReviewResponseRepository responseRepository;
-
-    private final ReviewResponse response;
+    private final Commission commission;
     private final GHRepository assessedRepo;
 
+    private GitHub gitHubWait;
+    private CredentialsProvider jGitCredentials;
+    private CommissionRepository commissionRepository;
     private GitHubDummy dummy;
 
     private String targetRepoName;
@@ -50,36 +47,32 @@ public class GitCloneTask implements Runnable {
     private Set<String> assessedRepoBranches;
     private GHRepository targetRepo;
 
-    public GitCloneTask(AppConfig appConfig,
-                        GitHub gitHub,
-                        CredentialsProvider jGitCredentials,
-                        ReviewResponseRepository responseRepository,
+    GitExecuteCloneTask(Commission commission, GHRepository assessedRepo) {
 
-                        ReviewResponse response,
-                        GHRepository assessedRepo) {
-
-        this.appConfig = appConfig;
-        this.gitHub = gitHub;
-        this.jGitCredentials = jGitCredentials;
-        this.responseRepository = responseRepository;
-
-        this.response = response;
+        intNo = commission.getUuid().toString();
+        this.commission = commission;
         this.assessedRepo = assessedRepo;
 
-        intNo = response.getUuid().toString();
         LOGGER.info("{} Repo cloning scheduled for review: {}, assessed: {}, assessor {}.",
                 intNo,
-                response.getReview().getName(),
-                response.getAssessed().getName(),
-                response.getAssessor().getName()
+                commission.getReview().getName(),
+                commission.getAssessed().getName(),
+                commission.getAssessor().getName()
         );
     }
 
     private void init() {
-        LOGGER.debug("Paths init.");
+        LOGGER.debug("{} Dependencies init.", intNo);
+
+        AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
+        gitHubWait = ApplicationContextProvider.getBean("gitHubWait", GitHub.class);
+        jGitCredentials = ApplicationContextProvider.getBean(CredentialsProvider.class);
+        commissionRepository = ApplicationContextProvider.getBean(CommissionRepository.class);
+
+        LOGGER.debug("{} Paths init.", intNo);
 
         dummy = appConfig.getGitHubConfig().getDummy();
-        targetRepoName = response.getUuid().toString();
+        targetRepoName = commission.getUuid().toString();
         targetRepoFullName = String.format("%s/%s", dummy.getUsername(), targetRepoName);
 
         String temporaryDir = appConfig.getGeneralConfig().getTempDir();
@@ -120,21 +113,20 @@ public class GitCloneTask implements Runnable {
                     commitFiles(gitTarget);
                     createBranchIfRequired(gitTarget, branch);
                     pushChangesIntoTargetRepo(gitTarget);
-
-                    setDefaultBranchSameAsInAssessed();
                 }
 
                 deleteDirForCloneIfExist(2);
-
             }
 
-            LOGGER.debug("{} Repo cloning done. Updating review response status.", intNo);
+            setDefaultBranchSameAsInAssessed();
 
-            response.setStatus(ReviewResponseStatus.NOT_FILLED);
-            response.setGhUrl(targetRepo.getHtmlUrl().toString());
-            responseRepository.save(response);
+            LOGGER.debug("{} Repo cloning done. Updating commision status.", intNo);
 
-            LOGGER.debug("{} Repo cloning done. Updated review response status.", intNo);
+            commission.setStatus(CommissionStatus.NOT_FILLED);
+            commission.setGhUrl(targetRepo.getHtmlUrl().toString());
+            commissionRepository.save(commission);
+
+            LOGGER.debug("{} Repo cloning done. Updated commision status.", intNo);
             LOGGER.info("{} Done.", intNo);
 
         } catch (GitAPIException | GitHubCommunicationException | IOException e) {
@@ -145,12 +137,12 @@ public class GitCloneTask implements Runnable {
 
             LOGGER.debug("{} Cleaning. Deleting target repo if exist.", intNo);
             ExceptionUtil.ignoreException2(() -> GitHubExecutor.ex(
-                    () -> gitHub.getRepository(targetRepoFullName).delete()
+                    () -> gitHubWait.getRepository(targetRepoFullName).delete()
             ));
 
-            LOGGER.debug("{} Cleaning. Updating review response status.", intNo);
-            response.setStatus(ReviewResponseStatus.PROCESSING_EROR);
-            responseRepository.save(response);
+            LOGGER.debug("{} Cleaning. Updating commision status.", intNo);
+            commission.setStatus(CommissionStatus.PROCESSING_FAILED);
+            commissionRepository.save(commission);
 
             LOGGER.debug("{} Cleaning done. ", intNo);
             LOGGER.info("{} Done.", intNo);
@@ -179,7 +171,7 @@ public class GitCloneTask implements Runnable {
         LOGGER.debug("{} Checking if target repo exist.", intNo);
 
         boolean targetRepoExist = GitHubExecutor.ex(() ->
-                gitHub.searchRepositories()
+                gitHubWait.searchRepositories()
                         .user(dummy.getUsername()).list().asList()
                         .stream().map(GHRepository::getName)
                         .anyMatch(name -> name.equals(targetRepoName)));
@@ -187,7 +179,7 @@ public class GitCloneTask implements Runnable {
         LOGGER.debug("{} Target repo should not exist, currently  = {}", intNo, targetRepoExist);
 
         if (targetRepoExist) {
-            GitHubExecutor.ex(() -> gitHub.getRepository(targetRepoFullName).delete());
+            GitHubExecutor.ex(() -> gitHubWait.getRepository(targetRepoFullName).delete());
             LOGGER.debug("{} Target repo deleted.", intNo);
         }
     }
@@ -212,7 +204,7 @@ public class GitCloneTask implements Runnable {
         LOGGER.debug("{} Creating target repo.", intNo);
 
         targetRepo = GitHubExecutor.ex(() ->
-                gitHub.createRepository(targetRepoName, dummy.getCommitMsg(), null, true));
+                gitHubWait.createRepository(targetRepoName, dummy.getCommitMsg(), null, true));
 
         LOGGER.debug("{} Created target repo.", intNo);
     }
@@ -285,7 +277,7 @@ public class GitCloneTask implements Runnable {
     private void commitFiles(Git gitTarget) throws GitAPIException {
         LOGGER.debug("{} Committing files.", intNo);
 
-        gitTarget.commit().setMessage(dummy.getUsername()).call();
+        gitTarget.commit().setMessage(dummy.getCommitMsg()).call();
 
         LOGGER.debug("{} Committed files.", intNo);
     }
@@ -318,7 +310,7 @@ public class GitCloneTask implements Runnable {
     }
 
     private void setDefaultBranchSameAsInAssessed() throws GitHubCommunicationException {
-        String defaultBranch = targetRepo.getDefaultBranch();
+        String defaultBranch = assessedRepo.getDefaultBranch();
         LOGGER.debug("{} Setting default branch to {}", intNo, defaultBranch);
 
         GitHubExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));

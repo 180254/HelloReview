@@ -8,26 +8,24 @@ import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 import pl.p.lodz.iis.hr.utils.IRunnerGH2;
 
-public class GitDeleteTask implements Runnable {
+class GitExecuteDeleteTask implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitDeleteTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitExecuteDeleteTask.class);
 
-    private final GitHub gitHub;
-    private final AppConfig appConfig;
     private final String repoName;
 
-    public GitDeleteTask(GitHub gitHub, AppConfig appConfig, String repoName) {
-        this.gitHub = gitHub;
-        this.appConfig = appConfig;
+    GitExecuteDeleteTask(String repoName) {
         this.repoName = repoName;
-
         LOGGER.info("{} Repo delete scheduled.", repoName);
     }
 
     @Override
     public void run() {
+        AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
+        GitHub gitHubWait = ApplicationContextProvider.getBean("gitHubWait", GitHub.class);
+
         String dummyUsername = appConfig.getGitHubConfig().getDummy().getUsername();
-        IRunnerGH2 deleteRunner = () -> gitHub.getRepository(String.format("%s/%s", dummyUsername, repoName)).delete();
+        IRunnerGH2 deleteRunner = () -> gitHubWait.getRepository(String.format("%s/%s", dummyUsername, repoName)).delete();
 
         boolean success = ExceptionUtil.isExceptionThrown2(() -> GitHubExecutor.ex(deleteRunner));
         LOGGER.info("{} Repo delete status succeeded = {}", repoName, success);

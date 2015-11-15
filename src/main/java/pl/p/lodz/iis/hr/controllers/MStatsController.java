@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.controllers;
 import org.kohsuke.github.GHRateLimit;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 @Controller
 class MStatsController {
 
-    @Autowired private GitHub gitHub;
+    @Autowired @Qualifier("gitHubFail") private GitHub gitHubFail;
     @Autowired private GitExecuteService gitExecuteService;
 
     @RequestMapping(
@@ -25,7 +26,7 @@ class MStatsController {
         try {
 
             GitHubExecutor.ex(() -> {
-                GHRateLimit rateLimit = gitHub.getRateLimit();
+                GHRateLimit rateLimit = gitHubFail.getRateLimit();
                 model.addAttribute("rateLimit", rateLimit);
             });
 

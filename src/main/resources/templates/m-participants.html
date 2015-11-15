@@ -13,17 +13,17 @@
     <h4 class="course-participant-header">
         <a th:href="'/m/courses/'+ ${course.id}">
             <strong th:text="${course.name}"></strong></a><span
-            th:text="#{m.courses.participants.table.head.addon}"></span>
+            th:text="#{m.participants.table.head.addon}"></span>
     </h4>
 
     <table class="table table-hover">
         <thead>
         <tr>
-            <th th:text="#{m.courses.participants.thead.id}"></th>
-            <th th:text="#{m.courses.participants.thead.name}"></th>
-            <th th:text="#{m.courses.participants.thead.github.name}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.participants.thead.responses}"></span></th>
-            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.courses.participants.thead.delete}"></span></th>
+            <th th:text="#{m.participants.thead.id}"></th>
+            <th th:text="#{m.participants.thead.name}"></th>
+            <th th:text="#{m.participants.thead.github.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.participants.thead.commissions}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.participants.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -32,14 +32,14 @@
             <td th:text="${participant.id}"></td>
 
             <td>
-                <a href="#" class="course-participant-name-rename-link b-rename-link"
+                <a href="#" class="participant-name-rename-link b-rename-link"
                    data-type="text" th:text="${participant.name}"
                    data-th-attr="data-url=@{/m/courses/participants/rename/name}, data-pk=${participant.id}">
                 </a>
             </td>
 
             <td>
-                <a href="#" class="course-participant-github-name-rename-link b-rename-link"
+                <a href="#" class="participant-github-name-rename-link b-rename-link"
                    data-type="text" th:text="${participant.gitHubName}"
                    data-th-attr="data-url=@{/m/courses/participants/rename/githubname}, data-pk=${participant.id}">
                 </a>
@@ -47,8 +47,8 @@
 
             <td>
                 <a th:href="'/m/reviews/responses/for/participant/'+ ${participant.id}">
-                    <strong th:text="${participant.reviewResponses.size()}"></strong>
-                    <span th:text="#{m.courses.participants.tbody.responses}"></span>
+                    <strong th:text="${participant.commissions.size()}"></strong>
+                    <span th:text="#{m.participants.tbody.commissions}"></span>
                 </a>
             </td>
 
@@ -58,9 +58,9 @@
                    th:attr="
                         data-delete-url=@{/m/courses/participants/delete},
                         data-id=${participant.id},
-                        data-title=#{m.courses.participants.delete.title},
-                        data-btnOkLabel=#{m.courses.participants.delete.btnOkLabel},
-                        data-btnCancelLabel=#{m.courses.participants.delete.btnCancelLabel}"
+                        data-title=#{m.participants.delete.title},
+                        data-btnOkLabel=#{m.participants.delete.btnOkLabel},
+                        data-btnCancelLabel=#{m.participants.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
                    th:text="#{m.courses.tbody.delete}"></a>
             </td>
@@ -70,7 +70,7 @@
 
     <div th:if="${newButton}" class="add-new text-right">
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#course-participant-add"
-                th:text="#{m.courses.participants.tbody.add.new.one}">
+                th:text="#{m.participants.tbody.add.new.one}">
         </button>
     </div>
 
@@ -82,7 +82,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" th:text="#{m.courses.participants.add.title}"></h4>
+                    <h4 class="modal-title" th:text="#{m.participants.add.title}"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -92,29 +92,29 @@
                                th:value="${_csrf.token}"/>
 
                         <div class="form-group">
-                            <label for="course-participant-name"
-                                   th:text="#{m.courses.participants.add.input.participant.name.label}">
+                            <label for="participant-name"
+                                   th:text="#{m.participants.add.input.participant.name.label}">
                             </label>
                             <input type="text"
                                    class="form-control"
-                                   id="course-participant-name" name="course-participant-name"
-                                   th:placeholder="#{m.courses.participants.add.input.participant.name.placeholder}"/>
+                                   id="participant-name" name="participant-name"
+                                   th:placeholder="#{m.participants.add.input.participant.name.placeholder}"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="course-participant-github-name"
-                                   th:text="#{m.courses.participants.add.input.github.name.label}">
+                            <label for="participant-github-name"
+                                   th:text="#{m.participants.add.input.github.name.label}">
                             </label>
                             <input type="text"
                                    class="form-control"
-                                   id="course-participant-github-name" name="course-participant-github-name"
-                                   th:placeholder="#{m.courses.participants.add.input.github.name.placeholder}"/>
+                                   id="participant-github-name" name="participant-github-name"
+                                   th:placeholder="#{m.participants.add.input.github.name.placeholder}"/>
                         </div>
                     </form>
                 </div>
 
                 <div id="course-participant-add-error" class="form-add-ajax-info alert alert-danger" role="alert">
-                    <h4 th:text="#{m.courses.participants.add.validation.header}"></h4>
+                    <h4 th:text="#{m.participants.add.validation.header}"></h4>
                     <ul id="course-participant-add-error-list">
                     </ul>
                 </div>
@@ -122,11 +122,11 @@
                 <div class="modal-footer">
                     <button id="course-participant-add-button-close" type="button" class="btn btn-default"
                             data-dismiss="modal"
-                            th:text="#{m.courses.participants.add.button.close}">
+                            th:text="#{m.participants.add.button.close}">
                     </button>
 
                     <button id="course-participant-add-button-submit" type="button" class="btn btn-primary"
-                            th:text="#{m.courses.participants.add.button.submit}">
+                            th:text="#{m.participants.add.button.submit}">
                     </button>
                 </div>
             </div>

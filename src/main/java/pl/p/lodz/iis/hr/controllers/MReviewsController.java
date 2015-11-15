@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.controllers;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,16 +15,12 @@ import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.InternalException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
-import pl.p.lodz.iis.hr.models.courses.Course;
-import pl.p.lodz.iis.hr.models.courses.Participant;
-import pl.p.lodz.iis.hr.models.courses.Review;
+import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.models.response.ReviewResponse;
-import pl.p.lodz.iis.hr.models.response.ReviewResponseStatus;
+import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
-import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
 import pl.p.lodz.iis.hr.services.GitExecuteService;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
@@ -37,11 +34,11 @@ import java.util.stream.Collectors;
 class MReviewsController {
 
     @Autowired private ReviewRepository reviewRepository;
-    @Autowired private ReviewResponseRepository reviewResponseRepository;
+    @Autowired private CommissionRepository commissionRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
     @Autowired private AppConfig appConfig;
-    @Autowired private GitHub gitHub;
+    @Autowired @Qualifier("gitHubFail") private GitHub gitHubFail;
     @Autowired private LocaleService localeService;
     @Autowired private ValidateService validateService;
     @Autowired private GitExecuteService gitExecuteService;
@@ -143,7 +140,7 @@ class MReviewsController {
             GitHubExecutor.ex(() -> {
 
                 for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
-                    gitHub.getUser(username).listRepositories()
+                    gitHubFail.getUser(username).listRepositories()
                             .asList().stream()
                             .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
                             .forEach(repoList::add);
@@ -175,8 +172,8 @@ class MReviewsController {
 
         Review review = reviewRepository.findOne(reviewID.get());
 
-        for (ReviewResponse reviewResponse : review.getReviewResponses()) {
-            gitExecuteService.registerDelete(reviewResponse.getUuid().toString());
+        for (Commission commission : review.getCommissions()) {
+            gitExecuteService.registerDelete(commission.getUuid().toString());
         }
 
         reviewRepository.delete(review);
@@ -241,7 +238,7 @@ class MReviewsController {
         GHRepository ghRepository;
 
         try {
-            ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
+            ghRepository = GitHubExecutor.ex(() -> gitHubFail.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return Collections.singletonList(localeService.getMessage("NoResources"));
@@ -254,7 +251,7 @@ class MReviewsController {
                         "respPerPeer"
                 }, new String[]{
                         localeService.getMessage("m.reviews.add.validation.prefix.name"),
-                        localeService.getMessage("m.reviews.add.validation.prefix.resp.per.peer")
+                        localeService.getMessage("m.reviews.add.validation.prefix.comm.per.peer")
                 }
         );
 
@@ -274,39 +271,39 @@ class MReviewsController {
             Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
 
-            List<Participant> participWhoForked = participants.stream()
+            List<Participant> participantWhoForked = participants.stream()
                     .filter(p -> forksMap.containsKey(p.getGitHubName()))
                     .collect(Collectors.toList());
 
-            List<Participant> participWhoNotForked = participants.stream()
+            List<Participant> participantsWhoNotForked = participants.stream()
                     .filter(p -> !forksMap.containsKey(p.getGitHubName()))
                     .collect(Collectors.toList());
 
-            if ((ignoreWarning.get() == 0L) && !participWhoNotForked.isEmpty()) {
+            if ((ignoreWarning.get() == 0L) && !participantsWhoNotForked.isEmpty()) {
                 response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 
                 List<String> warning = new ArrayList<>(10);
-                warning.add(String.valueOf(participWhoNotForked.size()));
+                warning.add(String.valueOf(participantsWhoNotForked.size()));
                 warning.add(String.valueOf(participants.size()));
-                participWhoNotForked.forEach((p) -> warning.add(p.getName()));
+                participantsWhoNotForked.forEach((p) -> warning.add(p.getName()));
                 return warning;
             }
 
-            long respPerPeer2 = Math.max(Math.min((long) participWhoForked.size() - 1L, respPerPeer.get()), 0L);
+            long respPerPeer2 = Math.max(Math.min((long) participantWhoForked.size() - 1L, respPerPeer.get()), 0L);
 
             List<Participant> mulParticipants = new ArrayList<>(10);
             while (mulParticipants.size() < participants.size()) {
-                mulParticipants.addAll(participWhoForked);
+                mulParticipants.addAll(participantWhoForked);
             }
             Collections.shuffle(mulParticipants);
-            mulParticipants.addAll(participWhoForked);
+            mulParticipants.addAll(participantWhoForked);
 
             Review review = new Review(name, respPerPeer2, course, form);
-            List<ReviewResponse> responses = new ArrayList<>(10);
+            List<Commission> responses = new ArrayList<>(10);
 
-            for (Participant particip : participWhoNotForked) {
-                ReviewResponse rResponse = new ReviewResponse(review, particip, null, null);
-                rResponse.setStatus(ReviewResponseStatus.NOT_FORKED);
+            for (Participant participant : participantsWhoNotForked) {
+                Commission rResponse = new Commission(review, participant, null, (String) null);
+                rResponse.setStatus(CommissionStatus.NOT_FORKED);
                 responses.add(rResponse);
             }
 
@@ -316,18 +313,17 @@ class MReviewsController {
                     Participant assessed = popNotMe(mulParticipants, assessor);
                     GHRepository assessedRepo = forksMap.get(assessed.getGitHubName());
 
-                    ReviewResponse rResponse =
-                            new ReviewResponse(review, assessed, assessor, assessedRepo.getHtmlUrl().toString());
+                    Commission rResponse = new Commission(review, assessed, assessor, assessedRepo.getHtmlUrl());
                     responses.add(rResponse);
 
                 }
             }
 
             reviewRepository.save(review);
-            reviewResponseRepository.save(responses);
+            commissionRepository.save(responses);
 
             responses.stream()
-                    .filter(r -> r.getStatus() != ReviewResponseStatus.NOT_FORKED)
+                    .filter(r -> r.getStatus() != CommissionStatus.NOT_FORKED)
                     .forEach(r -> gitExecuteService.registerCloneJob(r, forksMap.get(r.getAssessed().getGitHubName())));
 
             return Collections.singletonList(String.valueOf(review.getId()));

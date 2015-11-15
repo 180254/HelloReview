@@ -16,6 +16,7 @@ public final class GitHubMasters {
 
     @JsonCreator
     GitHubMasters(@JsonProperty("username") List<String> userNames) {
+
         this.userNames = new ArrayList<>(userNames);
     }
 

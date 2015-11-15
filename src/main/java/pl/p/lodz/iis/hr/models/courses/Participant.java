@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.p.lodz.iis.hr.models.response.ReviewResponse;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,7 +24,7 @@ public class Participant implements Serializable {
     @JsonView
     private String name;
 
-    @Column(nullable = false, length = 255, unique = true)
+    @Column(nullable = false, length = 255)
     @JsonView
     private String gitHubName;
 
@@ -36,8 +35,8 @@ public class Participant implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "assessor", orphanRemoval = true)
     @JsonView
-    @JsonProperty("reviewResponse")
-    private List<ReviewResponse> reviewResponses;
+    @JsonProperty("commission")
+    private List<Commission> commissions;
 
     @Column(nullable = false)
     @JsonView
@@ -84,12 +83,12 @@ public class Participant implements Serializable {
         return course;
     }
 
-    public List<ReviewResponse> getReviewResponses() {
-        return reviewResponses;
+    public List<Commission> getCommissions() {
+        return commissions;
     }
 
-    /* package */ void setReviewResponses(List<ReviewResponse> reviewResponses) {
-        this.reviewResponses = reviewResponses;
+    /* package */ void setCommissions(List<Commission> commissions) {
+        this.commissions = commissions;
     }
 
     /* package */ void setCourse(Course course) {

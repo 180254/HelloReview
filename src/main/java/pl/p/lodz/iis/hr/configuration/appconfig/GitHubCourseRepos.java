@@ -16,6 +16,7 @@ public class GitHubCourseRepos {
 
     @JsonCreator
     GitHubCourseRepos(@JsonProperty("username") List<String> userNames) {
+
         this.userNames = new ArrayList<>(userNames);
     }
 

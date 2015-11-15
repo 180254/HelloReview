@@ -26,6 +26,6 @@ public class Long2 {
 
     @Override
     public String toString() {
-        return Long.valueOf(value).toString();
+        return String.valueOf(value);
     }
 }

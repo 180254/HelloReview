@@ -108,7 +108,10 @@ class MFormsController {
 
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage()));
+
+            return Collections.singletonList(
+                    String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage())
+            );
         }
 
         form.setName(Strings.emptyToNull(formName));
