@@ -26,14 +26,12 @@ import static pl.p.lodz.iis.hr.utils.ExceptionChecker.exceptionThrown2;
 
 public class GitCloneTask implements Runnable {
 
-    private static final String COMMIT_MSG = "clone for peer review purposes";
-
-    private AppConfig appConfig;
-    private GitHub gitHub;
-    private CredentialsProvider jGitCredentials;
-    private ReviewResponseRepository responseRepository;
-    private ReviewResponse response;
-    private GHRepository assessedRepository;
+    private final AppConfig appConfig;
+    private final GitHub gitHub;
+    private final CredentialsProvider jGitCredentials;
+    private final ReviewResponseRepository responseRepository;
+    private final ReviewResponse response;
+    private final GHRepository assessedRepository;
 
     public GitCloneTask(AppConfig appConfig,
                         GitHub gitHub,
@@ -80,7 +78,7 @@ public class GitCloneTask implements Runnable {
             }
 
             branches = GitHubExecutor.ex(() -> assessedRepository.getBranches().keySet());
-            targetRepo = GitHubExecutor.ex(() -> gitHub.createRepository(targetName, COMMIT_MSG, COMMIT_MSG, true));
+            targetRepo = GitHubExecutor.ex(() -> gitHub.createRepository(targetName, dummy.getCommitMsg(), null, true));
 
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(ReviewResponseStatus.PROCESSING_EROR);
@@ -125,12 +123,12 @@ public class GitCloneTask implements Runnable {
                     add.call();
 
                     StoredConfig gitTargetConfig = gitTarget.getRepository().getConfig();
-                    gitTargetConfig.setString("user", null, "name", "Peer Review 70");
-                    gitTargetConfig.setString("user", null, "email", "peerreview70@gmail.com");
+                    gitTargetConfig.setString("user", null, "name", dummy.getName());
+                    gitTargetConfig.setString("user", null, "email", dummy.getEmail());
                     gitTargetConfig.setBoolean("core", null, "autocrlf", true);
                     gitTargetConfig.save();
 
-                    gitTarget.commit().setMessage(COMMIT_MSG).call();
+                    gitTarget.commit().setMessage(dummy.getUsername()).call();
 
                     if (!branch.equals("master")) {
                         gitTarget.branchCreate().setName(branch).call();

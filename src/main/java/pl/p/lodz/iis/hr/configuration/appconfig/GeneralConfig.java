@@ -7,14 +7,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public final class GeneralConfig {
 
-    @JsonProperty("url")
-    private final String url;
-
-    @JsonProperty("cachedir")
-    private final String cacheDir;
-
-    @JsonProperty("tempdir")
-    private final String tempDir;
+    /* @formatter:off */
+    @JsonProperty("url")      private final String url;
+    @JsonProperty("cachedir") private final String cacheDir;
+    @JsonProperty("tempdir")  private final String tempDir;
+    /* @formatter:on */
 
     @JsonCreator
     GeneralConfig(@JsonProperty("url") String url,

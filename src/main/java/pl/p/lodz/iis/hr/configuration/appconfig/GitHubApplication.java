@@ -7,11 +7,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public final class GitHubApplication {
 
-    @JsonProperty("clientID")
-    private final String clientID;
-
-    @JsonProperty("clientSecret")
-    private final String clientSecret;
+    /* @formatter:off */
+    @JsonProperty("clientID")     private final String clientID;
+    @JsonProperty("clientSecret") private final String clientSecret;
+    /* @formatter:on */
 
     @JsonCreator
     GitHubApplication(@JsonProperty("clientID") String clientID,

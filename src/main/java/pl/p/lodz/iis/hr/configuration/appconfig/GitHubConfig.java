@@ -7,17 +7,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public final class GitHubConfig {
 
-    @JsonProperty("masters")
-    private final GitHubMasters masters;
-
-    @JsonProperty("courserepos")
-    private final GitHubCourseRepos courseRepos;
-
-    @JsonProperty("dummy")
-    private final GitHubDummy dummy;
-
-    @JsonProperty("application")
-    private final GitHubApplication application;
+    /* @formatter:off */
+    @JsonProperty("masters")     private final GitHubMasters masters;
+    @JsonProperty("courserepos") private final GitHubCourseRepos courseRepos;
+    @JsonProperty("dummy")       private final GitHubDummy dummy;
+    @JsonProperty("application") private final GitHubApplication application;
+    /* @formatter:on */
 
     @JsonCreator
     GitHubConfig(@JsonProperty("masters") GitHubMasters masters,

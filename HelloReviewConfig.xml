@@ -17,8 +17,13 @@
         </courserepos>
 
         <dummy>
+            <name>Peer Review 70</name>
+            <email>peerreview70@gmail.com</email>
+
             <username>peerreview70</username>
             <password>3yeU52ZD3naYSQ0eHr6fFJYbuQTiCFZqu2UxEv4v</password>
+
+            <commitmsg>clone for anonymous peer review purposes</commitmsg>
         </dummy>
 
         <application>
