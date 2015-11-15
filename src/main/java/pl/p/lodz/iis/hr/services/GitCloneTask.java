@@ -67,7 +67,7 @@ public class GitCloneTask implements Runnable {
         this.response = response;
         this.assessedRepo = assessedRepo;
 
-        intNo = response.getUuid().toString().substring(0, 4);
+        intNo = response.getUuid().toString();
         LOGGER.info("{} Repo cloning scheduled for review: {}, assessed: {}, assessor {}.",
                 intNo,
                 response.getReview().getName(),
@@ -121,6 +121,8 @@ public class GitCloneTask implements Runnable {
                     commitFiles(gitTarget);
                     createBranchIfRequired(gitTarget, branch);
                     pushChangesIntoTargetRepo(gitTarget);
+
+                    setDefaultBranchSameAsInAssessed();
                 }
 
                 deleteDirForCloneIfExist(2);
@@ -154,6 +156,7 @@ public class GitCloneTask implements Runnable {
         }
 
     }
+
 
     private void deleteDirForCloneIfExist(int cause) throws IOException {
         boolean exists = directoryForClone.exists();
@@ -312,4 +315,14 @@ public class GitCloneTask implements Runnable {
 
         LOGGER.debug("{} Pushed branch.", intNo);
     }
+
+    private void setDefaultBranchSameAsInAssessed() throws GitHubCommunicationException {
+        String defaultBranch = targetRepo.getDefaultBranch();
+        LOGGER.debug("{} Setting default branch to {}", intNo, defaultBranch);
+
+        GitHubExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));
+
+        LOGGER.debug("{} Set default branch.", intNo);
+    }
+
 }
