@@ -288,13 +288,7 @@ class MReviewsController {
                 return warning;
             }
 
-            long respPerPeer2 = Math.min((long) participWhoForked.size() - 1L, respPerPeer.get());
-            if ((respPerPeer2 == 0L) && (participWhoForked.size() == 1)) {
-                respPerPeer2 = 1L;
-            }
-            if (respPerPeer2 == -1L) {
-                respPerPeer2 = 0L;
-            }
+            long respPerPeer2 = Math.max(Math.min((long) participWhoForked.size() - 1L, respPerPeer.get()), 0L);
 
             List<Participant> mulParticipants = new ArrayList<>(10);
             while (mulParticipants.size() < participants.size()) {
@@ -315,9 +309,7 @@ class MReviewsController {
             for (Participant assessor : course.getParticipants()) {
                 for (long lo = 0L; lo < respPerPeer2; lo++) {
 
-                    Participant assessed = (participWhoForked.size() == 1)
-                            ? pop(mulParticipants)
-                            : popNotMe(mulParticipants, assessor);
+                    Participant assessed = popNotMe(mulParticipants, assessor);
                     GHRepository assessedRepo = forksMap.get(assessed.getGitHubName());
 
                     ReviewResponse rResponse =
@@ -340,12 +332,6 @@ class MReviewsController {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return singletonList(e.toString());
         }
-    }
-
-    public <T> T pop(List<T> collection) {
-        T t = collection.get(0);
-        collection.remove(t);
-        return t;
     }
 
     public <T> T popNotMe(Collection<T> collection, T me) {

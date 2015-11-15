@@ -11,7 +11,7 @@ import pl.p.lodz.iis.hr.configuration.pac4j.Pac4jSecurityHelper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static pl.p.lodz.iis.hr.utils.ExceptionChecker.checkNoExceptionThrown;
+import static pl.p.lodz.iis.hr.utils.ExceptionChecker.exceptionThrown;
 
 /**
  * /login  - pl.p.lodz.iis.hr.controllers.AuthController
@@ -32,7 +32,7 @@ class AuthController {
         Pac4jSecurityHelper pac4jSecurityHelper = new Pac4jSecurityHelper(gitHubClient, request, response);
 
         if (pac4jSecurityHelper.getProfileManager().isAuthenticated()
-                && checkNoExceptionThrown(pac4jSecurityHelper::getUserProfileUp2Date)) {
+                && !exceptionThrown(pac4jSecurityHelper::getUserProfileUp2Date)) {
             return "redirect:/";
 
         } else {

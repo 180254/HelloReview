@@ -4,6 +4,8 @@ import com.barney4j.utils.unit.ByteUnit;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.HttpConnector;
@@ -50,5 +52,11 @@ class GitHubConfiguration {
             throw new UnableToInitializeException(GitHubConfiguration.class,
                     "Unable to initialize GitHub api client.", e);
         }
+    }
+
+    @Bean
+    public CredentialsProvider jGitCredentials() {
+        GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
+        return new UsernamePasswordCredentialsProvider(dummy.getUsername(), dummy.getPassword());
     }
 }

@@ -1,6 +1,8 @@
 package pl.p.lodz.iis.hr.services;
 
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
@@ -14,14 +16,22 @@ import java.util.concurrent.Executors;
 public class GitCloneService {
 
     @Autowired private AppConfig appConfig;
-    @Autowired private ReviewResponseRepository reviewResponseRepository;
+    @Autowired private CredentialsProvider jGitCredentials;
+    @Autowired private ReviewResponseRepository responseRepository;
+    @Autowired private GitHub gitHub;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public void registerCloneJob(ReviewResponse reviewResponse, GHRepository ghRepository) {
+
         Runnable gitCloneTask = new GitCloneTask(
-                appConfig, reviewResponseRepository,
-                reviewResponse, ghRepository);
+                appConfig,
+                gitHub,
+                jGitCredentials,
+                responseRepository,
+                reviewResponse,
+                ghRepository
+        );
 
         executor.submit(gitCloneTask);
     }
