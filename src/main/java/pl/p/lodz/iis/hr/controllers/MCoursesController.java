@@ -15,9 +15,8 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 @Controller
 class MCoursesController {
@@ -51,7 +50,7 @@ class MCoursesController {
         }
 
         Course course = courseRepository.findOne(courseID.get());
-        model.addAttribute("courses", singletonList(course));
+        model.addAttribute("courses", Collections.singletonList(course));
         model.addAttribute("newButton", false);
 
         return "m-courses";
@@ -80,7 +79,7 @@ class MCoursesController {
         }
 
         courseRepository.save(course);
-        return singletonList(localeService.getMessage("m.courses.add.done"));
+        return Collections.singletonList(localeService.getMessage("m.courses.add.done"));
     }
 
     @RequestMapping(
@@ -94,11 +93,11 @@ class MCoursesController {
 
         if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
         courseRepository.delete(courseID.get());
-        return singletonList(localeService.getMessage("m.courses.delete.done"));
+        return Collections.singletonList(localeService.getMessage("m.courses.delete.done"));
     }
 
     @RequestMapping(
@@ -113,7 +112,7 @@ class MCoursesController {
 
         if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
         List<String> errors = validateService.validateField(
@@ -131,7 +130,7 @@ class MCoursesController {
         course.setName(newName);
         courseRepository.save(course);
 
-        return singletonList(localeService.getMessage("m.courses.rename.done"));
+        return Collections.singletonList(localeService.getMessage("m.courses.rename.done"));
     }
 
 }

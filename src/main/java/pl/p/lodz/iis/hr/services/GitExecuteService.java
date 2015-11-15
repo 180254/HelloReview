@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class GitCloneService {
+public class GitExecuteService {
 
     @Autowired private AppConfig appConfig;
     @Autowired private CredentialsProvider jGitCredentials;
@@ -35,5 +35,16 @@ public class GitCloneService {
         );
 
         executor.submit(gitCloneTask);
+    }
+
+    public void registerDelete(String repoName) {
+
+        GitDeleteTask gitDeleteTask = new GitDeleteTask(
+                gitHub,
+                appConfig,
+                repoName
+        );
+
+        executor.submit(gitDeleteTask);
     }
 }

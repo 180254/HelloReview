@@ -10,10 +10,10 @@ public final class GitHubExecutor {
     private GitHubExecutor() {
     }
 
-    public static <T> T ex(GitHubExecutorFI<T> executor) throws GitHubCommunicationException {
+    public static <T> T ex(IRunnerGH1<T> runner) throws GitHubCommunicationException {
 
         try {
-            return executor.execute();
+            return runner.execute();
 
         } catch (IOException e) {
             throw new GitHubCommunicationException(e.getMessage(), e);
@@ -28,9 +28,9 @@ public final class GitHubExecutor {
         }
     }
 
-    public static void ex(GitHubExecutorFI2 executor) throws GitHubCommunicationException {
+    public static void ex(IRunnerGH2 runner) throws GitHubCommunicationException {
         GitHubExecutor.<Void>ex(() -> {
-            executor.execute();
+            runner.execute();
             return null;
         });
     }

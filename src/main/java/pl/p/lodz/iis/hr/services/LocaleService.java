@@ -5,11 +5,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import static pl.p.lodz.iis.hr.utils.ExceptionChecker.ignoreException;
 
 /*
     original concept: anataliocs @ http://stackoverflow.com/questions/28750292/
@@ -24,7 +24,7 @@ public class LocaleService {
     }
 
     private String msgOrCode(Supplier<String> msgSupplier, String code) {
-        String msg = ignoreException(msgSupplier);
+        String msg = ExceptionUtil.ignoreException1(msgSupplier::get);
         return (msg == null)
                 ? String.format("??%s%s??", code, getLocale().toString())
                 : msg;

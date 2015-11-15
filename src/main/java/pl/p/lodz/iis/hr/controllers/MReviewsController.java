@@ -24,7 +24,7 @@ import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
-import pl.p.lodz.iis.hr.services.GitCloneService;
+import pl.p.lodz.iis.hr.services.GitExecuteService;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
@@ -32,8 +32,6 @@ import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.singletonList;
 
 @Controller
 class MReviewsController {
@@ -46,7 +44,7 @@ class MReviewsController {
     @Autowired private GitHub gitHub;
     @Autowired private LocaleService localeService;
     @Autowired private ValidateService validateService;
-    @Autowired private GitCloneService gitCloneService;
+    @Autowired private GitExecuteService gitExecuteService;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -73,7 +71,7 @@ class MReviewsController {
         }
 
         Review review = reviewRepository.findOne(reviewID.get());
-        model.addAttribute("reviews", singletonList(review));
+        model.addAttribute("reviews", Collections.singletonList(review));
         model.addAttribute("newButton", false);
 
         return "m-reviews";
@@ -155,7 +153,7 @@ class MReviewsController {
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return singletonList(e.toString());
+            return Collections.singletonList(e.toString());
         }
 
         return repoList;
@@ -172,11 +170,17 @@ class MReviewsController {
 
         if (!reviewRepository.exists(reviewID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
-        reviewRepository.delete(reviewID.get());
-        return singletonList(localeService.getMessage("m.reviews.delete.done"));
+        Review review = reviewRepository.findOne(reviewID.get());
+
+        for (ReviewResponse reviewResponse : review.getReviewResponses()) {
+            gitExecuteService.registerDelete(reviewResponse.getUuid().toString());
+        }
+
+        reviewRepository.delete(review);
+        return Collections.singletonList(localeService.getMessage("m.reviews.delete.done"));
     }
 
     @RequestMapping(
@@ -191,7 +195,7 @@ class MReviewsController {
 
         if (!reviewRepository.exists(reviewID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.getMessage("NoResource"));
         }
 
         List<String> nameErrors = validateService.validateField(
@@ -209,7 +213,7 @@ class MReviewsController {
         review.setName(newName);
         reviewRepository.save(review);
 
-        return singletonList(localeService.getMessage("m.reviews.rename.done"));
+        return Collections.singletonList(localeService.getMessage("m.reviews.rename.done"));
     }
 
     @RequestMapping(
@@ -231,7 +235,7 @@ class MReviewsController {
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResources"));
+            return Collections.singletonList(localeService.getMessage("NoResources"));
         }
 
         GHRepository ghRepository;
@@ -240,7 +244,7 @@ class MReviewsController {
             ghRepository = GitHubExecutor.ex(() -> gitHub.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.getMessage("NoResources"));
+            return Collections.singletonList(localeService.getMessage("NoResources"));
         }
 
         List<String> errors = validateService.validateFields(
@@ -324,13 +328,13 @@ class MReviewsController {
 
             responses.stream()
                     .filter(r -> r.getStatus() != ReviewResponseStatus.NOT_FORKED)
-                    .forEach(r -> gitCloneService.registerCloneJob(r, forksMap.get(r.getAssessed().getGitHubName())));
+                    .forEach(r -> gitExecuteService.registerCloneJob(r, forksMap.get(r.getAssessed().getGitHubName())));
 
-            return singletonList(String.valueOf(review.getId()));
+            return Collections.singletonList(String.valueOf(review.getId()));
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return singletonList(e.toString());
+            return Collections.singletonList(e.toString());
         }
     }
 

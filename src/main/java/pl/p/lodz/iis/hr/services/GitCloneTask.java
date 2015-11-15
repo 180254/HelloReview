@@ -18,13 +18,12 @@ import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.models.response.ReviewResponse;
 import pl.p.lodz.iis.hr.models.response.ReviewResponseStatus;
 import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
+import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
-
-import static pl.p.lodz.iis.hr.utils.ExceptionChecker.ignoreException2;
 
 public class GitCloneTask implements Runnable {
 
@@ -142,10 +141,12 @@ public class GitCloneTask implements Runnable {
             LOGGER.info("{} Repo cloning failed.", intNo, e);
 
             LOGGER.debug("{} Cleaning. Deleting clone dir if exist.", intNo);
-            ignoreException2(() -> deleteDirForCloneIfExist(2));
+            ExceptionUtil.ignoreException2(() -> deleteDirForCloneIfExist(2));
 
             LOGGER.debug("{} Cleaning. Deleting target repo if exist.", intNo);
-            ignoreException2(() -> GitHubExecutor.ex(() -> gitHub.getRepository(targetRepoFullName).delete()));
+            ExceptionUtil.ignoreException2(() -> GitHubExecutor.ex(
+                    () -> gitHub.getRepository(targetRepoFullName).delete()
+            ));
 
             LOGGER.debug("{} Cleaning. Updating review response status.", intNo);
             response.setStatus(ReviewResponseStatus.PROCESSING_EROR);
