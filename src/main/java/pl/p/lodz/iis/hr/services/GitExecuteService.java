@@ -11,6 +11,7 @@ import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
 public class GitExecuteService {
@@ -20,7 +21,7 @@ public class GitExecuteService {
     @Autowired private ReviewResponseRepository responseRepository;
     @Autowired private GitHub gitHub;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public void registerCloneJob(ReviewResponse reviewResponse, GHRepository ghRepository) {
 
@@ -39,12 +40,32 @@ public class GitExecuteService {
 
     public void registerDelete(String repoName) {
 
-        GitDeleteTask gitDeleteTask = new GitDeleteTask(
+        Runnable gitDeleteTask = new GitDeleteTask(
                 gitHub,
                 appConfig,
                 repoName
         );
 
         executor.submit(gitDeleteTask);
+    }
+
+    public int getApproxNumberOfNotCompletedTasks() {
+        if (executor instanceof ThreadPoolExecutor) {
+            ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;
+            int queued = executorT.getQueue().size();
+            int active = executorT.getActiveCount();
+            return queued + active;
+        }
+
+        return -1;
+    }
+
+    public long getApproxNumberOfSubmittedTasks() {
+        if (executor instanceof ThreadPoolExecutor) {
+            ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;
+            return executorT.getTaskCount();
+        }
+
+        return -1L;
     }
 }
