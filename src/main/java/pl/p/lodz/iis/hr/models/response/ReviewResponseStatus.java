@@ -5,5 +5,5 @@ public enum ReviewResponseStatus {
     NOT_FORKED,
     PROCESSING,
     NOT_FILLED,
-    FILLED
+    ReviewResponseStatus, FILLED
 }

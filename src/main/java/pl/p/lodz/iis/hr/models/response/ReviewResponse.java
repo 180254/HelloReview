@@ -36,12 +36,12 @@ public class ReviewResponse implements Serializable {
     @JsonView
     private Participant assessed;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(nullable = true)
     @JsonView
     private Participant assessor;
 
-    @Column(nullable = false, length = 255, unique = false)
+    @Column(nullable = true, length = 255, unique = false)
     @JsonView
     private String assessedGhUrl;
 
@@ -64,8 +64,9 @@ public class ReviewResponse implements Serializable {
     ReviewResponse() {
     }
 
-    public ReviewResponse(Participant assessed, Participant assessor, String assessedGhUrl) {
+    public ReviewResponse(Review review, Participant assessed, Participant assessor, String assessedGhUrl) {
         uuid = UUID.randomUUID();
+        this.review = review;
         this.assessed = assessed;
         this.assessor = assessor;
         this.assessedGhUrl = assessedGhUrl;

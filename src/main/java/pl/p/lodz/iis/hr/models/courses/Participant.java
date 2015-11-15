@@ -34,7 +34,7 @@ public class Participant implements Serializable {
     @JsonView
     private Course course;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "participant", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "assessor", orphanRemoval = true)
     @JsonView
     @JsonProperty("reviewResponse")
     private List<ReviewResponse> reviewResponses;

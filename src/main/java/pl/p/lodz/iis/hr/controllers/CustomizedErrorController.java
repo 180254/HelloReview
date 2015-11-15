@@ -1,6 +1,8 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.BasicErrorController;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -14,6 +16,8 @@ import java.util.Map;
 @Controller
 class CustomizedErrorController extends BasicErrorController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizedErrorController.class);
+
     CustomizedErrorController() {
         super(new DefaultErrorAttributes(), new ErrorProperties());
     }
@@ -26,6 +30,8 @@ class CustomizedErrorController extends BasicErrorController {
     @Override
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         ResponseEntity<Map<String, Object>> error = super.error(request);
+
+        LOGGER.error(error.toString());
 
         Map<String, Object> body = new HashedMap<>(2);
         body.put("error", error.getBody().get("error"));

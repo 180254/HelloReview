@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.InternalException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
@@ -29,6 +30,7 @@ import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 
@@ -219,6 +221,7 @@ class MReviewsController {
                                  @RequestParam("review-add-course") Long2 courseID,
                                  @RequestParam("review-add-form") Long2 formID,
                                  @RequestParam("review-add-repository") String repository,
+                                 @RequestParam("review-add-ignore-warning") Long2 ignoreWarning,
                                  HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID.get())
@@ -254,38 +257,100 @@ class MReviewsController {
             return errors;
         }
 
-        //
+        // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
         try {
             Course course = courseRepository.getOne(courseID.get());
+            List<Participant> participants = course.getParticipants();
             Form form = formRepository.getOne(formID.get());
             List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
 
-            Map<String, GHRepository> forksMap = new HashMap<>(forks.size());
+            Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
 
-            Review review = new Review(name, respPerPeer.get(), course, form);
-            List<ReviewResponse> reviewResponses = new ArrayList<>(course.getParticipants().size());
+            List<Participant> participWhoForked = participants.stream()
+                    .filter(p -> forksMap.containsKey(p.getGitHubName()))
+                    .collect(Collectors.toList());
 
-            for (Participant participant : course.getParticipants()) {
-                ReviewResponse reviewResponse = new ReviewResponse(review, participant);
+            List<Participant> participWhoNotForked = participants.stream()
+                    .filter(p -> !forksMap.containsKey(p.getGitHubName()))
+                    .collect(Collectors.toList());
 
-                reviewResponse.setStatus(forksMap.containsKey(participant.getGitHubName())
-                        ? ReviewResponseStatus.NOT_FORKED
-                        : ReviewResponseStatus.PROCESSING);
+            if ((ignoreWarning.get() == 0L) && !participWhoNotForked.isEmpty()) {
+                response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 
-                reviewResponse.setGitHubUrl("XXXXX" + new Random().nextLong());
-                reviewResponses.add(reviewResponse);
+                List<String> warning = new ArrayList<>(10);
+                warning.add(String.valueOf(participWhoNotForked.size()));
+                warning.add(String.valueOf(participants.size()));
+                participWhoNotForked.forEach((p) -> warning.add(p.getName()));
+                return warning;
+            }
+
+            long respPerPeer2 = Math.min((long) participWhoForked.size() - 1L, respPerPeer.get());
+            if ((respPerPeer2 == 0L) && (participWhoForked.size() == 1)) {
+                respPerPeer2 = 1L;
+            }
+            if (respPerPeer2 == -1L) {
+                respPerPeer2 = 0L;
+            }
+
+            List<Participant> mulParticipants = new ArrayList<>(10);
+            while (mulParticipants.size() < participants.size()) {
+                mulParticipants.addAll(participWhoForked);
+            }
+            Collections.shuffle(mulParticipants);
+            mulParticipants.addAll(participWhoForked);
+
+            Review review = new Review(name, respPerPeer2, course, form);
+            List<ReviewResponse> responses = new ArrayList<>(10);
+
+            for (Participant particip : participWhoNotForked) {
+                ReviewResponse rResponse = new ReviewResponse(review, particip, null, null);
+                rResponse.setStatus(ReviewResponseStatus.NOT_FORKED);
+                responses.add(rResponse);
+            }
+
+            for (Participant assessor : course.getParticipants()) {
+                for (long lo = 0L; lo < respPerPeer2; lo++) {
+
+                    Participant assessed = (participWhoForked.size() == 1)
+                            ? pop(mulParticipants)
+                            : popNotMe(mulParticipants, assessor);
+                    GHRepository assessedRepo = forksMap.get(assessed.getGitHubName());
+
+                    ReviewResponse rResponse =
+                            new ReviewResponse(review, assessed, assessor, assessedRepo.getHtmlUrl().toString());
+                    responses.add(rResponse);
+                }
             }
 
             reviewRepository.save(review);
-            reviewResponseRepository.save(reviewResponses);
+            reviewResponseRepository.save(responses);
 
             return singletonList(String.valueOf(review.getId()));
+
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return singletonList(e.toString());
         }
     }
 
+    public <T> T pop(List<T> collection) {
+        T t = collection.get(0);
+        collection.remove(t);
+        return t;
+    }
+
+    public <T> T popNotMe(Collection<T> collection, T me) {
+        for (T collElement : collection) {
+            if (!me.equals(collElement)) {
+                collection.remove(collElement);
+                return collElement;
+            }
+        }
+        throw new InternalException();
+    }
+
+
 }
+

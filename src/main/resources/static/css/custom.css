@@ -178,7 +178,8 @@ main {
 }
 
 /*                displaying review                  */
-#review-add-error {
+#review-add-error,
+#review-add-warning {
     display: none;
 }
 

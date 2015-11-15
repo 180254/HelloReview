@@ -27,6 +27,7 @@ function formAddHandler(action) {
         $buttonAdd = $('#form-add-button-add'),
         $previewUrlDiv = $('#form-add-preview-url');
 
+    $errorsDiv.hide();
     $errorsList.html('');
     $buttonPreview.prop('disabled', true);
     $buttonAdd.prop('disabled', true);
@@ -78,6 +79,8 @@ function reviewDownloadRepoList() {
         $errorsDiv = $('#review-add-error'),
         $errorsList = $('#review-add-error-list');
 
+    $errorsDiv.hide();
+    $errorsList.html('');
     $button.prop('disabled', true);
 
     $.ajax({
@@ -113,12 +116,26 @@ function reviewDownloadRepoList() {
 function reviewAddHandler() {
     'use strict';
 
-    var serialized = $('#review-add-form').serialize(),
+    var serialized,
         $button = $('#review-add-submit'),
         $errorsDiv = $('#review-add-error'),
-        $errorsList = $('#review-add-error-list');
+        $errorsList = $('#review-add-error-list'),
+        $warningDiv = $('#review-add-warning'),
+        $warningList = $('#review-add-warning-list'),
+        $warningIgnore = $('#review-add-ignore-warning'),
+        $warningOf1 = $('#review-add-warning-of-1'),
+        $warningOf2 = $('#review-add-warning-of-2'),
+        $allInputs = $('#review-add-form select, #review-add-form input');
+
+    $allInputs.prop('disabled', false);
+    serialized = $('#review-add-form').serialize();
+    $warningIgnore.val('0');
+
+    $errorsDiv.hide();
+    $warningDiv.hide();
 
     $errorsList.html('');
+    $warningList.html('');
     $button.prop('disabled', true);
 
     $.ajax({
@@ -135,10 +152,27 @@ function reviewAddHandler() {
             i,
             errLen;
 
-        $errorsDiv.fadeIn();
 
-        for (i = 0, errLen = errors.length; i < errLen; i += 1) {
-            $('<li>').text(errors[i]).appendTo($errorsList);
+        // precondition failed
+        if (jqXHR.status === 412) {
+            $allInputs.prop('disabled', true);
+
+            $warningIgnore.val('1');
+            $warningOf1.html(errors[0]);
+            $warningOf2.html(errors[1]);
+
+            for (i = 2, errLen = errors.length; i < errLen; i += 1) {
+                $('<li>').text(errors[i]).appendTo($warningList);
+            }
+
+            $warningDiv.fadeIn();
+
+        } else {
+            for (i = 0, errLen = errors.length; i < errLen; i += 1) {
+                $('<li>').text(errors[i]).appendTo($errorsList);
+            }
+
+            $errorsDiv.fadeIn();
         }
 
     }).always(function () {
