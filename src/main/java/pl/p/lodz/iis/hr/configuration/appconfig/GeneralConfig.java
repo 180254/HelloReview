@@ -13,12 +13,17 @@ public final class GeneralConfig {
     @JsonProperty("cachedir")
     private final String cacheDir;
 
+    @JsonProperty("tempdir")
+    private final String tempDir;
+
     @JsonCreator
     GeneralConfig(@JsonProperty("url") String url,
-                  @JsonProperty("cachedir") String cacheDir) {
+                  @JsonProperty("cachedir") String cacheDir,
+                  @JsonProperty("tempdir") String tempDir) {
 
         this.url = url;
         this.cacheDir = cacheDir;
+        this.tempDir = tempDir;
     }
 
     public String getUrl() {
@@ -27,6 +32,10 @@ public final class GeneralConfig {
 
     public String getCacheDir() {
         return cacheDir;
+    }
+
+    public String getTempDir() {
+        return tempDir;
     }
 
     @Override

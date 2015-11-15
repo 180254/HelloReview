@@ -24,6 +24,7 @@ import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewResponseRepository;
+import pl.p.lodz.iis.hr.services.GitCloneService;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
@@ -45,6 +46,7 @@ class MReviewsController {
     @Autowired private GitHub gitHub;
     @Autowired private LocaleService localeService;
     @Autowired private ValidateService validateService;
+    @Autowired private GitCloneService gitCloneService;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -321,11 +323,16 @@ class MReviewsController {
                     ReviewResponse rResponse =
                             new ReviewResponse(review, assessed, assessor, assessedRepo.getHtmlUrl().toString());
                     responses.add(rResponse);
+
                 }
             }
 
             reviewRepository.save(review);
             reviewResponseRepository.save(responses);
+
+            responses.stream()
+                    .filter(r -> r.getStatus() != ReviewResponseStatus.NOT_FORKED)
+                    .forEach(r -> gitCloneService.registerCloneJob(r, forksMap.get(r.getAssessed().getGitHubName())));
 
             return singletonList(String.valueOf(review.getId()));
 

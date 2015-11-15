@@ -6,6 +6,7 @@ build/
 
 database
 cache
+temp
 
 rebel.xml
 rebel-remote.xml

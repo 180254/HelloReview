@@ -2,6 +2,7 @@
 <hello>
     <generalConfig>
         <url>http://127.0.0.1:8080</url>
+        <tempdir>temp</tempdir>
         <cachedir>cache</cachedir>
     </generalConfig>
 
