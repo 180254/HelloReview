@@ -320,12 +320,7 @@ class GitExecuteCloneTask implements Runnable {
 
             Awaitility.await("push is visible by GitHub api").atMost(2L, TimeUnit.MINUTES)
                     .with().pollDelay(5L, TimeUnit.SECONDS)
-                    .until(() -> {
-                                Boolean ex = GitHubExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch));
-                                LOGGER.info("XXX/{}", ex);
-                                return ex;
-                            }
-                    );
+                    .until(() -> GitHubExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
 
         } catch (Throwable ex) {
             throw new IOException(ex);

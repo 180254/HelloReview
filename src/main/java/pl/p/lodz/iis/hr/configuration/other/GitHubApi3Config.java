@@ -24,7 +24,7 @@ import java.io.IOException;
 
 @Configuration
 @DependsOn("appConfig")
-class GitHubApi3Configuration {
+class GitHubApi3Config {
 
     public static final double CACHE_SIZE_MB = 10.0;
 
@@ -44,14 +44,14 @@ class GitHubApi3Configuration {
 
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
             return new GitHubBuilder()
-                    .withConnector(okHttpConnector())
+//                    .withConnector(okHttpConnector())
                     .withRateLimitHandler(RateLimitHandler.FAIL)
                     .withPassword(dummy.getUsername(), dummy.getPassword())
                     .build();
 
         } catch (IOException e) {
 
-            throw new UnableToInitializeException(GitHubApi3Configuration.class,
+            throw new UnableToInitializeException(GitHubApi3Config.class,
                     "Unable to initialize GitHub api client.", e);
         }
     }
@@ -62,14 +62,14 @@ class GitHubApi3Configuration {
 
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
             return new GitHubBuilder()
-                    .withConnector(okHttpConnector())
+//                    .withConnector(okHttpConnector())
                     .withRateLimitHandler(RateLimitHandler.WAIT)
                     .withPassword(dummy.getUsername(), dummy.getPassword())
                     .build();
 
         } catch (IOException e) {
 
-            throw new UnableToInitializeException(GitHubApi3Configuration.class,
+            throw new UnableToInitializeException(GitHubApi3Config.class,
                     "Unable to initialize GitHub api client.", e);
         }
     }

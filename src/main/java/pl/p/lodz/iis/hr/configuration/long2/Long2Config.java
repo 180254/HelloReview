@@ -6,7 +6,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-public class Long2Configuration extends WebMvcConfigurerAdapter {
+public class Long2Config extends WebMvcConfigurerAdapter {
 
     @Bean
     public Long2Converter long2Converter() {

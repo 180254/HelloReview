@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-class Hibernate5Configuration {
+class Hibernate5Config {
 
     @Bean
     @Primary
