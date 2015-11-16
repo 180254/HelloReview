@@ -287,17 +287,20 @@ class MReviewsController {
                     .filter(p -> !forksMap.containsKey(p.getGitHubName()))
                     .collect(Collectors.toList());
 
-            if ((ignoreWarning.get() == 0L) && !participantsWhoNotForked.isEmpty()) {
+            long respPerPeer2 = Math.max(Math.min((long) participantWhoForked.size() - 1L, respPerPeer.get()), 0L);
+
+            boolean preconditionFailed = (!participantsWhoNotForked.isEmpty() || (respPerPeer.get() != respPerPeer2));
+            if ((ignoreWarning.get() == 0L) /*&& preconditionFailed*/) {
                 response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 
                 List<String> warning = new ArrayList<>(10);
+                warning.add(String.valueOf(respPerPeer2));
                 warning.add(String.valueOf(participantsWhoNotForked.size()));
                 warning.add(String.valueOf(participants.size()));
                 participantsWhoNotForked.forEach((p) -> warning.add(p.getName()));
                 return warning;
             }
 
-            long respPerPeer2 = Math.max(Math.min((long) participantWhoForked.size() - 1L, respPerPeer.get()), 0L);
 
             List<Participant> mulParticipants = new ArrayList<>(10);
             while (mulParticipants.size() < participants.size()) {

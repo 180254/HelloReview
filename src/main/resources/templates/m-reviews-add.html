@@ -68,15 +68,23 @@
 
             <div id="review-add-warning" class="course-add-ajax-info alert alert-warning" role="alert">
                 <h4>
-                    <strong id="review-add-warning-of-1">0</strong>
-                    <span th:text="#{m.reviews.add.warning.of}"></span>
-                    <strong id="review-add-warning-of-2">0</strong>
+                    <strong id="review-add-warning-part1">0</strong>
+                    <span th:text="#{m.reviews.add.warning.part1}"></span>
+                    <br/>
 
-                    <span th:text="#{m.reviews.add.warning.header}"></span>
+                    <strong id="review-add-warning-part2-of1">0</strong>
+                    <span th:text="#{m.reviews.add.warning.part2.of}"></span>
+                    <strong id="review-add-warning-part2-of2">0</strong>
+                    <span th:text="#{m.reviews.add.warning.part2}"></span>
                 </h4>
 
                 <ul id="review-add-warning-list">
                 </ul>
+                <br/>
+
+                <h4>
+                    <span th:text="#{m.reviews.add.warning.part3}"></span>
+                </h4>
             </div>
 
             <div id="review-add-error" class="course-add-ajax-info alert alert-danger" role="alert">

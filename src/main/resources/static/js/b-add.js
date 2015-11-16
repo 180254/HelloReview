@@ -123,8 +123,9 @@ function reviewAddHandler() {
         $warningDiv = $('#review-add-warning'),
         $warningList = $('#review-add-warning-list'),
         $warningIgnore = $('#review-add-ignore-warning'),
-        $warningOf1 = $('#review-add-warning-of-1'),
-        $warningOf2 = $('#review-add-warning-of-2'),
+        $warningPart1 = $('#review-add-warning-part1'),
+        $warningPart2Of1 = $('#review-add-warning-part2-of1'),
+        $warningPart2Of2 = $('#review-add-warning-part2-of2'),
         $allInputs = $('#review-add-form select, #review-add-form input');
 
     $allInputs.prop('disabled', false);
@@ -152,16 +153,16 @@ function reviewAddHandler() {
             i,
             errLen;
 
-
         // precondition failed
         if (jqXHR.status === 412) {
             $allInputs.prop('disabled', true);
 
             $warningIgnore.val('1');
-            $warningOf1.html(errors[0]);
-            $warningOf2.html(errors[1]);
+            $warningPart1.html(errors[0]);
+            $warningPart2Of1.html(errors[1]);
+            $warningPart2Of2.html(errors[2]);
 
-            for (i = 2, errLen = errors.length; i < errLen; i += 1) {
+            for (i = 3, errLen = errors.length; i < errLen; i += 1) {
                 $('<li>').text(errors[i]).appendTo($warningList);
             }
 
