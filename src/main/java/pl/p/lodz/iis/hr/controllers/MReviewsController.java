@@ -256,7 +256,7 @@ class MReviewsController {
                 new Review(name, respPerPeer.get(), null, null, name),
                 new String[]{
                         "name",
-                        "respPerPeer"
+                        "commPerPeer"
                 }, new String[]{
                         localeService.getMessage("m.reviews.add.validation.prefix.name"),
                         localeService.getMessage("m.reviews.add.validation.prefix.comm.per.peer")
