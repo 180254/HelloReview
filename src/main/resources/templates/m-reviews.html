@@ -15,9 +15,10 @@
         <tr>
             <th th:text="#{m.reviews.thead.id}"></th>
             <th th:text="#{m.reviews.thead.name}"></th>
-            <th th:text="#{m.reviews.thead.comm.per.peer}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.course}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.form}"></span></th>
+            <th th:text="#{m.reviews.thead.repository}"></th>
+            <th th:text="#{m.reviews.thead.comm.per.peer}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.commissions}"></span></th>
             <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.reviews.thead.delete}"></span></th>
         </tr>
@@ -34,8 +35,6 @@
                 </a>
             </td>
 
-            <td th:text="${review.commPerPeer}"></td>
-
             <td>
                 <a th:href="'/m/courses/'+ ${review.course.id}">
                     <span th:text="${review.course.name}"></span>
@@ -47,6 +46,11 @@
                     <span th:text="${review.form.name}"></span>
                 </a>
             </td>
+
+            <td th:text="${review.repository}"></td>
+
+
+            <td th:text="${review.commPerPeer}"></td>
 
             <td>
                 <a th:href="'/m/reviews/'+ ${review.id} + '/responses'">

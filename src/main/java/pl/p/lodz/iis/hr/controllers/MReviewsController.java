@@ -204,7 +204,7 @@ class MReviewsController {
         }
 
         List<String> nameErrors = validateService.validateField(
-                new Review(newName, 0L, null, null),
+                new Review(newName, 0L, null, null, null),
                 "name",
                 localeService.getMessage("m.reviews.add.validation.prefix.name")
         );
@@ -253,7 +253,7 @@ class MReviewsController {
         }
 
         List<String> errors = validateService.validateFields(
-                new Review(name, respPerPeer.get(), null, null),
+                new Review(name, respPerPeer.get(), null, null, name),
                 new String[]{
                         "name",
                         "respPerPeer"
@@ -306,8 +306,8 @@ class MReviewsController {
             Collections.shuffle(mulParticipants);
             mulParticipants.addAll(participantWhoForked);
 
-            Review review = new Review(name, respPerPeer2, course, form);
-            List<Commission> responses = new ArrayList<>(10);
+            Review review = new Review(name, respPerPeer2, course, form, repository);
+            Collection<Commission> responses = new ArrayList<>(10);
 
             for (Participant participant : participantsWhoNotForked) {
                 Commission rResponse = new Commission(review, participant, null, (String) null);

@@ -43,6 +43,10 @@ public class Review implements Serializable {
     @JsonView
     private Form form;
 
+    @Column(nullable = false, length = 255)
+    @JsonView
+    private String repository;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "review", orphanRemoval = true)
     @JsonView
     @JsonProperty("commission")
@@ -59,11 +63,12 @@ public class Review implements Serializable {
     Review() {
     }
 
-    public Review(String name, long commPerPeer, Course course, Form form) {
+    public Review(String name, long commPerPeer, Course course, Form form, String repository) {
         this.name = name;
         this.commPerPeer = commPerPeer;
         this.course = course;
         this.form = form;
+        this.repository = repository;
         commissions = new ArrayList<>(10);
     }
 
@@ -105,6 +110,14 @@ public class Review implements Serializable {
 
     /* package */ void setForm(Form form) {
         this.form = form;
+    }
+
+    public String getRepository() {
+        return repository;
+    }
+
+    /* package */ void setRepository(String repository) {
+        this.repository = repository;
     }
 
     public List<Commission> getCommissions() {
