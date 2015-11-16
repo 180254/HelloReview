@@ -172,9 +172,9 @@ class MReviewsController {
 
         Review review = reviewRepository.findOne(reviewID.get());
 
-        for (Commission commission : review.getCommissions()) {
-            gitExecuteService.registerDelete(commission.getUuid().toString());
-        }
+        review.getCommissions().stream()
+                .filter(commission -> commission.getStatus().isCopyExistOnGitHub())
+                .forEach(commission -> gitExecuteService.registerDelete(commission.getUuid().toString()));
 
         reviewRepository.delete(review);
         return Collections.singletonList(localeService.getMessage("m.reviews.delete.done"));

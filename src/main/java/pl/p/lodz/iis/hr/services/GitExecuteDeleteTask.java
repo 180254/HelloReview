@@ -21,14 +21,16 @@ class GitExecuteDeleteTask implements Runnable {
 
     @Override
     public void run() {
+        LOGGER.info("{} Deleting.", repoName);
         AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
         GitHub gitHubWait = ApplicationContextProvider.getBean("gitHubWait", GitHub.class);
 
         String dummyUsername = appConfig.getGitHubConfig().getDummy().getUsername();
-        IRunnerGH2 deleteRunner = () -> gitHubWait.getRepository(String.format("%s/%s", dummyUsername, repoName)).delete();
+        String fulLRepoName = String.format("%s/%s", dummyUsername, repoName);
 
-        boolean success = ExceptionUtil.isExceptionThrown2(() -> GitHubExecutor.ex(deleteRunner));
+        IRunnerGH2 deleteRunner = () -> gitHubWait.getRepository(fulLRepoName).delete();
+        boolean success = !ExceptionUtil.isExceptionThrown2(() -> GitHubExecutor.ex(deleteRunner));
+
         LOGGER.info("{} Repo delete status succeeded = {}", repoName, success);
-
     }
 }

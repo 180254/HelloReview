@@ -128,7 +128,7 @@ class GitExecuteCloneTask implements Runnable {
 
             LOGGER.debug("{} Repo cloning done. Updating commision status.", intNo);
 
-            commission.setStatus(CommissionStatus.NOT_FILLED);
+            commission.setStatus(CommissionStatus.UNFILLED);
             commission.setGhUrl(targetRepo.getHtmlUrl().toString());
             commissionRepository.save(commission);
 
