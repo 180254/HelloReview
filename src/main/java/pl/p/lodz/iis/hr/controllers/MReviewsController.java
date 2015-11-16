@@ -172,9 +172,17 @@ class MReviewsController {
 
         Review review = reviewRepository.findOne(reviewID.get());
 
+        boolean isAnyProcessing = review.getCommissions().stream()
+                .anyMatch(comm -> comm.getStatus() == CommissionStatus.PROCESSING);
+
+        if (isAnyProcessing) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return Collections.singletonList(localeService.getMessage("m.reviews.delete.cannot.as.comm.processing"));
+        }
+
         review.getCommissions().stream()
-                .filter(commission -> commission.getStatus().isCopyExistOnGitHub())
-                .forEach(commission -> gitExecuteService.registerDelete(commission.getUuid().toString()));
+                .filter(comm -> comm.getStatus().isCopyExistOnGitHub())
+                .forEach(comm -> gitExecuteService.registerDelete(comm.getUuid().toString()));
 
         reviewRepository.delete(review);
         return Collections.singletonList(localeService.getMessage("m.reviews.delete.done"));
