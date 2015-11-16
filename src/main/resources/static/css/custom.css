@@ -1,15 +1,15 @@
 /*                      error                       */
 
-#sth-go-wrong .status {
+#sth-went-wrong .status {
     font-family: Impact, Charcoal, sans-serif;
     font-size: 2.5em;
 }
 
-#sth-go-wrong .message {
+#sth-went-wrong .message {
     font-size: 1.2em;
 }
 
-#sth-go-wrong .message2 {
+#sth-went-wrong .message2 {
     font-size: 1.9em;
 }
 
