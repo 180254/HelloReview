@@ -20,6 +20,7 @@
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.repository}"></span></th>
             <th th:text="#{m.reviews.thead.comm.per.peer}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.commissions}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.responses}"></span></th>
             <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.reviews.thead.delete}"></span></th>
         </tr>
         </thead>
@@ -55,10 +56,14 @@
             <td th:text="${review.commPerPeer}"></td>
 
             <td>
-                <a th:href="'/m/reviews/'+ ${review.id} + '/responses'">
+                <a th:href="'/m/reviews/'+ ${review.id} + '/commissions'">
                     <strong th:text="${review.commissions.size()}"></strong>
                     <span th:text="#{m.reviews.tbody.commissions}"></span>
                 </a>
+            </td>
+
+            <td>
+                0/10 responses
             </td>
 
             <td>

@@ -70,7 +70,7 @@ class MCoursesController {
         List<String> errors = validateService.validateField(
                 course,
                 "name",
-                localeService.getMessage("m.courses.add.validation.prefix.course.name")
+                localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
         if (!errors.isEmpty()) {
@@ -79,7 +79,7 @@ class MCoursesController {
         }
 
         courseRepository.save(course);
-        return Collections.singletonList(localeService.getMessage("m.courses.add.done"));
+        return Collections.singletonList(localeService.get("m.courses.add.done"));
     }
 
     @RequestMapping(
@@ -93,11 +93,11 @@ class MCoursesController {
 
         if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         courseRepository.delete(courseID.get());
-        return Collections.singletonList(localeService.getMessage("m.courses.delete.done"));
+        return Collections.singletonList(localeService.get("m.courses.delete.done"));
     }
 
     @RequestMapping(
@@ -112,13 +112,13 @@ class MCoursesController {
 
         if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         List<String> errors = validateService.validateField(
                 new Course(newName),
                 "name",
-                localeService.getMessage("m.courses.add.validation.prefix.course.name")
+                localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
         if (!errors.isEmpty()) {
@@ -130,7 +130,7 @@ class MCoursesController {
         course.setName(newName);
         courseRepository.save(course);
 
-        return Collections.singletonList(localeService.getMessage("m.courses.rename.done"));
+        return Collections.singletonList(localeService.get("m.courses.rename.done"));
     }
 
 }

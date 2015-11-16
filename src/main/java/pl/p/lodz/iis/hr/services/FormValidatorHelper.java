@@ -63,7 +63,7 @@ class FormValidatorHelper {
                                 String.format("%s > %s: [%s]",
                                         errorPath,
                                         ((FieldError) objectError).getField(),
-                                        localeService.getMessage(objectError)))
+                                        localeService.get(objectError)))
                         .collect(Collectors.toList());
 
         errorsList.addAll(collect);

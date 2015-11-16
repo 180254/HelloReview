@@ -167,7 +167,7 @@ class MReviewsController {
 
         if (!reviewRepository.exists(reviewID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         Review review = reviewRepository.findOne(reviewID.get());
@@ -177,7 +177,7 @@ class MReviewsController {
 
         if (isAnyProcessing) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("m.reviews.delete.cannot.as.comm.processing"));
+            return Collections.singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
         }
 
         review.getCommissions().stream()
@@ -185,7 +185,7 @@ class MReviewsController {
                 .forEach(comm -> gitExecuteService.registerDelete(comm.getUuid().toString()));
 
         reviewRepository.delete(review);
-        return Collections.singletonList(localeService.getMessage("m.reviews.delete.done"));
+        return Collections.singletonList(localeService.get("m.reviews.delete.done"));
     }
 
     @RequestMapping(
@@ -200,13 +200,13 @@ class MReviewsController {
 
         if (!reviewRepository.exists(reviewID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         List<String> nameErrors = validateService.validateField(
                 new Review(newName, 0L, null, null, null),
                 "name",
-                localeService.getMessage("m.reviews.add.validation.prefix.name")
+                localeService.get("m.reviews.add.validation.prefix.name")
         );
 
         if (!nameErrors.isEmpty()) {
@@ -218,7 +218,7 @@ class MReviewsController {
         review.setName(newName);
         reviewRepository.save(review);
 
-        return Collections.singletonList(localeService.getMessage("m.reviews.rename.done"));
+        return Collections.singletonList(localeService.get("m.reviews.rename.done"));
     }
 
     @RequestMapping(
@@ -240,7 +240,7 @@ class MReviewsController {
                 || !repository.contains("/")) {
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResources"));
+            return Collections.singletonList(localeService.get("NoResources"));
         }
 
         GHRepository ghRepository;
@@ -249,7 +249,7 @@ class MReviewsController {
             ghRepository = GitHubExecutor.ex(() -> gitHubFail.getRepository(repository));
         } catch (GitHubCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResources"));
+            return Collections.singletonList(localeService.get("NoResources"));
         }
 
         List<String> errors = validateService.validateFields(
@@ -258,8 +258,8 @@ class MReviewsController {
                         "name",
                         "commPerPeer"
                 }, new String[]{
-                        localeService.getMessage("m.reviews.add.validation.prefix.name"),
-                        localeService.getMessage("m.reviews.add.validation.prefix.comm.per.peer")
+                        localeService.get("m.reviews.add.validation.prefix.name"),
+                        localeService.get("m.reviews.add.validation.prefix.comm.per.peer")
                 }
         );
 
@@ -341,7 +341,9 @@ class MReviewsController {
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return Collections.singletonList(e.toString());
+            return Collections.singletonList(
+                    String.format("%s %s", localeService.get("NoGitHub"), e.toString())
+            );
         }
     }
 

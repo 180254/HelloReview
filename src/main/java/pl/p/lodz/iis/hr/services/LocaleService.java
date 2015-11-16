@@ -30,19 +30,19 @@ public class LocaleService {
                 : msg;
     }
 
-    public String getMessage(String code) {
+    public String get(String code) {
         return msgOrCode(() -> messageSource.getMessage(code, null, getLocale()), code);
     }
 
-    public String getMessage(String code, Object[] args, String defaultMessage) {
+    public String get(String code, Object[] args, String defaultMessage) {
         return msgOrCode(() -> messageSource.getMessage(code, args, defaultMessage, getLocale()), code);
     }
 
-    public String getMessage(String code, Object[] args) {
+    public String get(String code, Object[] args) {
         return msgOrCode(() -> messageSource.getMessage(code, args, getLocale()), code);
     }
 
-    public String getMessage(MessageSourceResolvable resolvable) {
+    public String get(MessageSourceResolvable resolvable) {
         return msgOrCode(() -> messageSource.getMessage(resolvable, getLocale()), resolvable.getCodes()[0]);
     }
 }

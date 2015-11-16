@@ -80,14 +80,15 @@ class MParticipantsController {
                                  HttpServletResponse response) {
 
         if (!courseRepository.exists(courseID.get())) {
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         Course course = courseRepository.getOne(courseID.get());
         Participant participant = new Participant(course, name, gitHubName);
 
-        String namePrefix = localeService.getMessage("m.participants.add.validation.prefix.participant.name");
-        String gitHubNamePrefix = localeService.getMessage("m.participants.add.validation.prefix.github.name");
+        String namePrefix = localeService.get("m.participants.add.validation.prefix.participant.name");
+        String gitHubNamePrefix = localeService.get("m.participants.add.validation.prefix.github.name");
 
         List<String> allErrors = validateService.validateFields(
                 participant,
@@ -101,11 +102,11 @@ class MParticipantsController {
         );
 
         if (participantRepository.findByCourseAndName(course, name) != null) {
-            allErrors.add(String.format("%s %s", namePrefix, localeService.getMessage("UniqueName")));
+            allErrors.add(String.format("%s %s", namePrefix, localeService.get("UniqueName")));
         }
 
         if (participantRepository.findByCourseAndGitHubName(course, gitHubName) != null) {
-            allErrors.add(String.format("%s %s", gitHubNamePrefix, localeService.getMessage("UniqueName")));
+            allErrors.add(String.format("%s %s", gitHubNamePrefix, localeService.get("UniqueName")));
         }
 
         if (!allErrors.isEmpty()) {
@@ -114,7 +115,7 @@ class MParticipantsController {
         }
 
         participantRepository.save(participant);
-        return Collections.singletonList(localeService.getMessage("m.participants.add.done"));
+        return Collections.singletonList(localeService.get("m.participants.add.done"));
     }
 
     @RequestMapping(
@@ -128,11 +129,11 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         participantRepository.delete(participantID.get());
-        return Collections.singletonList(localeService.getMessage("m.participants.delete.done"));
+        return Collections.singletonList(localeService.get("m.participants.delete.done"));
     }
 
     @RequestMapping(
@@ -147,20 +148,20 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("UniqueName"));
+            return Collections.singletonList(localeService.get("UniqueName"));
         }
 
         List<String> nameErrors = validateService.validateField(
                 new Participant(null, newName, null),
                 "name",
-                localeService.getMessage("m.participants.add.validation.prefix.participant.name")
+                localeService.get("m.participants.add.validation.prefix.participant.name")
         );
 
         if (!nameErrors.isEmpty()) {
@@ -171,7 +172,7 @@ class MParticipantsController {
         participant.setName(newName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.getMessage("m.participants.rename.participant.name.done"));
+        return Collections.singletonList(localeService.get("m.participants.rename.participant.name.done"));
     }
 
     @RequestMapping(
@@ -186,20 +187,20 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("UniqueName"));
+            return Collections.singletonList(localeService.get("UniqueName"));
         }
 
         List<String> gitHubNameErrors = validateService.validateField(
                 new Participant(null, null, newGitHubName),
                 "gitHubName",
-                localeService.getMessage("m.participants.add.validation.prefix.github.name")
+                localeService.get("m.participants.add.validation.prefix.github.name")
         );
 
         if (!gitHubNameErrors.isEmpty()) {
@@ -210,6 +211,6 @@ class MParticipantsController {
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.getMessage("m.participants.rename.github.name.done"));
+        return Collections.singletonList(localeService.get("m.participants.rename.github.name.done"));
     }
 }

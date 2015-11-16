@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+    <div th:replace="fragments/ajax :: ajax-loader"></div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th th:text="#{m.commissions.thead.id}"></th>
+            <th th:text="#{m.commissions.thead.review.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessed}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessor}"></span></th>
+            <th th:text="#{m.commissions.thead.status}"></th>
+            <th><i class="fa fa-refresh"></i>&nbsp;<span th:text="#{m.commissions.thead.retry}"></span></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="commission : ${commissions}">
+
+            <td th:text="${commission.id}"></td>
+
+            <td th:text="${commission.review.name}"></td>
+
+            <td>
+                <a th:href="'/m/participants/'+ ${commission.assessed.id}">
+                    <span th:text="${commission.assessed.name}"></span>
+                </a>
+            </td>
+
+            <td th:if="${commission.assessor != null}">
+                <a th:href="'/m/participants/'+ ${commission.assessor.id}">
+                    <span th:text="${commission.assessor.name}"></span>
+                </a>
+            </td>
+            <td th:if="${commission.assessor == null}">&nbsp;</td>
+
+            <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
+
+            <td th:if="${commission.status.shouldBeRetried() == true}">
+                <a href="#" class="commission-retry" th:attr="data-id=${commission.id}"
+                   th:text="#{m.commissions.tbody.retry}"></a>
+            </td>
+            <td th:if="${commission.status.shouldBeRetried() == false}">&nbsp;</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

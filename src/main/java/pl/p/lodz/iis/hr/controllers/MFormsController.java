@@ -187,11 +187,11 @@ class MFormsController {
 
         if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         formRepository.delete(formID.get());
-        return Collections.singletonList(localeService.getMessage("m.forms.delete.done"));
+        return Collections.singletonList(localeService.get("m.forms.delete.done"));
     }
 
     @RequestMapping(
@@ -206,13 +206,13 @@ class MFormsController {
 
         if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.getMessage("NoResource"));
+            return Collections.singletonList(localeService.get("NoResource"));
         }
 
         List<String> nameErrors = validateService.validateField(
                 new Form(newName, null),
                 "name",
-                localeService.getMessage("m.forms.rename.validation.prefix.name")
+                localeService.get("m.forms.rename.validation.prefix.name")
         );
 
         if (!nameErrors.isEmpty()) {
@@ -224,6 +224,6 @@ class MFormsController {
         form.setName(newName);
         formRepository.save(form);
 
-        return Collections.singletonList(localeService.getMessage("m.forms.rename.done"));
+        return Collections.singletonList(localeService.get("m.forms.rename.done"));
     }
 }

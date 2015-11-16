@@ -49,6 +49,7 @@ public class Commission implements Serializable {
     private String ghUrl;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @JsonView
     private CommissionStatus status;
 

@@ -24,7 +24,7 @@ public class ValidateService {
 
         List<FieldError> fieldErrors = bindingResult.getFieldErrors(fieldName);
         return fieldErrors.stream().map(
-                fieldError -> String.format("%s %s", prefix, localeService.getMessage(fieldError)))
+                fieldError -> String.format("%s %s", prefix, localeService.get(fieldError)))
                 .sorted()
                 .collect(Collectors.toList());
     }
