@@ -1,7 +1,6 @@
 package pl.p.lodz.iis.hr.services;
 
-
-import org.apache.commons.io.FileUtils;
+import com.jayway.awaitility.Awaitility;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -23,7 +22,13 @@ import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 class GitExecuteCloneTask implements Runnable {
 
@@ -113,6 +118,7 @@ class GitExecuteCloneTask implements Runnable {
                     commitFiles(gitTarget);
                     createBranchIfRequired(gitTarget, branch);
                     pushChangesIntoTargetRepo(gitTarget);
+                    awaitUntilPushIsCompleted(branch);
                 }
 
                 deleteDirForCloneIfExist(2);
@@ -150,7 +156,6 @@ class GitExecuteCloneTask implements Runnable {
 
     }
 
-
     private void deleteDirForCloneIfExist(int cause) throws IOException {
         boolean exists = directoryForClone.exists();
 
@@ -158,11 +163,10 @@ class GitExecuteCloneTask implements Runnable {
             LOGGER.debug("{} Directory for clone should not exist, currently exist = {}", intNo, exists);
         } else if (cause == 2) {
             LOGGER.debug("{} Cleaning. Directory for clone should exist, currently exist = {}", intNo, exists);
-
         }
 
         if (exists) {
-            FileUtils.deleteDirectory(directoryForClone);
+            deleteDirectoryNIO(directoryForClone.toPath());
             LOGGER.debug("{} Directory for clone deleted.", intNo);
         }
     }
@@ -194,7 +198,7 @@ class GitExecuteCloneTask implements Runnable {
 
         int i = 0;
         for (String assessedRepoBranch : assessedRepoBranches) {
-            LOGGER.trace("{} {}. {}", intNo, i, assessedRepoBranch);
+            LOGGER.debug("{} {}. {}", intNo, i, assessedRepoBranch);
             i++;
         }
 
@@ -239,7 +243,7 @@ class GitExecuteCloneTask implements Runnable {
     private void removeGitSubdirInClone() throws IOException {
         LOGGER.debug("{} Removing .git subdir in clone.", intNo);
 
-        FileUtils.deleteDirectory(directoryForCloneGitSubdir);
+        deleteDirectoryNIO(directoryForCloneGitSubdir.toPath());
 
         LOGGER.debug("{} Removed .git subdir in clone.", intNo);
     }
@@ -309,6 +313,27 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Pushed branch.", intNo);
     }
 
+    private void awaitUntilPushIsCompleted(String branch) throws IOException {
+        LOGGER.debug("{} Awaiting until push completed.", intNo);
+
+        try {
+
+            Awaitility.await("push is visible by GitHub api").atMost(2L, TimeUnit.MINUTES)
+                    .with().pollDelay(5L, TimeUnit.SECONDS)
+                    .until(() -> {
+                                Boolean ex = GitHubExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch));
+                                LOGGER.info("XXX/{}", ex);
+                                return ex;
+                            }
+                    );
+
+        } catch (Throwable ex) {
+            throw new IOException(ex);
+        }
+
+        LOGGER.debug("{} Awaiting push finish done..", intNo);
+    }
+
     private void setDefaultBranchSameAsInAssessed() throws GitHubCommunicationException {
         String defaultBranch = assessedRepo.getDefaultBranch();
         LOGGER.debug("{} Setting default branch to {}", intNo, defaultBranch);
@@ -318,4 +343,31 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Set default branch.", intNo);
     }
 
+    private void deleteDirectoryNIO(Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
+                new File(file.toString()).setWritable(true);
+                Files.delete(file);
+
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+
+                    new File(dir.toString()).setWritable(true);
+                    Files.delete(dir);
+
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+
+        });
+    }
 }

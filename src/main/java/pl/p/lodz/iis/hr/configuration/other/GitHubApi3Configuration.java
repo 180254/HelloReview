@@ -24,7 +24,7 @@ import java.io.IOException;
 
 @Configuration
 @DependsOn("appConfig")
-class GitHubConfiguration {
+class GitHubApi3Configuration {
 
     public static final double CACHE_SIZE_MB = 10.0;
 
@@ -51,7 +51,7 @@ class GitHubConfiguration {
 
         } catch (IOException e) {
 
-            throw new UnableToInitializeException(GitHubConfiguration.class,
+            throw new UnableToInitializeException(GitHubApi3Configuration.class,
                     "Unable to initialize GitHub api client.", e);
         }
     }
@@ -69,7 +69,7 @@ class GitHubConfiguration {
 
         } catch (IOException e) {
 
-            throw new UnableToInitializeException(GitHubConfiguration.class,
+            throw new UnableToInitializeException(GitHubApi3Configuration.class,
                     "Unable to initialize GitHub api client.", e);
         }
     }
