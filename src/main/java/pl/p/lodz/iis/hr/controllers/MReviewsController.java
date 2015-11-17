@@ -310,12 +310,12 @@ class MReviewsController {
 
 
             List<Participant> mulParticipants = new ArrayList<>(10);
-            long expectedMulParSize = (participants.size() * (respPerPeer2 + 1L));
+            long expectedMulParSize = (participants.size() * respPerPeer2);
             while (mulParticipants.size() < expectedMulParSize) {
                 mulParticipants.addAll(participantWhoForked);
             }
             Collections.shuffle(mulParticipants);
-            mulParticipants.addAll(participantWhoForked);
+            mulParticipants.addAll(participantWhoForked); // to be sure, that is enough
 
             Review review = new Review(name, respPerPeer2, course, form, repository);
             Collection<Commission> responses = new ArrayList<>(10);
