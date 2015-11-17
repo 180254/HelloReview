@@ -34,7 +34,7 @@
         <thead>
         <tr>
             <th th:text="#{m.commissions.thead.id}"></th>
-            <th th:text="#{m.commissions.thead.review.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.review}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessed}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessor}"></span></th>
             <th th:text="#{m.commissions.thead.status}"></th>
@@ -47,7 +47,11 @@
 
             <td th:text="${commission.id}"></td>
 
-            <td th:text="${commission.review.name}"></td>
+            <td>
+                <a th:href="'/m/reviews/'+ ${commission.review.id}">
+                    <span th:text="${commission.review.name}"></span>
+                </a>
+            </td>
 
             <td>
                 <a th:href="'/m/participants/'+ ${commission.assessed.id}">
