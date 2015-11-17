@@ -102,6 +102,8 @@
     </table>
 
     <div th:if="${newButton}" class="add-new text-right">
+        <a class="btn btn-default btn-xs" th:href="@{/m/reviews/commissions/failed}"
+           th:text="#{m.reviews.tbody.commissions.failed}" role="button"></a><br/>
         <a class="btn btn-default" th:href="@{/m/reviews/add}"
            th:text="#{m.reviews.tbody.add.new.one}" role="button"></a>
     </div>

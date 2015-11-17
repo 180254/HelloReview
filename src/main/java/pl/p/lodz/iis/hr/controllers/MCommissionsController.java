@@ -100,6 +100,20 @@ class MCommissionsController {
     }
 
     @RequestMapping(
+            value = "/m/reviews/commissions/failed",
+            method = RequestMethod.GET)
+    @Transactional
+    public String list4(Model model) {
+
+        List<Commission> failed = commissionRepository.findByStatus(CommissionStatus.PROCESSING_FAILED);
+        model.addAttribute("commissions", failed);
+
+        model.addAttribute("addon_failed", true);
+
+        return "m-commissions";
+    }
+
+    @RequestMapping(
             value = "/m/reviews/commissions/retry",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
