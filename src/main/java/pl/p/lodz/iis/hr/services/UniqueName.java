@@ -7,10 +7,11 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * unique name validation is based on:
- * http://codingexplained.com/coding/java/hibernate/unique-field-validation-using-hibernate-spring
+ * Unique name validation.<br/>
+ * Based on: http://codingexplained.com/coding/java/hibernate/unique-field-validation-using-hibernate-spring
  *
- * @author February 27, 2015 by Bo Andersen, modified by me
+ * @author February 27, 2015 by Bo Andersen
+ * @author modifications by 180254
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

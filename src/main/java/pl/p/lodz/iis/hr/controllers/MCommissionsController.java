@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
@@ -22,7 +22,7 @@ import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.GitExecuteService;
 import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.utils.GitHubExecutor;
+import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -150,10 +150,10 @@ class MCommissionsController {
         }
 
         try {
-            GHRepository repo = GitHubExecutor.ex(() -> gitHubFail.getRepository(comm.getReview().getRepository()));
+            GHRepository repo = GHExecutor.ex(() -> gitHubFail.getRepository(comm.getReview().getRepository()));
             gitExecuteService.registerCloneJob(comm, repo);
 
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return singletonList(
                     String.format("%s %s", localeService.get("NoGitHub"), e.toString())

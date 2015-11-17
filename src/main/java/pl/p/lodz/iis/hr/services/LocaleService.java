@@ -10,9 +10,11 @@ import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-
-/*
-    original concept: anataliocs @ http://stackoverflow.com/questions/28750292/
+/**
+ * Get properly localizes message from MessageSource easily.
+ *
+ * @author original concept by anataliocs @ http://stackoverflow.com/questions/28750292/
+ * @author 180254
  */
 @Service
 public class LocaleService {

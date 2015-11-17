@@ -12,11 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
-import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.services.GitExecuteService;
-import pl.p.lodz.iis.hr.utils.GitHubExecutor;
+import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,16 +39,16 @@ class MStatsController {
     public String stats(Model model) {
 
         try {
-            GitHubExecutor.ex(() -> {
+            GHExecutor.ex(() -> {
                 GHRateLimit rateLimit = gitHubFail.getRateLimit();
                 model.addAttribute("rateLimit", rateLimit);
             });
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             model.addAttribute("rateLimit", e);
         }
 
         try {
-            GitHubExecutor.ex(() -> {
+            GHExecutor.ex(() -> {
 
                 Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
@@ -67,7 +67,7 @@ class MStatsController {
 
                 model.addAttribute("junkRepo", diff.size() - 1);
             });
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             model.addAttribute("junkRepo", e);
         }
 
@@ -83,7 +83,7 @@ class MStatsController {
             method = RequestMethod.GET)
     public String junkClean() {
         try {
-            GitHubExecutor.ex(() -> {
+            GHExecutor.ex(() -> {
 
                 Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
@@ -97,7 +97,7 @@ class MStatsController {
                         .filter(r -> !r.getName().equals("fix"))
                         .forEach(r -> gitExecuteService.registerDelete(r.getName()));
             });
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             LOGGER.error("Exception while junk clean", e);
         }
 

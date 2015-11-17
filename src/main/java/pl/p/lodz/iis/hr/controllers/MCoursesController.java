@@ -13,8 +13,8 @@ import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.Review2Repository;
+import pl.p.lodz.iis.hr.services.FieldValidateService;
 import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -26,7 +26,7 @@ class MCoursesController {
 
     @Autowired private CourseRepository courseRepository;
     @Autowired private LocaleService localeService;
-    @Autowired private ValidateService validateService;
+    @Autowired private FieldValidateService fieldValidateService;
     @Autowired private Review2Repository review2Repository;
 
     @RequestMapping(
@@ -73,7 +73,7 @@ class MCoursesController {
 
         Course course = new Course(courseName);
 
-        List<String> errors = validateService.validateField(
+        List<String> errors = fieldValidateService.validateField(
                 course,
                 "name",
                 localeService.get("m.courses.add.validation.prefix.course.name")
@@ -130,7 +130,7 @@ class MCoursesController {
             return singletonList(localeService.get("NoResource"));
         }
 
-        List<String> errors = validateService.validateField(
+        List<String> errors = fieldValidateService.validateField(
                 new Course(newName),
                 "name",
                 localeService.get("m.courses.add.validation.prefix.course.name")

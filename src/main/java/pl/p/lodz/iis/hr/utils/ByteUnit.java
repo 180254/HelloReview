@@ -1,5 +1,4 @@
-package com.barney4j.utils.unit;
-
+package pl.p.lodz.iis.hr.utils;
 
 /*
  * Copyright 2011 Fabian Barney

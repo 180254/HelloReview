@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.appconfig.GHDummy;
-import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.utils.ExceptionUtil;
-import pl.p.lodz.iis.hr.utils.GitHubExecutor;
+import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ class GitExecuteCloneTask implements Runnable {
         );
     }
 
-    private void init() throws GitHubCommunicationException {
+    private void init() throws GHCommunicationException {
         LOGGER.debug("{} Dependencies init.", intNo);
 
         AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
@@ -80,7 +80,7 @@ class GitExecuteCloneTask implements Runnable {
 
         dummy = appConfig.getGitHubConfig().getDummy();
         targetRepoName = commission.getUuid().toString();
-        targetRepoFullName = String.format("%s/%s", GitHubExecutor.ex(() -> gitHubWait.getMyself().getLogin()), targetRepoName);
+        targetRepoFullName = String.format("%s/%s", GHExecutor.ex(() -> gitHubWait.getMyself().getLogin()), targetRepoName);
 
         Random random = new SecureRandom();
         String tempDir = appConfig.getGeneralConfig().getTempDir();
@@ -140,14 +140,14 @@ class GitExecuteCloneTask implements Runnable {
             LOGGER.debug("{} Repo cloning done. Updated commision status.", intNo);
             LOGGER.info("{} Done.", intNo);
 
-        } catch (GitAPIException | GitHubCommunicationException | IOException e) {
+        } catch (GitAPIException | GHCommunicationException | IOException e) {
             LOGGER.info("{} Repo cloning failed.", intNo, e);
 
             LOGGER.debug("{} Cleaning. Deleting clone dir if exist.", intNo);
             ExceptionUtil.ignoreException2(() -> deleteDirForCloneIfExist(2));
 
             LOGGER.debug("{} Cleaning. Deleting target repo if exist.", intNo);
-            ExceptionUtil.ignoreException2(() -> GitHubExecutor.ex(
+            ExceptionUtil.ignoreException2(() -> GHExecutor.ex(
                     () -> gitHubWait.getRepository(targetRepoFullName).delete()
             ));
 
@@ -176,25 +176,25 @@ class GitExecuteCloneTask implements Runnable {
         }
     }
 
-    private void deleteTargetRepoIfExist() throws GitHubCommunicationException {
+    private void deleteTargetRepoIfExist() throws GHCommunicationException {
         LOGGER.debug("{} Checking if target repo exist.", intNo);
 
-        boolean targetRepoExist = GitHubExecutor.ex(() ->
+        boolean targetRepoExist = GHExecutor.ex(() ->
                 gitHubWait.getMyself().getRepositories()
                         .keySet().contains(targetRepoName));
 
         LOGGER.debug("{} Target repo should not exist, currently  = {}", intNo, targetRepoExist);
 
         if (targetRepoExist) {
-            GitHubExecutor.ex(() -> gitHubWait.getRepository(targetRepoFullName).delete());
+            GHExecutor.ex(() -> gitHubWait.getRepository(targetRepoFullName).delete());
             LOGGER.debug("{} Target repo deleted.", intNo);
         }
     }
 
-    private void getListOfBranchesOfAssessedRepo() throws GitHubCommunicationException {
+    private void getListOfBranchesOfAssessedRepo() throws GHCommunicationException {
         LOGGER.debug("{} Retrieving list of branches of assessed repo.", intNo);
 
-        assessedRepoBranches = GitHubExecutor.ex(() -> assessedRepo.getBranches().keySet());
+        assessedRepoBranches = GHExecutor.ex(() -> assessedRepo.getBranches().keySet());
 
         LOGGER.debug("{} Retrieved list of branches of assessed repo.", intNo);
         LOGGER.debug("{} {} branch found.", intNo, assessedRepoBranches.size());
@@ -207,10 +207,10 @@ class GitExecuteCloneTask implements Runnable {
 
     }
 
-    private void createTargetRepo() throws GitHubCommunicationException {
+    private void createTargetRepo() throws GHCommunicationException {
         LOGGER.debug("{} Creating target repo.", intNo);
 
-        targetRepo = GitHubExecutor.ex(() ->
+        targetRepo = GHExecutor.ex(() ->
                 gitHubWait.createRepository(targetRepoName, dummy.getCommitMsg(), null, true));
 
         LOGGER.debug("{} Created target repo.", intNo);
@@ -269,12 +269,12 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Added all files to commit.", intNo);
     }
 
-    private void setRepoConfiguration(Git gitTarget) throws IOException, GitHubCommunicationException {
+    private void setRepoConfiguration(Git gitTarget) throws IOException, GHCommunicationException {
         LOGGER.debug("{} Setting repo configuration.", intNo);
 
         StoredConfig gitTargetConfig = gitTarget.getRepository().getConfig();
-        gitTargetConfig.setString("user", null, "name", GitHubExecutor.ex(() -> gitHubWait.getMyself().getName()));
-        gitTargetConfig.setString("user", null, "email", GitHubExecutor.ex(() -> gitHubWait.getMyself().getEmail()));
+        gitTargetConfig.setString("user", null, "name", GHExecutor.ex(() -> gitHubWait.getMyself().getName()));
+        gitTargetConfig.setString("user", null, "email", GHExecutor.ex(() -> gitHubWait.getMyself().getEmail()));
         gitTargetConfig.setBoolean("core", null, "autocrlf", true);
         gitTargetConfig.save();
 
@@ -323,7 +323,7 @@ class GitExecuteCloneTask implements Runnable {
 
             Awaitility.await("push is visible by GitHub api").atMost(2L, TimeUnit.MINUTES)
                     .with().pollDelay(5L, TimeUnit.SECONDS)
-                    .until(() -> GitHubExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
+                    .until(() -> GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
 
         } catch (Throwable ex) {
             throw new IOException(ex);
@@ -332,11 +332,11 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Awaiting push finish done..", intNo);
     }
 
-    private void setDefaultBranchSameAsInAssessed() throws GitHubCommunicationException {
+    private void setDefaultBranchSameAsInAssessed() throws GHCommunicationException {
         String defaultBranch = assessedRepo.getDefaultBranch();
         LOGGER.debug("{} Setting default branch to {}", intNo, defaultBranch);
 
-        GitHubExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));
+        GHExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));
 
         LOGGER.debug("{} Set default branch.", intNo);
     }

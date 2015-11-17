@@ -12,25 +12,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ValidateService {
+public class FieldValidateService {
 
-    @Autowired private Validator validator;
-    @Autowired private LocaleService localeService;
+    private final Validator validator;
+    private final LocaleService localeService;
+
+    @Autowired
+    public FieldValidateService(Validator validator, LocaleService localeService) {
+        this.validator = validator;
+        this.localeService = localeService;
+    }
 
     public List<String> validateField(Object object, String fieldName, String prefix) {
 
         BindingResult bindingResult = new DataBinder(object).getBindingResult();
         validator.validate(object, bindingResult);
-
         List<FieldError> fieldErrors = bindingResult.getFieldErrors(fieldName);
-        return fieldErrors.stream().map(
-                fieldError -> String.format("%s %s", prefix, localeService.get(fieldError)))
+
+        return fieldErrors.stream()
+                .map(fieldError -> String.format("%s %s", prefix, localeService.get(fieldError)))
                 .sorted()
                 .collect(Collectors.toList());
     }
 
     public List<String> validateFields(Object object, String[] fieldNames, String[] prefixes) {
-        List<String> errors = new ArrayList<>(10);
+        List<String> errors = new ArrayList<>(fieldNames.length);
 
         for (int i = 0, len = fieldNames.length; i < len; i++) {
             errors.addAll(validateField(object, fieldNames[i], prefixes[i]));

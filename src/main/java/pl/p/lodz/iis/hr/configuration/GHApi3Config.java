@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.configuration;
 
-import com.barney4j.utils.unit.ByteUnit;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
@@ -17,6 +16,7 @@ import org.springframework.context.annotation.DependsOn;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.appconfig.GHDummy;
 import pl.p.lodz.iis.hr.exceptions.UnableToInitializeException;
+import pl.p.lodz.iis.hr.utils.ByteUnit;
 
 import java.io.File;
 import java.io.IOException;

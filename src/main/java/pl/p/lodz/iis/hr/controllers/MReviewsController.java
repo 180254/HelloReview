@@ -12,16 +12,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.InternalException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.*;
+import pl.p.lodz.iis.hr.services.FieldValidateService;
 import pl.p.lodz.iis.hr.services.GitExecuteService;
 import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.ValidateService;
-import pl.p.lodz.iis.hr.utils.GitHubExecutor;
+import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -40,7 +40,7 @@ class MReviewsController {
     @Autowired private AppConfig appConfig;
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private LocaleService localeService;
-    @Autowired private ValidateService validateService;
+    @Autowired private FieldValidateService fieldValidateService;
     @Autowired private GitExecuteService gitExecuteService;
 
     @RequestMapping(
@@ -146,7 +146,7 @@ class MReviewsController {
         List<String> repoList = new ArrayList<>(10);
 
         try {
-            GitHubExecutor.ex(() -> {
+            GHExecutor.ex(() -> {
 
                 for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
                     gitHubFail.getUser(username).listRepositories()
@@ -157,7 +157,7 @@ class MReviewsController {
                 }
             });
 
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return singletonList(e.toString());
         }
@@ -205,7 +205,7 @@ class MReviewsController {
             return singletonList(localeService.get("NoResource"));
         }
 
-        List<String> nameErrors = validateService.validateField(
+        List<String> nameErrors = fieldValidateService.validateField(
                 new Review(newName, 0L, null, null, null),
                 "name",
                 localeService.get("m.reviews.add.validation.prefix.name")
@@ -248,13 +248,13 @@ class MReviewsController {
         GHRepository ghRepository;
 
         try {
-            ghRepository = GitHubExecutor.ex(() -> gitHubFail.getRepository(repository));
-        } catch (GitHubCommunicationException ignored) {
+            ghRepository = GHExecutor.ex(() -> gitHubFail.getRepository(repository));
+        } catch (GHCommunicationException ignored) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.get("NoResources"));
         }
 
-        List<String> errors = validateService.validateFields(
+        List<String> errors = fieldValidateService.validateFields(
                 new Review(name, respPerPeer.get(), null, null, name),
                 new String[]{
                         "name",
@@ -276,7 +276,7 @@ class MReviewsController {
             Course course = courseRepository.getOne(courseID.get());
             List<Participant> participants = course.getParticipants();
             Form form = formRepository.getOne(formID.get());
-            List<GHRepository> forks = GitHubExecutor.ex(() -> ghRepository.listForks().asList());
+            List<GHRepository> forks = GHExecutor.ex(() -> ghRepository.listForks().asList());
 
             Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
@@ -348,7 +348,7 @@ class MReviewsController {
 
             return singletonList(String.valueOf(review.getId()));
 
-        } catch (GitHubCommunicationException e) {
+        } catch (GHCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
             return singletonList(
                     String.format("%s %s", localeService.get("NoGitHub"), e.toString())

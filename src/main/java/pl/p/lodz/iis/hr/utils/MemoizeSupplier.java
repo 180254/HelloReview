@@ -5,12 +5,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * Memoize loading Supplier on Java8
- * Lazy (expensive) calculation, but protected against calculation multiple times.
- * Source: https://gist.github.com/taichi/6daf50919ff276aae74f
+ * Memoize loading Supplier on Java8<br/>
+ * Lazy (expensive) calculation, but protected against calculation multiple times.<br/>
+ * Source: https://gist.github.com/taichi/6daf50919ff276aae74f<br/>
  *
  * @param <T> type
- * @author https://gist.github.com/taichi
+ * @author taichi (https://github.com/taichi)
  */
 public class MemoizeSupplier<T> implements Supplier<T> {
 

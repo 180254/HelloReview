@@ -4,8 +4,8 @@ import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.p.lodz.iis.hr.utils.ExceptionUtil;
-import pl.p.lodz.iis.hr.utils.GitHubExecutor;
-import pl.p.lodz.iis.hr.utils.IRunnerGH2;
+import pl.p.lodz.iis.hr.utils.GHExecutor;
+import pl.p.lodz.iis.hr.utils.GHIRunner2;
 
 class GitExecuteDeleteTask implements Runnable {
 
@@ -23,8 +23,8 @@ class GitExecuteDeleteTask implements Runnable {
         LOGGER.info("{} Deleting.", repoName);
         GitHub gitHubWait = ApplicationContextProvider.getBean("gitHubWait", GitHub.class);
 
-        IRunnerGH2 deleteRunner = () -> gitHubWait.getMyself().getRepository(repoName).delete();
-        boolean success = !ExceptionUtil.isExceptionThrown2(() -> GitHubExecutor.ex(deleteRunner));
+        GHIRunner2 deleteRunner = () -> gitHubWait.getMyself().getRepository(repoName).delete();
+        boolean success = !ExceptionUtil.isExceptionThrown2(() -> GHExecutor.ex(deleteRunner));
 
         LOGGER.info("{} Repo delete status succeeded = {}", repoName, success);
     }
