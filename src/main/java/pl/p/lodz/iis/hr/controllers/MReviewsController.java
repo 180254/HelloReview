@@ -303,7 +303,7 @@ class MReviewsController {
 
 
             List<Participant> mulParticipants = new ArrayList<>(10);
-            while (mulParticipants.size() < participants.size()) {
+            while (mulParticipants.size() < (participants.size() * respPerPeer2)) {
                 mulParticipants.addAll(participantWhoForked);
             }
             Collections.shuffle(mulParticipants);
