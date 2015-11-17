@@ -58,14 +58,14 @@
             </td>
 
             <td th:if="${commission.assessor != null}">
-                <a th:href="'/m/participants/'+ ${commission.assessor.id}">
+                <a th:href="'/m/courses/participants/'+ ${commission.assessor.id}">
                     <span th:text="${commission.assessor.name}"></span>
                 </a>
             </td>
             <td th:if="${commission.assessor == null}">&nbsp;</td>
 
             <td>
-                <a th:href="'/m/participants/'+ ${commission.assessed.id}">
+                <a th:href="'/m/courses/participants/'+ ${commission.assessed.id}">
                     <span th:text="${commission.assessed.name}"></span>
                 </a>
             </td>

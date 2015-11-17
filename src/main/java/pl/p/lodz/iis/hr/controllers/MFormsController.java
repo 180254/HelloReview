@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
+import pl.p.lodz.iis.hr.repositories.Review2Repository;
 import pl.p.lodz.iis.hr.services.FormValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
@@ -40,6 +42,7 @@ class MFormsController {
     @Autowired private FormValidator formValidator;
     @Autowired private LocaleService localeService;
     @Autowired private ValidateService validateService;
+    @Autowired private Review2Repository review2Repository;
 
     @RequestMapping(
             value = "/m/forms",
@@ -194,6 +197,15 @@ class MFormsController {
             return singletonList(localeService.get("NoResource"));
         }
 
+        Form form = formRepository.getOne(formID.get());
+
+        List<Review> reviews = form.getReviews();
+        if (!review2Repository.canBeDeleted(reviews)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
+        }
+
+        review2Repository.delete(reviews);
         formRepository.delete(formID.get());
         return singletonList(localeService.get("m.forms.delete.done"));
     }

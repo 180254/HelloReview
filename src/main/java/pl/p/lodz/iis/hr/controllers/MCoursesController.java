@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.long2.Long2;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
+import pl.p.lodz.iis.hr.repositories.Review2Repository;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
@@ -25,6 +27,7 @@ class MCoursesController {
     @Autowired private CourseRepository courseRepository;
     @Autowired private LocaleService localeService;
     @Autowired private ValidateService validateService;
+    @Autowired private Review2Repository review2Repository;
 
     @RequestMapping(
             value = "/m/courses",
@@ -99,6 +102,15 @@ class MCoursesController {
             return singletonList(localeService.get("NoResource"));
         }
 
+        Course course = courseRepository.getOne(courseID.get());
+
+        List<Review> reviews = course.getReviews();
+        if (!review2Repository.canBeDeleted(reviews)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
+        }
+
+        review2Repository.delete(reviews);
         courseRepository.delete(courseID.get());
         return singletonList(localeService.get("m.courses.delete.done"));
     }

@@ -17,10 +17,7 @@ import pl.p.lodz.iis.hr.exceptions.InternalException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.repositories.CommissionRepository;
-import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.repositories.FormRepository;
-import pl.p.lodz.iis.hr.repositories.ReviewRepository;
+import pl.p.lodz.iis.hr.repositories.*;
 import pl.p.lodz.iis.hr.services.GitExecuteService;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
@@ -36,6 +33,7 @@ import static java.util.Collections.singletonList;
 class MReviewsController {
 
     @Autowired private ReviewRepository reviewRepository;
+    @Autowired private Review2Repository review2Repository;
     @Autowired private CommissionRepository commissionRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
@@ -183,19 +181,12 @@ class MReviewsController {
 
         Review review = reviewRepository.findOne(reviewID.get());
 
-        boolean isAnyProcessing = review.getCommissions().stream()
-                .anyMatch(comm -> comm.getStatus() == CommissionStatus.PROCESSING);
-
-        if (isAnyProcessing) {
+        if (!review2Repository.canBeDeleted(review)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
         }
 
-        review.getCommissions().stream()
-                .filter(comm -> comm.getStatus().isCopyExistOnGitHub())
-                .forEach(comm -> gitExecuteService.registerDelete(comm.getUuid().toString()));
-
-        reviewRepository.delete(review);
+        review2Repository.delete(review);
         return singletonList(localeService.get("m.reviews.delete.done"));
     }
 
