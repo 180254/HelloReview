@@ -53,6 +53,8 @@ class MCoursesController {
         model.addAttribute("courses", Collections.singletonList(course));
         model.addAttribute("newButton", false);
 
+        model.addAttribute("addon_oneCourse", true);
+
         return "m-courses";
     }
 

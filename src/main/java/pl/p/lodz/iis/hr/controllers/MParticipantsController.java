@@ -45,6 +45,8 @@ class MParticipantsController {
         model.addAttribute("course", course);
         model.addAttribute("participants", course.getParticipants());
 
+        model.addAttribute("addon_allParticipants", true);
+
         return "m-participants";
     }
 
@@ -64,6 +66,8 @@ class MParticipantsController {
         model.addAttribute("newButton", false);
         model.addAttribute("course", participant.getCourse());
         model.addAttribute("participants", Collections.singletonList(participant));
+
+        model.addAttribute("addon_oneParticipant", true);
 
         return "m-participants";
     }

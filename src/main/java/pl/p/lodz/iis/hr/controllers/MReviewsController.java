@@ -71,6 +71,9 @@ class MReviewsController {
         model.addAttribute("reviews", Collections.singletonList(review));
         model.addAttribute("newButton", false);
 
+        model.addAttribute("addon_oneReview", true);
+
+
         return "m-reviews";
     }
 
@@ -89,6 +92,8 @@ class MReviewsController {
 
         model.addAttribute("reviews", course.getReviews());
         model.addAttribute("newButton", false);
+
+        model.addAttribute("addon_forCourse", true);
 
         return "m-reviews";
     }
@@ -109,6 +114,8 @@ class MReviewsController {
 
         model.addAttribute("reviews", form.getReviews());
         model.addAttribute("newButton", false);
+
+        model.addAttribute("addon_forForm", true);
 
         return "m-reviews";
     }

@@ -54,6 +54,9 @@ class MCommissionsController {
         model.addAttribute("commissions", review.getCommissions());
         model.addAttribute("review", review);
 
+        model.addAttribute("addon_forReview", true);
+
+
         return "m-commissions";
     }
 
@@ -70,6 +73,8 @@ class MCommissionsController {
 
         Commission commission = commissionRepository.findOne(commissionID.get());
         model.addAttribute("commissions", Collections.singletonList(commission));
+
+        model.addAttribute("addon_oneCommission", true);
 
         return "m-commissions";
     }
@@ -88,6 +93,8 @@ class MCommissionsController {
         Participant participant = participantRepository.findOne(participantID.get());
         model.addAttribute("participant", participant);
         model.addAttribute("commissions", participant.getCommissions());
+
+        model.addAttribute("addon_forParticipant", true);
 
         return "m-commissions";
     }

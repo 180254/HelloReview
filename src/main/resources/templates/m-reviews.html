@@ -10,6 +10,24 @@
 <main class="container">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
+    <h4 th:if="${addon_oneReview != null and addon_oneReview == true}" class="pre-table-addon">
+        <span th:text="#{m.reviews.table.head.addon.oneReview}"></span>
+    </h4>
+
+    <h4 th:if="${addon_forCourse!= null and addon_forCourse == true}" class="pre-table-addon">
+        <span th:text="#{m.reviews.table.head.addon.forCourse}"></span>
+        <a th:href="'/m/courses/'+ ${reviews[0].course.id}">
+            <strong th:text="${reviews[0].course.name}"></strong>
+        </a>
+    </h4>
+
+    <h4 th:if="${addon_forForm!= null and addon_forForm == true}" class="pre-table-addon">
+        <span th:text="#{m.reviews.table.head.addon.forForm}"></span>
+        <a th:href="'/m/forms/'+ ${reviews[0].form.id}">
+            <strong th:text="${reviews[0].form.name}"></strong>
+        </a>
+    </h4>
+
     <table class="table table-hover">
         <thead>
         <tr>

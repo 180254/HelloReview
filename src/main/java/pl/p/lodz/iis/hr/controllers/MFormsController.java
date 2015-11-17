@@ -72,6 +72,8 @@ class MFormsController {
         model.addAttribute("forms", Collections.singletonList(form));
         model.addAttribute("newButton", false);
 
+        model.addAttribute("addon_oneForm", true);
+
         return "m-forms";
     }
 
