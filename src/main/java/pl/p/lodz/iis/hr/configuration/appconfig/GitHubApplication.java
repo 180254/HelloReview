@@ -8,14 +8,17 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public final class GitHubApplication {
 
     /* @formatter:off */
-    @JsonProperty("clientID")     private final String clientID;
-    @JsonProperty("clientSecret") private final String clientSecret;
+    @JsonProperty("appname")      private final String appName;
+    @JsonProperty("clientid")     private final String clientID;
+    @JsonProperty("clientsecret") private final String clientSecret;
     /* @formatter:on */
 
     @JsonCreator
-    GitHubApplication(@JsonProperty("clientID") String clientID,
-                      @JsonProperty("clientSecret") String clientSecret) {
+    GitHubApplication(@JsonProperty("appname") String appName,
+                      @JsonProperty("clientid") String clientID,
+                      @JsonProperty("clientsecret") String clientSecret) {
 
+        this.appName = appName;
         this.clientID = clientID;
         this.clientSecret = clientSecret;
     }
@@ -26,6 +29,10 @@ public final class GitHubApplication {
 
     public String getClientSecret() {
         return clientSecret;
+    }
+
+    public String getAppName() {
+        return appName;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package pl.p.lodz.iis.hr.configuration.other;
 
-import com.barney4j.utils.unit.ByteUnit;
-import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -10,7 +8,6 @@ import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.HttpConnector;
 import org.kohsuke.github.RateLimitHandler;
-import org.kohsuke.github.extras.OkHttpConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +16,6 @@ import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.appconfig.GitHubDummy;
 import pl.p.lodz.iis.hr.exceptions.UnableToInitializeException;
 
-import java.io.File;
 import java.io.IOException;
 
 @Configuration
@@ -32,10 +28,17 @@ class GitHubApi3Config {
 
     @Bean(name = "okHttpConnector")
     public HttpConnector okHttpConnector() {
+        String appName = appConfig.getGitHubConfig().getApplication().getAppName();
         String cacheDir = appConfig.getGeneralConfig().getCacheDir();
-        Cache cache = new Cache(new File(cacheDir), Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB)));
-        OkHttpClient okHttpClient = new OkHttpClient().setCache(cache);
-        return new OkHttpConnector(new OkUrlFactory(okHttpClient));
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+//        Cache cache = new Cache(new File(cacheDir), Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB)));
+//        okHttpClient.setCache(cache);
+
+        OkUrlFactory okUrlFactory = new OkUrlFactory(okHttpClient);
+
+        return new OkHttpConnector2(okUrlFactory, appName);
     }
 
     @Bean(name = "gitHubFail")
@@ -44,9 +47,9 @@ class GitHubApi3Config {
 
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
             return new GitHubBuilder()
-//                    .withConnector(okHttpConnector())
+                    .withConnector(okHttpConnector())
                     .withRateLimitHandler(RateLimitHandler.FAIL)
-                    .withPassword(dummy.getUsername(), dummy.getPassword())
+                    .withOAuthToken(dummy.getToken())
                     .build();
 
         } catch (IOException e) {
@@ -62,9 +65,9 @@ class GitHubApi3Config {
 
             GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
             return new GitHubBuilder()
-//                    .withConnector(okHttpConnector())
+                    .withConnector(okHttpConnector())
                     .withRateLimitHandler(RateLimitHandler.WAIT)
-                    .withPassword(dummy.getUsername(), dummy.getPassword())
+                    .withOAuthToken(dummy.getToken())
                     .build();
 
         } catch (IOException e) {
@@ -78,6 +81,6 @@ class GitHubApi3Config {
     @Bean
     public CredentialsProvider jGitCredentials() {
         GitHubDummy dummy = appConfig.getGitHubConfig().getDummy();
-        return new UsernamePasswordCredentialsProvider(dummy.getUsername(), dummy.getPassword());
+        return new UsernamePasswordCredentialsProvider(dummy.getToken(), "");
     }
 }

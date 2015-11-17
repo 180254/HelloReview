@@ -8,6 +8,7 @@
 
     <github>
         <masters>
+            <username>peerreview70</username>
             <username>180254</username>
             <username>radamuspl</username>
         </masters>
@@ -17,18 +18,19 @@
         </courserepos>
 
         <dummy>
+            <username>peerreview70</username>
+            <token>5d9ace8a9f8e682ae5a62055cb67209f52b7e52c</token>
+
             <name>Peer Review 70</name>
             <email>peerreview70@gmail.com</email>
-
-            <username>peerreview70</username>
-            <password>3yeU52ZD3naYSQ0eHr6fFJYbuQTiCFZqu2UxEv4v</password>
 
             <commitmsg>clone for anonymous peer review purposes</commitmsg>
         </dummy>
 
         <application>
-            <clientID>181ce53eea876bfe4b94</clientID>
-            <clientSecret>7833861cc05a3e7d54e604a1b43f17c3351778ff</clientSecret>
+            <appname>HelloReview</appname>
+            <clientid>4d8d2aaee4f9a1c6a176</clientid>
+            <clientsecret>e6b71ddec1774464bb9538142a65ef8bba844647</clientsecret>
         </application>
     </github>
 
