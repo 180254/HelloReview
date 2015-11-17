@@ -12,8 +12,8 @@
 
     <h4 th:if="${addon_forReview != null and addon_forReview == true}" class="pre-table-addon">
         <span th:text="#{m.commissions.table.head.addon.forReview}"></span>
-        <a th:href="'/m/reviews/'+ ${commissions[0].review.id}">
-            <strong th:text="${commissions[0].review.name}"></strong>
+        <a th:href="'/m/reviews/'+ ${review.id}">
+            <strong th:text="${review.name}"></strong>
         </a>
     </h4>
 

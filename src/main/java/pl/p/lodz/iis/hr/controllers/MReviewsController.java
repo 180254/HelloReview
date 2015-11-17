@@ -92,6 +92,7 @@ class MReviewsController {
 
         Course course = courseRepository.findOne(courseID.get());
 
+        model.addAttribute("course", course);
         model.addAttribute("reviews", course.getReviews());
         model.addAttribute("newButton", false);
 
@@ -114,6 +115,7 @@ class MReviewsController {
 
         Form form = formRepository.getOne(formID.get());
 
+        model.addAttribute("form", form);
         model.addAttribute("reviews", form.getReviews());
         model.addAttribute("newButton", false);
 
