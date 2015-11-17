@@ -49,9 +49,8 @@ class MStatsController {
 
         try {
             GitHubExecutor.ex(() -> {
-                String dummyUsername = appConfig.getGitHubConfig().getDummy().getUsername();
 
-                Collection<GHRepository> gitRepos = gitHubFail.getUser(dummyUsername).getRepositories().values();
+                Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
 
                 List<String> gitRepoUrls = gitRepos.stream()
@@ -85,9 +84,8 @@ class MStatsController {
     public String junkClean() {
         try {
             GitHubExecutor.ex(() -> {
-                String dummyUsername = appConfig.getGitHubConfig().getDummy().getUsername();
 
-                Collection<GHRepository> gitRepos = gitHubFail.getUser(dummyUsername).getRepositories().values();
+                Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
 
                 List<String> dbReposUrl = dbRepos.stream()

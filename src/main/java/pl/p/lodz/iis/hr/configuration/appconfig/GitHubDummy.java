@@ -8,10 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public final class GitHubDummy {
 
     /* @formatter:off */
-    @JsonProperty("username")  private final String username;
     @JsonProperty("token")     private final String token;
-    @JsonProperty("name")      private final String name;
-    @JsonProperty("email")     private final String email;
     @JsonProperty("commitmsg") private final String commitMsg;
     /* @formatter:on */
 
@@ -22,27 +19,13 @@ public final class GitHubDummy {
                 @JsonProperty("email") String email,
                 @JsonProperty("commitmsg") String commitMsg) {
 
-        this.username = username;
         this.token = token;
-        this.name = name;
-        this.email = email;
         this.commitMsg = commitMsg;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
     public String getToken() {
         return token;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public String getCommitMsg() {

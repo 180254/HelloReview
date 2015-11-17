@@ -18,12 +18,7 @@
         </courserepos>
 
         <dummy>
-            <username>peerreview70</username>
             <token>5d9ace8a9f8e682ae5a62055cb67209f52b7e52c</token>
-
-            <name>Peer Review 70</name>
-            <email>peerreview70@gmail.com</email>
-
             <commitmsg>clone for anonymous peer review purposes</commitmsg>
         </dummy>
 

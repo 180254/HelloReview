@@ -68,7 +68,7 @@ class GitExecuteCloneTask implements Runnable {
         );
     }
 
-    private void init() {
+    private void init() throws GitHubCommunicationException {
         LOGGER.debug("{} Dependencies init.", intNo);
 
         AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
@@ -80,7 +80,7 @@ class GitExecuteCloneTask implements Runnable {
 
         dummy = appConfig.getGitHubConfig().getDummy();
         targetRepoName = commission.getUuid().toString();
-        targetRepoFullName = String.format("%s/%s", dummy.getUsername(), targetRepoName);
+        targetRepoFullName = String.format("%s/%s", GitHubExecutor.ex(() -> gitHubWait.getMyself().getLogin()), targetRepoName);
 
         Random random = new SecureRandom();
         String tempDir = appConfig.getGeneralConfig().getTempDir();
@@ -95,9 +95,11 @@ class GitExecuteCloneTask implements Runnable {
     public void run() {
         LOGGER.debug("{} Repo cloning started.", intNo);
 
-        init();
+
 
         try {
+            init();
+
             deleteDirForCloneIfExist(1);
             deleteTargetRepoIfExist();
             getListOfBranchesOfAssessedRepo();
@@ -178,10 +180,8 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Checking if target repo exist.", intNo);
 
         boolean targetRepoExist = GitHubExecutor.ex(() ->
-                gitHubWait.searchRepositories()
-                        .user(dummy.getUsername()).list().asList()
-                        .stream().map(GHRepository::getName)
-                        .anyMatch(name -> name.equals(targetRepoName)));
+                gitHubWait.getMyself().getRepositories()
+                        .keySet().contains(targetRepoName));
 
         LOGGER.debug("{} Target repo should not exist, currently  = {}", intNo, targetRepoExist);
 
@@ -269,12 +269,12 @@ class GitExecuteCloneTask implements Runnable {
         LOGGER.debug("{} Added all files to commit.", intNo);
     }
 
-    private void setRepoConfiguration(Git gitTarget) throws IOException {
+    private void setRepoConfiguration(Git gitTarget) throws IOException, GitHubCommunicationException {
         LOGGER.debug("{} Setting repo configuration.", intNo);
 
         StoredConfig gitTargetConfig = gitTarget.getRepository().getConfig();
-        gitTargetConfig.setString("user", null, "name", dummy.getName());
-        gitTargetConfig.setString("user", null, "email", dummy.getEmail());
+        gitTargetConfig.setString("user", null, "name", GitHubExecutor.ex(() -> gitHubWait.getMyself().getName()));
+        gitTargetConfig.setString("user", null, "email", GitHubExecutor.ex(() -> gitHubWait.getMyself().getEmail()));
         gitTargetConfig.setBoolean("core", null, "autocrlf", true);
         gitTargetConfig.save();
 
