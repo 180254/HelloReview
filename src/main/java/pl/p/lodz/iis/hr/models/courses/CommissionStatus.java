@@ -34,8 +34,10 @@ public enum CommissionStatus {
         return code >= UNFILLED.code;
     }
 
-    public boolean shouldBeRetried() {
-        return this == PROCESSING_FAILED;
+    public boolean shouldBeRetried(boolean retryOnProcessing) {
+        boolean shouldBeRetried = this == PROCESSING_FAILED;
+        shouldBeRetried |= retryOnProcessing && (this == PROCESSING);
+        return shouldBeRetried;
     }
 
     public String getLocaleCode() {

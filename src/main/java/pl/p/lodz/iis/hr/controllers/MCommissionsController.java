@@ -25,6 +25,7 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +51,8 @@ class MCommissionsController {
         }
 
         Review review = reviewRepository.findOne(reviewID.get());
+        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("commissions", review.getCommissions());
         model.addAttribute("review", review);
@@ -73,6 +76,8 @@ class MCommissionsController {
 
         Commission commission = commissionRepository.findOne(commissionID.get());
         model.addAttribute("commissions", Collections.singletonList(commission));
+        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("addon_oneCommission", true);
 
@@ -91,8 +96,11 @@ class MCommissionsController {
         }
 
         Participant participant = participantRepository.findOne(participantID.get());
+        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+
         model.addAttribute("participant", participant);
         model.addAttribute("commissions", participant.getCommissions());
+        model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("addon_forParticipant", true);
 
@@ -105,8 +113,13 @@ class MCommissionsController {
     @Transactional
     public String list4(Model model) {
 
-        List<Commission> failed = commissionRepository.findByStatus(CommissionStatus.PROCESSING_FAILED);
+        List<Commission> failed = commissionRepository.findByStatusIn(
+                Arrays.asList(CommissionStatus.PROCESSING_FAILED, CommissionStatus.PROCESSING)
+        );
+        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+
         model.addAttribute("commissions", failed);
+        model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("addon_failed", true);
 
@@ -128,8 +141,9 @@ class MCommissionsController {
         }
 
         Commission comm = commissionRepository.getOne(commissionID.get());
+        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
 
-        if (comm.getStatus() != CommissionStatus.PROCESSING_FAILED) {
+        if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return Collections.singletonList(localeService.get("BadResource"));
         }

@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.SecureRandom;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -80,8 +82,9 @@ class GitExecuteCloneTask implements Runnable {
         targetRepoName = commission.getUuid().toString();
         targetRepoFullName = String.format("%s/%s", dummy.getUsername(), targetRepoName);
 
-        String temporaryDir = appConfig.getGeneralConfig().getTempDir();
-        String dirForClonePath = String.format("%s%s%s", temporaryDir, File.separator, targetRepoName);
+        Random random = new SecureRandom();
+        String tempDir = appConfig.getGeneralConfig().getTempDir();
+        String dirForClonePath = String.format("%s%s%s%d", tempDir, File.separator, targetRepoName, random.nextInt());
         String dirForCloneGitSP = String.format("%s%s.git", dirForClonePath, File.separator);
         directoryForClone = new File(dirForClonePath);
         directoryForCloneGitSubdir = new File(dirForCloneGitSP);

@@ -72,11 +72,11 @@
 
             <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
 
-            <td th:if="${commission.status.shouldBeRetried() == true}">
+            <td th:if="${commission.status.shouldBeRetried(retryButtonForProcessing)}">
                 <a href="#" class="commission-retry" th:attr="data-id=${commission.id}"
                    th:text="#{m.commissions.tbody.retry}"></a>
             </td>
-            <td th:if="${commission.status.shouldBeRetried() == false}">&nbsp;</td>
+            <td th:if="${commission.status.shouldBeRetried(retryButtonForProcessing) == false}">&nbsp;</td>
         </tr>
         </tbody>
     </table>
