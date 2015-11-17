@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Service
 public class GitExecuteService {
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(1);
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     public void registerCloneJob(Commission commission, GHRepository ghRepository) {
         Runnable gitCloneTask = new GitExecuteCloneTask(commission, ghRepository);

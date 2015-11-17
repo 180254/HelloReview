@@ -310,7 +310,8 @@ class MReviewsController {
 
 
             List<Participant> mulParticipants = new ArrayList<>(10);
-            while (mulParticipants.size() < (participants.size() * respPerPeer2)) {
+            long expectedMulParSize = (participants.size() * (respPerPeer2 + 1L));
+            while (mulParticipants.size() < expectedMulParSize) {
                 mulParticipants.addAll(participantWhoForked);
             }
             Collections.shuffle(mulParticipants);
@@ -325,10 +326,16 @@ class MReviewsController {
                 responses.add(rResponse);
             }
 
+            Collection<Participant> assessedCollection = new LinkedList<>();
+
             for (Participant assessor : course.getParticipants()) {
+                assessedCollection.clear();
+
                 for (long lo = 0L; lo < respPerPeer2; lo++) {
 
-                    Participant assessed = popNotMe(mulParticipants, assessor);
+                    Participant assessed = popUnique(mulParticipants, assessor, assessedCollection);
+                    assessedCollection.add(assessed);
+
                     GHRepository assessedRepo = forksMap.get(assessed.getGitHubName());
 
                     Commission rResponse = new Commission(review, assessed, assessor, assessedRepo.getHtmlUrl());
@@ -354,12 +361,14 @@ class MReviewsController {
         }
     }
 
-    public <T> T popNotMe(Collection<T> collection, T me) {
+    public <T> T popUnique(Collection<T> collection, T meExclude, Collection<T> excludeCollection) {
         for (T collElement : collection) {
-            if (!me.equals(collElement)) {
+
+            if (!meExclude.equals(collElement) && !excludeCollection.contains(collElement)) {
                 collection.remove(collElement);
                 return collElement;
             }
+
         }
         throw new InternalException();
     }
