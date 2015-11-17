@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 @Controller
 class MFormsController {
 
@@ -69,7 +71,7 @@ class MFormsController {
             throw new ResourceNotFoundException();
         }
 
-        model.addAttribute("forms", Collections.singletonList(form));
+        model.addAttribute("forms", singletonList(form));
         model.addAttribute("newButton", false);
 
         model.addAttribute("addon_oneForm", true);
@@ -111,7 +113,7 @@ class MFormsController {
         } catch (IOException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
 
-            return Collections.singletonList(
+            return singletonList(
                     String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage())
             );
         }
@@ -131,7 +133,7 @@ class MFormsController {
         form.fixRelations();
         formRepository.save(form);
 
-        return Collections.singletonList(String.valueOf(form.getId()));
+        return singletonList(String.valueOf(form.getId()));
     }
 
     @RequestMapping(
@@ -189,11 +191,11 @@ class MFormsController {
 
         if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         formRepository.delete(formID.get());
-        return Collections.singletonList(localeService.get("m.forms.delete.done"));
+        return singletonList(localeService.get("m.forms.delete.done"));
     }
 
     @RequestMapping(
@@ -208,7 +210,7 @@ class MFormsController {
 
         if (!formRepository.exists(formID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         List<String> nameErrors = validateService.validateField(
@@ -226,6 +228,6 @@ class MFormsController {
         form.setName(newName);
         formRepository.save(form);
 
-        return Collections.singletonList(localeService.get("m.forms.rename.done"));
+        return singletonList(localeService.get("m.forms.rename.done"));
     }
 }

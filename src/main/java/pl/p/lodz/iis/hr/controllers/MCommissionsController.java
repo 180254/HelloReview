@@ -26,8 +26,9 @@ import pl.p.lodz.iis.hr.utils.GitHubExecutor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Controller
 class MCommissionsController {
@@ -75,7 +76,7 @@ class MCommissionsController {
         }
 
         Commission commission = commissionRepository.findOne(commissionID.get());
-        model.addAttribute("commissions", Collections.singletonList(commission));
+        model.addAttribute("commissions", singletonList(commission));
         int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
         model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
@@ -137,7 +138,7 @@ class MCommissionsController {
 
         if (!commissionRepository.exists(commissionID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         Commission comm = commissionRepository.getOne(commissionID.get());
@@ -145,7 +146,7 @@ class MCommissionsController {
 
         if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("BadResource"));
+            return singletonList(localeService.get("BadResource"));
         }
 
         try {
@@ -154,14 +155,14 @@ class MCommissionsController {
 
         } catch (GitHubCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return Collections.singletonList(
+            return singletonList(
                     String.format("%s %s", localeService.get("NoGitHub"), e.toString())
             );
         }
 
         comm.setStatus(CommissionStatus.PROCESSING);
         commissionRepository.save(comm);
-        return Collections.singletonList(localeService.get("m.commissions.retry.done"));
+        return singletonList(localeService.get("m.commissions.retry.done"));
     }
 
 }

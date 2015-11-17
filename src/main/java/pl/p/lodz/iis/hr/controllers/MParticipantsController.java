@@ -17,8 +17,9 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ValidateService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Controller
 class MParticipantsController {
@@ -65,7 +66,7 @@ class MParticipantsController {
 
         model.addAttribute("newButton", false);
         model.addAttribute("course", participant.getCourse());
-        model.addAttribute("participants", Collections.singletonList(participant));
+        model.addAttribute("participants", singletonList(participant));
 
         model.addAttribute("addon_oneParticipant", true);
 
@@ -85,7 +86,7 @@ class MParticipantsController {
 
         if (!courseRepository.exists(courseID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         Course course = courseRepository.getOne(courseID.get());
@@ -119,7 +120,7 @@ class MParticipantsController {
         }
 
         participantRepository.save(participant);
-        return Collections.singletonList(localeService.get("m.participants.add.done"));
+        return singletonList(localeService.get("m.participants.add.done"));
     }
 
     @RequestMapping(
@@ -133,11 +134,11 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         participantRepository.delete(participantID.get());
-        return Collections.singletonList(localeService.get("m.participants.delete.done"));
+        return singletonList(localeService.get("m.participants.delete.done"));
     }
 
     @RequestMapping(
@@ -152,14 +153,14 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("UniqueName"));
+            return singletonList(localeService.get("UniqueName"));
         }
 
         List<String> nameErrors = validateService.validateField(
@@ -176,7 +177,7 @@ class MParticipantsController {
         participant.setName(newName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.get("m.participants.rename.participant.name.done"));
+        return singletonList(localeService.get("m.participants.rename.participant.name.done"));
     }
 
     @RequestMapping(
@@ -191,14 +192,14 @@ class MParticipantsController {
 
         if (!participantRepository.exists(participantID.get())) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("NoResource"));
+            return singletonList(localeService.get("NoResource"));
         }
 
         Participant participant = participantRepository.getOne(participantID.get());
 
         if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.singletonList(localeService.get("UniqueName"));
+            return singletonList(localeService.get("UniqueName"));
         }
 
         List<String> gitHubNameErrors = validateService.validateField(
@@ -215,6 +216,6 @@ class MParticipantsController {
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
-        return Collections.singletonList(localeService.get("m.participants.rename.github.name.done"));
+        return singletonList(localeService.get("m.participants.rename.github.name.done"));
     }
 }
