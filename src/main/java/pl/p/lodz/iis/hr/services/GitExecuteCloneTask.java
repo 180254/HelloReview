@@ -11,8 +11,8 @@ import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
-import pl.p.lodz.iis.hr.configuration.appconfig.GitHubDummy;
+import pl.p.lodz.iis.hr.appconfig.AppConfig;
+import pl.p.lodz.iis.hr.appconfig.GHDummy;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
@@ -43,7 +43,7 @@ class GitExecuteCloneTask implements Runnable {
     private GitHub gitHubWait;
     private CredentialsProvider jGitCredentials;
     private CommissionRepository commissionRepository;
-    private GitHubDummy dummy;
+    private GHDummy dummy;
 
     private String targetRepoName;
     private String targetRepoFullName;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.p.lodz.iis.hr.configuration.appconfig.AppConfig;
+import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
@@ -28,7 +28,7 @@ class MStatsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
 
-    @Autowired @Qualifier("gitHubFail") private GitHub gitHubFail;
+    @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private GitExecuteService gitExecuteService;
     @Autowired private AppConfig appConfig;
     @Autowired private CommissionRepository commissionRepository;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.p.lodz.iis.hr.configuration.long2.Long2;
+import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.GitHubCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
@@ -38,7 +38,7 @@ class MCommissionsController {
     @Autowired private ParticipantRepository participantRepository;
     @Autowired private LocaleService localeService;
     @Autowired private GitExecuteService gitExecuteService;
-    @Autowired @Qualifier("gitHubFail") private GitHub gitHubFail;
+    @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
 
     @RequestMapping(
             value = "/m/reviews/{reviewID}/commissions",
