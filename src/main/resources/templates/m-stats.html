@@ -10,9 +10,24 @@
 <main class="container">
     <p th:text="${rateLimit}"></p>
 
-    <p>Number of submitted GitHub tasks (approx): <span th:text="${submitted}"></span></p>
+    <p>
+        <span th:text="#{m.stats.submitted}"></span>
+        <span th:text="${submitted}"></span></p>
 
-    <p>Number of not completed yet GitHub tasks (approx): <span th:text="${notCompleted}"></span></p>
+    <p>
+        <span th:text="#{m.stats.notCompleted}"></span>
+        <span th:text="${notCompleted}"></span></p>
+
+    <p>
+        <span th:text="#{m.stats.junkRepo}"></span>
+        <span th:text="${junkRepo}"></span>
+
+        <a th:if="${notCompleted == 0 and junkRepo > 0}"
+           th:href="@{/m/stats/junkclean}"
+           th:text="#{m.stats.junkRepo.clean}">
+        </a>
+    </p>
+
 </main>
 
 </body>
