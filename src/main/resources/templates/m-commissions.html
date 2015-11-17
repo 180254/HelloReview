@@ -35,8 +35,8 @@
         <tr>
             <th th:text="#{m.commissions.thead.id}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.review}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessed}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessor}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessed}"></span></th>
             <th th:text="#{m.commissions.thead.status}"></th>
             <th><i class="fa fa-refresh"></i>&nbsp;<span th:text="#{m.commissions.thead.retry}"></span></th>
         </tr>
@@ -53,18 +53,18 @@
                 </a>
             </td>
 
-            <td>
-                <a th:href="'/m/participants/'+ ${commission.assessed.id}">
-                    <span th:text="${commission.assessed.name}"></span>
-                </a>
-            </td>
-
             <td th:if="${commission.assessor != null}">
                 <a th:href="'/m/participants/'+ ${commission.assessor.id}">
                     <span th:text="${commission.assessor.name}"></span>
                 </a>
             </td>
             <td th:if="${commission.assessor == null}">&nbsp;</td>
+
+            <td>
+                <a th:href="'/m/participants/'+ ${commission.assessed.id}">
+                    <span th:text="${commission.assessed.name}"></span>
+                </a>
+            </td>
 
             <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
 
