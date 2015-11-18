@@ -4,9 +4,11 @@ build/
 *.iml
 .idea/
 
-database
-cache
-temp
+
+database/*
+cache/*
+temp/*
+!.gitignore
 
 rebel.xml
 rebel-remote.xml
