@@ -39,6 +39,7 @@ class GHApi3Config {
 
         Cache cache = new Cache(cacheDirFile, cacheSizeBytes);
         OkHttpClient okHttpClient = new OkHttpClient()/*.setCache(cache)*/;
+//        okHttpClient.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)));
         OkUrlFactory okUrlFactory = new OkUrlFactory(okHttpClient);
         return new GHOkHttpConnector(okUrlFactory, appName);
     }

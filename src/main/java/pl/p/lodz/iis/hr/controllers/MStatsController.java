@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
+import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
@@ -29,7 +30,7 @@ class MStatsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
 
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
-    @Autowired private GHTaskScheduler GHTaskScheduler;
+    @Autowired private GHTaskScheduler ghTaskScheduler;
     @Autowired private AppConfig appConfig;
     @Autowired private CommissionRepository commissionRepository;
 
@@ -71,9 +72,9 @@ class MStatsController {
             model.addAttribute("junkRepo", e);
         }
 
-        model.addAttribute("submitted", GHTaskScheduler.getApproxNumberOfSubmittedTasks());
-        model.addAttribute("notCompleted", GHTaskScheduler.getApproxNumberOfScheduledTasks());
-
+        model.addAttribute("submitted", ghTaskScheduler.getApproxNumberOfSubmittedTasks());
+        model.addAttribute("notCompleted", ghTaskScheduler.getApproxNumberOfScheduledTasks());
+        model.addAttribute("processing", commissionRepository.findByStatus(CommissionStatus.PROCESSING).size());
         return "m-stats";
 
     }
@@ -95,7 +96,7 @@ class MStatsController {
                 gitRepos.stream()
                         .filter(r -> !dbReposUrl.contains(r.getHtmlUrl().toString()))
                         .filter(r -> !r.getName().equals("fix"))
-                        .forEach(r -> GHTaskScheduler.registerDelete(r.getName()));
+                        .forEach(r -> ghTaskScheduler.registerDelete(r.getName()));
             });
         } catch (GHCommunicationException e) {
             LOGGER.error("Exception while junk clean", e);

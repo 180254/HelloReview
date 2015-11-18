@@ -12,11 +12,20 @@
 
     <p>
         <span th:text="#{m.stats.submitted}"></span>
-        <span th:text="${submitted}"></span></p>
+        <span th:text="${submitted}"></span>
+    </p>
 
     <p>
         <span th:text="#{m.stats.notCompleted}"></span>
-        <span th:text="${notCompleted}"></span></p>
+        <span th:text="${notCompleted}"></span>
+    </p>
+
+    <p>
+        <span th:text="#{m.stats.processing}"></span>
+        <a th:href="@{/m/reviews/commissions/failed}"
+           th:text="${processing}">
+        </a>
+    </p>
 
     <p>
         <span th:text="#{m.stats.junkRepo}"></span>

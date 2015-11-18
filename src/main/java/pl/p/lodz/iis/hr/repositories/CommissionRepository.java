@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface CommissionRepository extends JpaRepository<Commission, Long> {
 
+    List<Commission> findByStatus(CommissionStatus status);
     List<Commission> findByStatusIn(List<CommissionStatus> statuses);
 }

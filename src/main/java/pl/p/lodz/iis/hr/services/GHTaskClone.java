@@ -323,7 +323,11 @@ class GHTaskClone implements Runnable {
             Awaitility.await("push is visible by GitHub api")
                     .atMost(2L, TimeUnit.MINUTES)
                     .pollDelay(5L, TimeUnit.SECONDS)
-                    .until(() -> GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
+                    .until(() -> {
+                        Boolean ex = GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch));
+                        System.out.println("XXXXX/" + ex);
+                        return ex;
+                    });
 
         } catch (Throwable ex) {
             throw new IOException(ex);
@@ -365,7 +369,6 @@ class GHTaskClone implements Runnable {
         public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
             if (exc == null) {
 
-                setWritable(dir);
                 Files.delete(dir);
 
                 return FileVisitResult.CONTINUE;
@@ -376,7 +379,7 @@ class GHTaskClone implements Runnable {
 
         private void setWritable(Path pathToBeWritable) {
             if (!new File(pathToBeWritable.toString()).setWritable(true)) {
-                LOGGER1.error("Failed to set {} as writable.", pathToBeWritable);
+                LOGGER1.warn("Failed to set {} as writable.", pathToBeWritable);
             }
         }
     }

@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Improved OkHttpConnector.<br/>
+ * Improved OkHttpConnector for GitHub api connecting purposes.<br/>
  * - Set User-Agent header as requested by GitHub.<br/>
  * - Explicitly set Accept header as encouraged by GitHub.<br/>
  */
