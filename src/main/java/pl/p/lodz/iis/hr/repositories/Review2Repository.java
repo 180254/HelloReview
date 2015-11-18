@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.courses.Review;
-import pl.p.lodz.iis.hr.services.GitExecuteService;
+import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 
 import java.util.Collection;
 
@@ -12,7 +12,7 @@ import java.util.Collection;
 public class Review2Repository {
 
     @Autowired private ReviewRepository reviewRepository;
-    @Autowired private GitExecuteService gitExecuteService;
+    @Autowired private GHTaskScheduler GHTaskScheduler;
 
 
     public boolean canBeDeleted(Review review) {
@@ -27,7 +27,7 @@ public class Review2Repository {
     public void delete(Review review) {
         review.getCommissions().stream()
                 .filter(comm -> comm.getStatus().isCopyExistOnGitHub())
-                .forEach(comm -> gitExecuteService.registerDelete(comm.getUuid().toString()));
+                .forEach(comm -> GHTaskScheduler.registerDelete(comm.getUuid().toString()));
 
         reviewRepository.delete(review);
     }

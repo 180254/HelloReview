@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FieldValidateService {
+public class FieldValidator {
 
     private final Validator validator;
     private final LocaleService localeService;
 
     @Autowired
-    public FieldValidateService(Validator validator, LocaleService localeService) {
+    public FieldValidator(Validator validator, LocaleService localeService) {
         this.validator = validator;
         this.localeService = localeService;
     }

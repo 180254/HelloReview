@@ -6,6 +6,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.kohsuke.github.GHMyself;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
@@ -31,20 +32,24 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
-class GitExecuteCloneTask implements Runnable {
+class GHTaskClone implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitExecuteCloneTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GHTaskClone.class);
+    private static final Pattern GH_URL = Pattern.compile("https?://github.com/");
 
-    private final String intNo;
+    private final String uuid;
     private final Commission commission;
-    private final GHRepository assessedRepo;
 
-    private GitHub gitHubWait;
+    private GitHub ghWait;
     private CredentialsProvider jGitCredentials;
     private CommissionRepository commissionRepository;
-    private GHDummy dummy;
 
+    private GHDummy ghDummy;
+    private GHMyself ghMyself;
+
+    private GHRepository assessedRepo;
     private String targetRepoName;
     private String targetRepoFullName;
 
@@ -54,14 +59,13 @@ class GitExecuteCloneTask implements Runnable {
     private Set<String> assessedRepoBranches;
     private GHRepository targetRepo;
 
-    GitExecuteCloneTask(Commission commission, GHRepository assessedRepo) {
+    GHTaskClone(Commission commission) {
 
-        intNo = commission.getUuid().toString();
+        uuid = commission.getUuid().toString();
         this.commission = commission;
-        this.assessedRepo = assessedRepo;
 
         LOGGER.info("{} Repo cloning scheduled for review: {}, assessed: {}, assessor {}.",
-                intNo,
+                uuid,
                 commission.getReview().getName(),
                 commission.getAssessed().getName(),
                 commission.getAssessor().getName()
@@ -69,18 +73,22 @@ class GitExecuteCloneTask implements Runnable {
     }
 
     private void init() throws GHCommunicationException {
-        LOGGER.debug("{} Dependencies init.", intNo);
+        LOGGER.debug("{} Dependencies init.", uuid);
 
         AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
-        gitHubWait = ApplicationContextProvider.getBean("gitHubWait", GitHub.class);
+        ghWait = ApplicationContextProvider.getBean("ghWait", GitHub.class);
         jGitCredentials = ApplicationContextProvider.getBean(CredentialsProvider.class);
         commissionRepository = ApplicationContextProvider.getBean(CommissionRepository.class);
 
-        LOGGER.debug("{} Paths init.", intNo);
+        LOGGER.debug("{} Paths init.", uuid);
 
-        dummy = appConfig.getGitHubConfig().getDummy();
+        ghDummy = appConfig.getGitHubConfig().getDummy();
+        ghMyself = GHExecutor.ex(() -> ghWait.getMyself());
+
+        String assessedRepoName = GH_URL.matcher(commission.getAssessedGhUrl()).replaceAll("");
+        assessedRepo = GHExecutor.ex(() -> ghWait.getRepository(assessedRepoName));
         targetRepoName = commission.getUuid().toString();
-        targetRepoFullName = String.format("%s/%s", GHExecutor.ex(() -> gitHubWait.getMyself().getLogin()), targetRepoName);
+        targetRepoFullName = String.format("%s/%s", ghMyself.getLogin(), targetRepoName);
 
         Random random = new SecureRandom();
         String tempDir = appConfig.getGeneralConfig().getTempDir();
@@ -93,30 +101,28 @@ class GitExecuteCloneTask implements Runnable {
     @Override
     @Transactional
     public void run() {
-        LOGGER.debug("{} Repo cloning started.", intNo);
-
-
+        LOGGER.debug("{} Repo cloning started.", uuid);
 
         try {
             init();
 
-            deleteDirForCloneIfExist(1);
+            deleteDirForCloneIfExist(false);
             deleteTargetRepoIfExist();
             getListOfBranchesOfAssessedRepo();
             createTargetRepo();
 
             for (String branch : assessedRepoBranches) {
-                LOGGER.debug("{} Processing branch: {}", intNo, branch);
+                LOGGER.debug("{} Processing branch: {}", uuid, branch);
 
                 createDirForClone();
                 cloneAssessedRepo(branch);
                 removeGitSubdirInClone();
 
-                LOGGER.debug("{} Init-ing clone dir as new repo.", intNo);
+                LOGGER.debug("{} Init-ing clone dir as new repo.", uuid);
 
                 try (Git gitTarget = Git.init().setDirectory(directoryForClone).call()) {
 
-                    LOGGER.debug("{} Init-ed clone dir as new repo.", intNo);
+                    LOGGER.debug("{} Init-ed clone dir as new repo.", uuid);
 
                     addAllFilesToCommit(gitTarget);
                     setRepoConfiguration(gitTarget);
@@ -126,110 +132,104 @@ class GitExecuteCloneTask implements Runnable {
                     awaitUntilPushIsCompleted(branch);
                 }
 
-                deleteDirForCloneIfExist(2);
+                deleteDirForCloneIfExist(true);
             }
 
             setDefaultBranchSameAsInAssessed();
 
-            LOGGER.debug("{} Repo cloning done. Updating commision status.", intNo);
+            LOGGER.debug("{} Repo cloning done. Updating commision status.", uuid);
 
             commission.setStatus(CommissionStatus.UNFILLED);
             commission.setGhUrl(targetRepo.getHtmlUrl().toString());
             commissionRepository.save(commission);
 
-            LOGGER.debug("{} Repo cloning done. Updated commision status.", intNo);
-            LOGGER.info("{} Done.", intNo);
+            LOGGER.debug("{} Repo cloning done. Updated commision status.", uuid);
+            LOGGER.info("{} Done.", uuid);
 
-        } catch (GitAPIException | GHCommunicationException | IOException e) {
-            LOGGER.info("{} Repo cloning failed.", intNo, e);
+        } catch (GitAPIException | GHCommunicationException | IOException | RuntimeException e) {
+            LOGGER.info("{} Repo cloning failed.", uuid, e);
 
-            LOGGER.debug("{} Cleaning. Deleting clone dir if exist.", intNo);
-            ExceptionUtil.ignoreException2(() -> deleteDirForCloneIfExist(2));
-
-            LOGGER.debug("{} Cleaning. Deleting target repo if exist.", intNo);
-            ExceptionUtil.ignoreException2(() -> GHExecutor.ex(
-                    () -> gitHubWait.getRepository(targetRepoFullName).delete()
-            ));
-
-            LOGGER.debug("{} Cleaning. Updating commision status.", intNo);
+            LOGGER.debug("{} Cleaning. Updating commission status.", uuid);
             commission.setStatus(CommissionStatus.PROCESSING_FAILED);
             commissionRepository.save(commission);
 
-            LOGGER.debug("{} Cleaning done. ", intNo);
-            LOGGER.info("{} Done.", intNo);
+            LOGGER.debug("{} Cleaning. Deleting target repo if exist.", uuid);
+            ExceptionUtil.ignoreException2(() ->
+                    GHExecutor.ex(() -> ghWait.getRepository(targetRepoFullName).delete())
+            );
+
+            LOGGER.debug("{} Cleaning. Deleting clone dir if exist.", uuid);
+            ExceptionUtil.ignoreException2(() ->
+                    deleteDirForCloneIfExist(false)
+            );
+
+            LOGGER.debug("{} Cleaning done. ", uuid);
+            LOGGER.info("{} Done.", uuid);
         }
 
     }
 
-    private void deleteDirForCloneIfExist(int cause) throws IOException {
+    private void deleteDirForCloneIfExist(boolean shouldExist) throws IOException {
         boolean exists = directoryForClone.exists();
 
-        if (cause == 1) {
-            LOGGER.debug("{} Directory for clone should not exist, currently exist = {}", intNo, exists);
-        } else if (cause == 2) {
-            LOGGER.debug("{} Cleaning. Directory for clone should exist, currently exist = {}", intNo, exists);
-        }
+        LOGGER.debug("{} Directory for clone should {}, currently exist = {}",
+                uuid, shouldExist ? "not exist" : "exist", exists
+        );
 
         if (exists) {
             deleteDirectoryNIO(directoryForClone.toPath());
-            LOGGER.debug("{} Directory for clone deleted.", intNo);
+            LOGGER.debug("{} Directory for clone deleted.", uuid);
         }
     }
 
     private void deleteTargetRepoIfExist() throws GHCommunicationException {
-        LOGGER.debug("{} Checking if target repo exist.", intNo);
+        LOGGER.debug("{} Checking if target repo exist.", uuid);
 
         boolean targetRepoExist = GHExecutor.ex(() ->
-                gitHubWait.getMyself().getRepositories()
-                        .keySet().contains(targetRepoName));
+                ghWait.getMyself().getRepositories().keySet().contains(targetRepoName)
+        );
 
-        LOGGER.debug("{} Target repo should not exist, currently  = {}", intNo, targetRepoExist);
+        LOGGER.debug("{} Target repo should not exist, currently  = {}", uuid, targetRepoExist);
 
         if (targetRepoExist) {
-            GHExecutor.ex(() -> gitHubWait.getRepository(targetRepoFullName).delete());
-            LOGGER.debug("{} Target repo deleted.", intNo);
+            GHExecutor.ex(() -> ghWait.getRepository(targetRepoFullName).delete());
+            LOGGER.debug("{} Target repo deleted.", uuid);
         }
     }
 
     private void getListOfBranchesOfAssessedRepo() throws GHCommunicationException {
-        LOGGER.debug("{} Retrieving list of branches of assessed repo.", intNo);
+        LOGGER.debug("{} Retrieving list of branches of assessed repo.", uuid);
 
         assessedRepoBranches = GHExecutor.ex(() -> assessedRepo.getBranches().keySet());
+        String branches = assessedRepoBranches.stream().reduce((b1, b2) -> String.format("%s, %s", b1, b2)).orElse("");
 
-        LOGGER.debug("{} Retrieved list of branches of assessed repo.", intNo);
-        LOGGER.debug("{} {} branch found.", intNo, assessedRepoBranches.size());
-
-        int i = 0;
-        for (String assessedRepoBranch : assessedRepoBranches) {
-            LOGGER.debug("{} {}. {}", intNo, i, assessedRepoBranch);
-            i++;
-        }
-
+        LOGGER.debug("{} Retrieved list of branches of assessed repo.", uuid);
+        LOGGER.debug("{} {} branch found: {}", uuid, assessedRepoBranches.size(), branches);
     }
 
     private void createTargetRepo() throws GHCommunicationException {
-        LOGGER.debug("{} Creating target repo.", intNo);
+        LOGGER.debug("{} Creating target repo.", uuid);
 
         targetRepo = GHExecutor.ex(() ->
-                gitHubWait.createRepository(targetRepoName, dummy.getCommitMsg(), null, true));
+                ghWait.createRepository(targetRepoName, ghDummy.getCommitMsg(), null, true)
+        );
 
-        LOGGER.debug("{} Created target repo.", intNo);
+        LOGGER.debug("{} Created target repo.", uuid);
     }
 
 
     private void createDirForClone() throws IOException {
-        LOGGER.debug("{} Creating directory for clone.", intNo);
+        LOGGER.debug("{} Creating directory for clone.", uuid);
 
         if (!directoryForClone.mkdir()) {
             throw new IOException("Unable to create directory for clone.");
         }
 
-        LOGGER.debug("{} Created directory for clone.", intNo);
-
+        LOGGER.debug("{} Created directory for clone.", uuid);
     }
 
     private void cloneAssessedRepo(String branch) throws GitAPIException {
-        LOGGER.debug("{} Cloning assessed repo, branch: {}", intNo, branch);
+        LOGGER.debug("{} Cloning assessed repo, branch: {}", uuid, branch);
 
         try (Git gitClone = Git.cloneRepository()
                 .setURI(assessedRepo.gitHttpTransportUrl())
@@ -239,25 +239,24 @@ class GitExecuteCloneTask implements Runnable {
                 .call()) {
         }
 
-        LOGGER.debug("{} Cloned assessed repo, branch: {}", intNo, branch);
-
+        LOGGER.debug("{} Cloned assessed repo, branch: {}", uuid, branch);
     }
 
     private void removeGitSubdirInClone() throws IOException {
-        LOGGER.debug("{} Removing .git subdir in clone.", intNo);
+        LOGGER.debug("{} Removing .git subdir in clone.", uuid);
 
         deleteDirectoryNIO(directoryForCloneGitSubdir.toPath());
 
-        LOGGER.debug("{} Removed .git subdir in clone.", intNo);
+        LOGGER.debug("{} Removed .git subdir in clone.", uuid);
     }
 
     private void addAllFilesToCommit(Git gitTarget) throws GitAPIException {
-        LOGGER.debug("{} Adding all files to commit.", intNo);
+        LOGGER.debug("{} Adding all files to commit.", uuid);
 
-        int i = 0;
         AddCommand add = gitTarget.add();
         String[] files = directoryForClone.list();
 
+        int i = 0;
         for (String fileName : files) {
             LOGGER.trace("{}. {}", i, fileName);
             add.addFilepattern(fileName);
@@ -266,106 +265,119 @@ class GitExecuteCloneTask implements Runnable {
 
         add.call();
 
-        LOGGER.debug("{} Added all files to commit.", intNo);
+        LOGGER.debug("{} Added all files to commit.", uuid);
     }
 
     private void setRepoConfiguration(Git gitTarget) throws IOException, GHCommunicationException {
-        LOGGER.debug("{} Setting repo configuration.", intNo);
+        LOGGER.debug("{} Setting repo configuration.", uuid);
 
         StoredConfig gitTargetConfig = gitTarget.getRepository().getConfig();
-        gitTargetConfig.setString("user", null, "name", GHExecutor.ex(() -> gitHubWait.getMyself().getName()));
-        gitTargetConfig.setString("user", null, "email", GHExecutor.ex(() -> gitHubWait.getMyself().getEmail()));
+        gitTargetConfig.setString("user", null, "name", GHExecutor.ex(() -> ghMyself.getName()));
+        gitTargetConfig.setString("user", null, "email", GHExecutor.ex(() -> ghMyself.getEmail()));
         gitTargetConfig.setBoolean("core", null, "autocrlf", true);
         gitTargetConfig.save();
 
-        LOGGER.debug("{} Set repo configuration.", intNo);
+        LOGGER.debug("{} Set repo configuration.", uuid);
     }
 
     private void commitFiles(Git gitTarget) throws GitAPIException {
-        LOGGER.debug("{} Committing files.", intNo);
+        LOGGER.debug("{} Committing files.", uuid);
 
-        gitTarget.commit().setMessage(dummy.getCommitMsg()).call();
+        gitTarget.commit().setMessage(ghDummy.getCommitMsg()).call();
 
-        LOGGER.debug("{} Committed files.", intNo);
+        LOGGER.debug("{} Committed files.", uuid);
     }
 
 
     private void createBranchIfRequired(Git gitTarget, String branch) throws GitAPIException {
 
         boolean cratingRequired = !branch.equals("master");
-        LOGGER.debug("{} Current branch: {}, creating required: {}", intNo, branch, cratingRequired);
+        LOGGER.debug("{} Current branch: {}, creating required: {}", uuid, branch, cratingRequired);
 
         if (cratingRequired) {
-            LOGGER.debug("{} Creating branch.", intNo);
+            LOGGER.debug("{} Creating branch.", uuid);
 
             gitTarget.branchCreate().setName(branch).call();
             gitTarget.checkout().setName(branch).call();
 
-            LOGGER.debug("{} Created branch.", intNo);
+            LOGGER.debug("{} Created branch.", uuid);
         }
     }
 
     private void pushChangesIntoTargetRepo(Git gitTarget) throws GitAPIException {
-        LOGGER.debug("{} Pushing branch.", intNo);
+        LOGGER.debug("{} Pushing branch.", uuid);
 
         gitTarget.push()
                 .setRemote(targetRepo.gitHttpTransportUrl())
                 .setCredentialsProvider(jGitCredentials)
                 .call();
 
-        LOGGER.debug("{} Pushed branch.", intNo);
+        LOGGER.debug("{} Pushed branch.", uuid);
     }
 
     private void awaitUntilPushIsCompleted(String branch) throws IOException {
-        LOGGER.debug("{} Awaiting until push completed.", intNo);
+        LOGGER.debug("{} Awaiting until push completed.", uuid);
 
         try {
 
-            Awaitility.await("push is visible by GitHub api").atMost(2L, TimeUnit.MINUTES)
-                    .with().pollDelay(5L, TimeUnit.SECONDS)
+            Awaitility.await("push is visible by GitHub api")
+                    .atMost(2L, TimeUnit.MINUTES)
+                    .pollDelay(5L, TimeUnit.SECONDS)
                     .until(() -> GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
 
         } catch (Throwable ex) {
             throw new IOException(ex);
         }
 
-        LOGGER.debug("{} Awaiting push finish done..", intNo);
+        LOGGER.debug("{} Awaiting push finish done..", uuid);
     }
 
     private void setDefaultBranchSameAsInAssessed() throws GHCommunicationException {
         String defaultBranch = assessedRepo.getDefaultBranch();
-        LOGGER.debug("{} Setting default branch to {}", intNo, defaultBranch);
+        LOGGER.debug("{} Setting default branch to {}", uuid, defaultBranch);
 
         GHExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));
 
-        LOGGER.debug("{} Set default branch.", intNo);
+        LOGGER.debug("{} Set default branch.", uuid);
     }
 
     private void deleteDirectoryNIO(Path path) throws IOException {
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(path, new GHTaskClone.DeleteFileVisitor());
+    }
 
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+    private static class DeleteFileVisitor extends SimpleFileVisitor<Path> {
 
-                new File(file.toString()).setWritable(true);
-                Files.delete(file);
+        private static final Logger LOGGER1 = LoggerFactory.getLogger(GHTaskClone.DeleteFileVisitor.class);
+
+        DeleteFileVisitor() {
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
+            setWritable(file);
+            Files.delete(file);
+
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            if (exc == null) {
+
+                setWritable(dir);
+                Files.delete(dir);
 
                 return FileVisitResult.CONTINUE;
+            } else {
+                throw exc;
             }
+        }
 
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                if (exc == null) {
-
-                    new File(dir.toString()).setWritable(true);
-                    Files.delete(dir);
-
-                    return FileVisitResult.CONTINUE;
-                } else {
-                    throw exc;
-                }
+        private void setWritable(Path pathToBeWritable) {
+            if (!new File(pathToBeWritable.toString()).setWritable(true)) {
+                LOGGER1.error("Failed to set {} as writable.", pathToBeWritable);
             }
-
-        });
+        }
     }
 }

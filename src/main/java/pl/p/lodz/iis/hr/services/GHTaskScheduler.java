@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.services;
 
-import org.kohsuke.github.GHRepository;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 
@@ -9,21 +8,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
-public class GitExecuteService {
+public class GHTaskScheduler {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(3);
 
-    public void registerCloneJob(Commission commission, GHRepository ghRepository) {
-        Runnable gitCloneTask = new GitExecuteCloneTask(commission, ghRepository);
-        executor.submit(gitCloneTask);
+    public void registerClone(Commission commission) {
+        executor.submit(new GHTaskClone(commission));
     }
 
+    /**
+     * @param repoName simple repo name (ex "test", not "user/text")
+     */
     public void registerDelete(String repoName) {
-        Runnable gitDeleteTask = new GitExecuteDeleteTask(repoName);
-        executor.submit(gitDeleteTask);
+        executor.submit(new GHTaskDelete(repoName));
     }
 
-    public int getApproxNumberOfNotCompletedTasks() {
+    public int getApproxNumberOfScheduledTasks() {
         if (executor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;
             int queued = executorT.getQueue().size();

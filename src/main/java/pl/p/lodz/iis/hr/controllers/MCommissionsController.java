@@ -20,7 +20,7 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
-import pl.p.lodz.iis.hr.services.GitExecuteService;
+import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
@@ -37,7 +37,7 @@ class MCommissionsController {
     @Autowired private CommissionRepository commissionRepository;
     @Autowired private ParticipantRepository participantRepository;
     @Autowired private LocaleService localeService;
-    @Autowired private GitExecuteService gitExecuteService;
+    @Autowired private GHTaskScheduler GHTaskScheduler;
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
 
     @RequestMapping(
@@ -52,7 +52,7 @@ class MCommissionsController {
         }
 
         Review review = reviewRepository.findOne(reviewID.get());
-        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        int notCompleted = GHTaskScheduler.getApproxNumberOfScheduledTasks();
         model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("commissions", review.getCommissions());
@@ -77,7 +77,7 @@ class MCommissionsController {
 
         Commission commission = commissionRepository.findOne(commissionID.get());
         model.addAttribute("commissions", singletonList(commission));
-        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        int notCompleted = GHTaskScheduler.getApproxNumberOfScheduledTasks();
         model.addAttribute("retryButtonForProcessing", notCompleted == 0);
 
         model.addAttribute("addon_oneCommission", true);
@@ -97,7 +97,7 @@ class MCommissionsController {
         }
 
         Participant participant = participantRepository.findOne(participantID.get());
-        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        int notCompleted = GHTaskScheduler.getApproxNumberOfScheduledTasks();
 
         model.addAttribute("participant", participant);
         model.addAttribute("commissions", participant.getCommissions());
@@ -117,7 +117,7 @@ class MCommissionsController {
         List<Commission> failed = commissionRepository.findByStatusIn(
                 Arrays.asList(CommissionStatus.PROCESSING_FAILED, CommissionStatus.PROCESSING)
         );
-        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        int notCompleted = GHTaskScheduler.getApproxNumberOfScheduledTasks();
 
         model.addAttribute("commissions", failed);
         model.addAttribute("retryButtonForProcessing", notCompleted == 0);
@@ -142,7 +142,7 @@ class MCommissionsController {
         }
 
         Commission comm = commissionRepository.getOne(commissionID.get());
-        int notCompleted = gitExecuteService.getApproxNumberOfNotCompletedTasks();
+        int notCompleted = GHTaskScheduler.getApproxNumberOfScheduledTasks();
 
         if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -151,7 +151,7 @@ class MCommissionsController {
 
         try {
             GHRepository repo = GHExecutor.ex(() -> gitHubFail.getRepository(comm.getReview().getRepository()));
-            gitExecuteService.registerCloneJob(comm, repo);
+            GHTaskScheduler.registerClone(comm);
 
         } catch (GHCommunicationException e) {
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());

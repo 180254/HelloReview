@@ -18,8 +18,8 @@ import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.*;
-import pl.p.lodz.iis.hr.services.FieldValidateService;
-import pl.p.lodz.iis.hr.services.GitExecuteService;
+import pl.p.lodz.iis.hr.services.FieldValidator;
+import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
@@ -40,8 +40,8 @@ class MReviewsController {
     @Autowired private AppConfig appConfig;
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private LocaleService localeService;
-    @Autowired private FieldValidateService fieldValidateService;
-    @Autowired private GitExecuteService gitExecuteService;
+    @Autowired private FieldValidator fieldValidator;
+    @Autowired private GHTaskScheduler GHTaskScheduler;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -205,7 +205,7 @@ class MReviewsController {
             return singletonList(localeService.get("NoResource"));
         }
 
-        List<String> nameErrors = fieldValidateService.validateField(
+        List<String> nameErrors = fieldValidator.validateField(
                 new Review(newName, 0L, null, null, null),
                 "name",
                 localeService.get("m.reviews.add.validation.prefix.name")
@@ -254,7 +254,7 @@ class MReviewsController {
             return singletonList(localeService.get("NoResources"));
         }
 
-        List<String> errors = fieldValidateService.validateFields(
+        List<String> errors = fieldValidator.validateFields(
                 new Review(name, respPerPeer.get(), null, null, name),
                 new String[]{
                         "name",
@@ -344,7 +344,7 @@ class MReviewsController {
 
             responses.stream()
                     .filter(r -> r.getStatus() != CommissionStatus.NOT_FORKED)
-                    .forEach(r -> gitExecuteService.registerCloneJob(r, forksMap.get(r.getAssessed().getGitHubName())));
+                    .forEach(r -> GHTaskScheduler.registerClone(r));
 
             return singletonList(String.valueOf(review.getId()));
 

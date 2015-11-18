@@ -19,7 +19,7 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.Review2Repository;
-import pl.p.lodz.iis.hr.services.FieldValidateService;
+import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.FormValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.XmlMapperProvider;
@@ -41,7 +41,7 @@ class MFormsController {
     @Autowired private XmlMapperProvider xmlMapperProvider;
     @Autowired private FormValidator formValidator;
     @Autowired private LocaleService localeService;
-    @Autowired private FieldValidateService fieldValidateService;
+    @Autowired private FieldValidator fieldValidator;
     @Autowired private Review2Repository review2Repository;
 
     @RequestMapping(
@@ -225,7 +225,7 @@ class MFormsController {
             return singletonList(localeService.get("NoResource"));
         }
 
-        List<String> nameErrors = fieldValidateService.validateField(
+        List<String> nameErrors = fieldValidator.validateField(
                 new Form(newName, null),
                 "name",
                 localeService.get("m.forms.rename.validation.prefix.name")

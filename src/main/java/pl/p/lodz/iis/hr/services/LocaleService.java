@@ -19,7 +19,12 @@ import java.util.function.Supplier;
 @Service
 public class LocaleService {
 
-    @Autowired private MessageSource messageSource;
+    private final MessageSource messageSource;
+
+    @Autowired
+    LocaleService(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     private Locale getLocale() {
         return LocaleContextHolder.getLocale();

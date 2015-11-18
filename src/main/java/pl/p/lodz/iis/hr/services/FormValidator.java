@@ -10,10 +10,16 @@ import java.util.List;
 @Service
 public class FormValidator {
 
-    @Autowired private Validator validator;
-    @Autowired private LocaleService localeService;
+    private Validator validator;
+    private LocaleService localeService;
+
+    @Autowired
+    public FormValidator(Validator validator, LocaleService localeService) {
+        this.validator = validator;
+        this.localeService = localeService;
+    }
 
     public List<String> validate(Form form) {
-        return new FormValidatorHelper(validator, localeService, form).validate();
+        return new FormValidator2(validator, localeService, form).validate();
     }
 }

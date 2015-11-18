@@ -13,7 +13,7 @@ import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
-import pl.p.lodz.iis.hr.services.FieldValidateService;
+import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ class MParticipantsController {
 
     @Autowired private CourseRepository courseRepository;
     @Autowired private ParticipantRepository participantRepository;
-    @Autowired private FieldValidateService fieldValidateService;
+    @Autowired private FieldValidator fieldValidator;
     @Autowired private LocaleService localeService;
 
     @RequestMapping(
@@ -95,7 +95,7 @@ class MParticipantsController {
         String namePrefix = localeService.get("m.participants.add.validation.prefix.participant.name");
         String gitHubNamePrefix = localeService.get("m.participants.add.validation.prefix.github.name");
 
-        List<String> allErrors = fieldValidateService.validateFields(
+        List<String> allErrors = fieldValidator.validateFields(
                 participant,
                 new String[]{
                         "name",
@@ -163,7 +163,7 @@ class MParticipantsController {
             return singletonList(localeService.get("UniqueName"));
         }
 
-        List<String> nameErrors = fieldValidateService.validateField(
+        List<String> nameErrors = fieldValidator.validateField(
                 new Participant(null, newName, null),
                 "name",
                 localeService.get("m.participants.add.validation.prefix.participant.name")
@@ -202,7 +202,7 @@ class MParticipantsController {
             return singletonList(localeService.get("UniqueName"));
         }
 
-        List<String> gitHubNameErrors = fieldValidateService.validateField(
+        List<String> gitHubNameErrors = fieldValidator.validateField(
                 new Participant(null, null, newGitHubName),
                 "gitHubName",
                 localeService.get("m.participants.add.validation.prefix.github.name")
