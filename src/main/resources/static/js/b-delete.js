@@ -19,11 +19,11 @@ function deleteB($deleteLink) {
         headers: ajaxHeaders
 
     }).done(function (data) {
-        toastr.success(data);
+        toastr.success(data.join("\n"));
         $row.remove();
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHR.responseText);
+        toastr.error(jqXHRFailToArray(jqXHR).join("\n"));
 
     });
 }

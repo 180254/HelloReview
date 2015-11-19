@@ -29,7 +29,6 @@ function commissionRetryHandler($retryLink) {
 $(document).ready(function () {
     'use strict';
 
-
     $('.commission-retry').click(function () {
         commissionRetryHandler($(this));
     });
