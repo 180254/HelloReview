@@ -137,6 +137,13 @@ class MParticipantsController {
             return singletonList(localeService.get("NoResource"));
         }
 
+        Participant participant = participantRepository.getOne(participantID.get());
+        if (!participant.getCommissions().isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.get("m.participants.delete.cannot.as.comm.exist"));
+
+        }
+
         participantRepository.delete(participantID.get());
         return singletonList(localeService.get("m.participants.delete.done"));
     }
