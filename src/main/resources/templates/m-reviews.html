@@ -39,6 +39,7 @@
             <th th:text="#{m.reviews.thead.comm.per.peer}"></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.commissions}"></span></th>
             <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.responses}"></span></th>
+            <th><i class="fa fa-times-circle"></i>&nbsp;<span th:text="#{m.reviews.thead.close}"></span></th>
             <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.reviews.thead.delete}"></span></th>
         </tr>
         </thead>
@@ -82,6 +83,22 @@
 
             <td>
                 0/10 responses
+            </td>
+
+            <td>
+                <a href="#"
+                   class="review-open-close-link"
+                   th:attr="
+                        data-url=@{/m/reviews/openclose},
+                        data-id=${review.id},
+                        data-title=#{m.reviews.open.close.title},
+                        data-btnOkLabel=#{m.reviews.open.close.btnOkLabel},
+                        data-btnCancelLabel=#{m.reviews.open.close.btnCancelLabel}"
+                   data-btnOkClass="btn btn-sm btn-danger">
+
+                    <span th:if="${review.closed == true}" th:text="#{m.reviews.tbody.open.close.open}"></span>
+                    <span th:if="${review.closed == false}" th:text="#{m.reviews.tbody.open.close.close}"></span>
+                </a>
             </td>
 
             <td>

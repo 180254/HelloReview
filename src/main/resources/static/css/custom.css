@@ -1,5 +1,23 @@
-/*                      error                       */
+/*                      general                     */
+main {
+    margin-top: 1em;
+}
 
+main::after {
+    margin-bottom: 100px;
+}
+
+.fa {
+    display: none;
+}
+
+@media (min-width: 1200px) {
+    .container .fa {
+        display: inline;
+    }
+}
+
+/*                      error                       */
 #sth-went-wrong .status {
     font-family: Impact, Charcoal, sans-serif;
     font-size: 2.5em;
@@ -53,20 +71,10 @@ header pre {
 }
 
 /*                      navbar                      */
-
 @media (min-width: 768px) {
     .navbar-right {
         right: 2em;
     }
-}
-
-/*                      general                     */
-main {
-    margin-top: 1em;
-}
-
-main::after {
-    margin-bottom: 100px;
 }
 
 /*                login/github button               */
@@ -149,11 +157,11 @@ main::after {
 }
 
 .table {
-    table-layout: fixed;
+    /* table-layout: fixed; */
 }
 
 .table th:first-child {
-    width: 10%;
+    width: 8%;
 }
 
 .add-new > .btn {
@@ -170,7 +178,6 @@ main::after {
 }
 
 /*          displaying course participants          */
-
 .pre-table-addon {
     font-size: 16px;
     margin-bottom: 2em;

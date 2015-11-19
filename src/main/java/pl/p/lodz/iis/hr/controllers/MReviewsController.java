@@ -191,6 +191,34 @@ class MReviewsController {
     }
 
     @RequestMapping(
+            value = "/m/reviews/openclose",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    @ResponseBody
+    public List<String> openClose(@ModelAttribute("id") Long2 reviewID,
+                                  HttpServletResponse response) {
+
+        if (!reviewRepository.exists(reviewID.get())) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return singletonList(localeService.get("NoResource"));
+        }
+
+        Review review = reviewRepository.findOne(reviewID.get());
+        review.setClosed(!review.isClosed());
+        reviewRepository.save(review);
+
+        return review.isClosed() ? Arrays.asList(
+                localeService.get("m.reviews.open.close.closed"),
+                localeService.get("m.reviews.tbody.open.close.open")
+        ) : Arrays.asList(
+                localeService.get("m.reviews.open.close.opened"),
+                localeService.get("m.reviews.tbody.open.close.close")
+        );
+    }
+
+
+    @RequestMapping(
             value = "/m/reviews/rename",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
