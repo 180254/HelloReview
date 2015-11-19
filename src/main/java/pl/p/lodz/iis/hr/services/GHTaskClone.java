@@ -322,12 +322,8 @@ class GHTaskClone implements Runnable {
 
             Awaitility.await("push is visible by GitHub api")
                     .atMost(2L, TimeUnit.MINUTES)
-                    .pollDelay(5L, TimeUnit.SECONDS)
-                    .until(() -> {
-                        Boolean ex = GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch));
-                        System.out.println("XXXXX/" + ex);
-                        return ex;
-                    });
+                    .pollDelay(2L, TimeUnit.SECONDS)
+                    .until(() -> GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
 
         } catch (Throwable ex) {
             throw new IOException(ex);
