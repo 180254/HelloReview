@@ -1,13 +1,14 @@
-.gradle
+.gradle/
 build/
 
 *.iml
 .idea/
 
 
-database/*
-cache/*
-temp/*
+database/
+cache/
+temp/
+logs/
 !.gitignore
 
 rebel.xml
