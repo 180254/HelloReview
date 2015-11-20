@@ -17,10 +17,14 @@ import pl.p.lodz.iis.hr.exceptions.InternalException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.repositories.*;
+import pl.p.lodz.iis.hr.repositories.CommissionRepository;
+import pl.p.lodz.iis.hr.repositories.CourseRepository;
+import pl.p.lodz.iis.hr.repositories.FormRepository;
+import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.ReviewService;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +37,7 @@ import static java.util.Collections.singletonList;
 class MReviewsController {
 
     @Autowired private ReviewRepository reviewRepository;
-    @Autowired private Review2Repository review2Repository;
+    @Autowired private ReviewService reviewService;
     @Autowired private CommissionRepository commissionRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
@@ -181,12 +185,12 @@ class MReviewsController {
 
         Review review = reviewRepository.findOne(reviewID.get());
 
-        if (!review2Repository.canBeDeleted(review)) {
+        if (!reviewService.canBeDeleted(review)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
         }
 
-        review2Repository.delete(review);
+        reviewService.delete(review);
         return singletonList(localeService.get("m.reviews.delete.done"));
     }
 

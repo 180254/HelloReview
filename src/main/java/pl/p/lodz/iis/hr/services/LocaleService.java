@@ -7,6 +7,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.utils.ExceptionUtil;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
@@ -39,6 +41,10 @@ public class LocaleService {
 
     public String get(String code) {
         return msgOrCode(() -> messageSource.getMessage(code, null, getLocale()), code);
+    }
+
+    public List<String> getAsList(String code) {
+        return Collections.singletonList(get(code));
     }
 
     public String get(String code, Object[] args, String defaultMessage) {

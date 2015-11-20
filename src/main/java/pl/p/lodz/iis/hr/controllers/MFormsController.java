@@ -18,11 +18,7 @@ import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
-import pl.p.lodz.iis.hr.repositories.Review2Repository;
-import pl.p.lodz.iis.hr.services.FieldValidator;
-import pl.p.lodz.iis.hr.services.FormValidator;
-import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.XmlMapperProvider;
+import pl.p.lodz.iis.hr.services.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,7 +38,7 @@ class MFormsController {
     @Autowired private FormValidator formValidator;
     @Autowired private LocaleService localeService;
     @Autowired private FieldValidator fieldValidator;
-    @Autowired private Review2Repository review2Repository;
+    @Autowired private ReviewService reviewService;
 
     @RequestMapping(
             value = "/m/forms",
@@ -200,12 +196,12 @@ class MFormsController {
         Form form = formRepository.getOne(formID.get());
 
         List<Review> reviews = form.getReviews();
-        if (!review2Repository.canBeDeleted(reviews)) {
+        if (!reviewService.canBeDeleted(reviews)) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
         }
 
-        review2Repository.delete(reviews);
+        reviewService.delete(reviews);
         formRepository.delete(formID.get());
         return singletonList(localeService.get("m.forms.delete.done"));
     }

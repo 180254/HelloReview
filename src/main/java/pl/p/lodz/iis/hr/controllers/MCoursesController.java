@@ -8,26 +8,39 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.repositories.Review2Repository;
 import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.RepoCommonService;
+import pl.p.lodz.iis.hr.services.ReviewService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 @Controller
 class MCoursesController {
 
-    @Autowired private CourseRepository courseRepository;
-    @Autowired private LocaleService localeService;
-    @Autowired private FieldValidator fieldValidator;
-    @Autowired private Review2Repository review2Repository;
+    private final RepoCommonService repoCommonService;
+    private final CourseRepository courseRepository;
+    private final ReviewService reviewService;
+    private final FieldValidator fieldValidator;
+    private final LocaleService localeService;
+
+    @Autowired
+    MCoursesController(RepoCommonService repoCommonService,
+                       CourseRepository courseRepository,
+                       ReviewService reviewService,
+                       FieldValidator fieldValidator,
+                       LocaleService localeService) {
+        this.repoCommonService = repoCommonService;
+        this.courseRepository = courseRepository;
+        this.reviewService = reviewService;
+        this.fieldValidator = fieldValidator;
+        this.localeService = localeService;
+    }
 
     @RequestMapping(
             value = "/m/courses",
@@ -36,6 +49,7 @@ class MCoursesController {
     public String list(Model model) {
 
         List<Course> courses = courseRepository.findAll();
+
         model.addAttribute("courses", courses);
         model.addAttribute("newButton", true);
 
@@ -49,14 +63,10 @@ class MCoursesController {
     public String listOne(@PathVariable Long2 courseID,
                           Model model) {
 
-        if (!courseRepository.exists(courseID.get())) {
-            throw new ResourceNotFoundException();
-        }
+        Course course = repoCommonService.getResource(courseRepository, courseID.get());
 
-        Course course = courseRepository.findOne(courseID.get());
-        model.addAttribute("courses", singletonList(course));
+        model.addAttribute("courses", Collections.singletonList(course));
         model.addAttribute("newButton", false);
-
         model.addAttribute("addon_oneCourse", true);
 
         return "m-courses";
@@ -80,12 +90,13 @@ class MCoursesController {
         );
 
         if (!errors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return errors;
         }
 
         courseRepository.save(course);
-        return singletonList(localeService.get("m.courses.add.done"));
+
+        return localeService.getAsList("m.courses.add.done");
     }
 
     @RequestMapping(
@@ -97,22 +108,23 @@ class MCoursesController {
     public List<String> delete(@ModelAttribute("id") Long2 courseID,
                                HttpServletResponse response) {
 
-        if (!courseRepository.exists(courseID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
+        Course course = repoCommonService.getResourceForJSON(courseRepository, courseID.get());
 
-        Course course = courseRepository.getOne(courseID.get());
+        if (course == null) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return localeService.getAsList("NoResource");
+        }
 
         List<Review> reviews = course.getReviews();
-        if (!review2Repository.canBeDeleted(reviews)) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
+        if (!reviewService.canBeDeleted(reviews)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return localeService.getAsList("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        review2Repository.delete(reviews);
+        reviewService.delete(reviews);
         courseRepository.delete(courseID.get());
-        return singletonList(localeService.get("m.courses.delete.done"));
+
+        return localeService.getAsList("m.courses.delete.done");
     }
 
     @RequestMapping(
@@ -125,9 +137,11 @@ class MCoursesController {
                                @ModelAttribute("pk") Long2 courseID,
                                HttpServletResponse response) {
 
-        if (!courseRepository.exists(courseID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
+        Course course = repoCommonService.getResourceForJSON(courseRepository, courseID.get());
+
+        if (course == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return localeService.getAsList("NoResource");
         }
 
         List<String> errors = fieldValidator.validateField(
@@ -141,11 +155,9 @@ class MCoursesController {
             return errors;
         }
 
-        Course course = courseRepository.getOne(courseID.get());
         course.setName(newName);
         courseRepository.save(course);
 
-        return singletonList(localeService.get("m.courses.rename.done"));
+        return localeService.getAsList("m.courses.rename.done");
     }
-
 }

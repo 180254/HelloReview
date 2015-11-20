@@ -1,19 +1,25 @@
-package pl.p.lodz.iis.hr.repositories;
+package pl.p.lodz.iis.hr.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.courses.Review;
-import pl.p.lodz.iis.hr.services.GHTaskScheduler;
+import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 
 import java.util.Collection;
 
 @Service
-public class Review2Repository {
+public class ReviewService {
 
-    @Autowired private ReviewRepository reviewRepository;
-    @Autowired private GHTaskScheduler GHTaskScheduler;
+    private final ReviewRepository reviewRepository;
+    private final GHTaskScheduler ghTaskScheduler;
 
+    @Autowired
+    public ReviewService(ReviewRepository reviewRepository,
+                         GHTaskScheduler ghTaskScheduler) {
+        this.reviewRepository = reviewRepository;
+        this.ghTaskScheduler = ghTaskScheduler;
+    }
 
     public boolean canBeDeleted(Review review) {
         return review.getCommissions().stream()
@@ -27,7 +33,7 @@ public class Review2Repository {
     public void delete(Review review) {
         review.getCommissions().stream()
                 .filter(comm -> comm.getStatus().isCopyExistOnGitHub())
-                .forEach(comm -> GHTaskScheduler.registerDelete(comm.getUuid().toString()));
+                .forEach(comm -> ghTaskScheduler.registerDelete(comm.getUuid().toString()));
 
         reviewRepository.delete(review);
     }
