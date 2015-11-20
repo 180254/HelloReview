@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.controllers;
 
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.client.GitHubClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +18,19 @@ import javax.servlet.http.HttpServletResponse;
  * /login  - pl.p.lodz.iis.hr.controllers.AuthController
  * /logout - org.pac4j.springframework.web.ApplicationLogoutController
  * /callback - org.pac4j.springframework.web.CallbackController
+ * /callback customize - pl.p.lodz.iis.hr.controllers.CustomizedCallbackController
  */
 @Controller
 class AuthController {
 
-    @Autowired private GitHubClient gitHubClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+
+    private final GitHubClient gitHubClient;
+
+    @Autowired
+    AuthController(GitHubClient gitHubClient) {
+        this.gitHubClient = gitHubClient;
+    }
 
     @RequestMapping(
             value = "/login",
@@ -28,17 +38,17 @@ class AuthController {
     public String login(HttpServletRequest request,
                         HttpServletResponse response) {
 
-        GHPac4jSecurityHelper GHPac4JSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
+        GHPac4jSecurityHelper ghSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
 
-        if (GHPac4JSecurityHelper.getProfileManager().isAuthenticated()
-                && !ExceptionUtil.isExceptionThrown1(GHPac4JSecurityHelper::getUserProfileUp2Date)) {
+        if (ghSecurityHelper.getProfileManager().isAuthenticated()
+                && !ExceptionUtil.isExceptionThrown1(ghSecurityHelper::getUserProfileUp2Date)) {
             return "redirect:/";
 
         } else {
-            GHPac4JSecurityHelper.getProfileManager().remove(true);
+            ghSecurityHelper.getProfileManager().remove(true);
 
             try {
-                return String.format("redirect:%s", GHPac4JSecurityHelper.getRedirectLocation());
+                return String.format("redirect:%s", ghSecurityHelper.getRedirectLocation());
             } catch (RequiresHttpAction ignored) {
                 return "redirect:/";
             }

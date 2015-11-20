@@ -18,6 +18,6 @@ class CSPController {
             method = RequestMethod.POST)
     @ResponseBody
     public void cspReports(@RequestBody String str) {
-        LOGGER.warn(str);
+        LOGGER.error(str);
     }
 }
