@@ -8,9 +8,9 @@ import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import java.io.Serializable;
 
 @Service
-public class RepoCommonService {
+public class ResCommonService {
 
-    public <T, K extends Serializable> T getResource(JpaRepository<T, K> repository, K id) {
+    public <T, K extends Serializable> T getOne(JpaRepository<T, K> repository, K id) {
         if (!repository.exists(id)) {
             throw new ResourceNotFoundException();
         }
@@ -19,7 +19,7 @@ public class RepoCommonService {
     }
 
 
-    public @Nullable <T, K extends Serializable> T getResourceForJSON(JpaRepository<T, K> repository, K id) {
+    public @Nullable <T, K extends Serializable> T getOneForJSON(JpaRepository<T, K> repository, K id) {
         if (!repository.exists(id)) {
             return null;
         }

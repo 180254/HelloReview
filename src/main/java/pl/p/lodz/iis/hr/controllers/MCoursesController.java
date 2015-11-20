@@ -13,7 +13,7 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.RepoCommonService;
+import pl.p.lodz.iis.hr.services.ResCommonService;
 import pl.p.lodz.iis.hr.services.ReviewService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,19 +23,19 @@ import java.util.List;
 @Controller
 class MCoursesController {
 
-    private final RepoCommonService repoCommonService;
+    private final ResCommonService resCommonService;
     private final CourseRepository courseRepository;
     private final ReviewService reviewService;
     private final FieldValidator fieldValidator;
     private final LocaleService localeService;
 
     @Autowired
-    MCoursesController(RepoCommonService repoCommonService,
+    MCoursesController(ResCommonService resCommonService,
                        CourseRepository courseRepository,
                        ReviewService reviewService,
                        FieldValidator fieldValidator,
                        LocaleService localeService) {
-        this.repoCommonService = repoCommonService;
+        this.resCommonService = resCommonService;
         this.courseRepository = courseRepository;
         this.reviewService = reviewService;
         this.fieldValidator = fieldValidator;
@@ -63,7 +63,7 @@ class MCoursesController {
     public String listOne(@PathVariable Long2 courseID,
                           Model model) {
 
-        Course course = repoCommonService.getResource(courseRepository, courseID.get());
+        Course course = resCommonService.getOne(courseRepository, courseID.get());
 
         model.addAttribute("courses", Collections.singletonList(course));
         model.addAttribute("newButton", false);
@@ -108,7 +108,7 @@ class MCoursesController {
     public List<String> delete(@ModelAttribute("id") Long2 courseID,
                                HttpServletResponse response) {
 
-        Course course = repoCommonService.getResourceForJSON(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForJSON(courseRepository, courseID.get());
 
         if (course == null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -137,7 +137,7 @@ class MCoursesController {
                                @ModelAttribute("pk") Long2 courseID,
                                HttpServletResponse response) {
 
-        Course course = repoCommonService.getResourceForJSON(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForJSON(courseRepository, courseID.get());
 
         if (course == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
