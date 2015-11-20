@@ -18,9 +18,9 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private HeaderWriter getCSPHeader() {
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
-                // Note: style-src 'unsafe-inline' is required for xml displaying in pretty format by browser (chrome)
                 // Note: img-src data: is used by toastr.js
                 // Note: img-src cdnjs.cloudflare.com is used by X-editable
+                // Note: style-src 'unsafe-inline' is required for xml displaying in pretty format by browser (chrome)
                 // Note: form-action github.com is required to redirect user to github in authentication
 
                 .put("default-src",     "'none'")

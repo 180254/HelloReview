@@ -23,7 +23,7 @@ class I18nConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("setLang");
+        lci.setParamName("lang");
         return lci;
     }
 

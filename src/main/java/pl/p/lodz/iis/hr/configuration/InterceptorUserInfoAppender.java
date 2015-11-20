@@ -30,14 +30,14 @@ class InterceptorUserInfoAppender extends HandlerInterceptorAdapter {
                 return;
             }
 
-            GHPac4jSecurityHelper GHPac4JSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
+            GHPac4jSecurityHelper ghSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
             ModelMap model = modelAndView.getModelMap();
 
-            if (GHPac4JSecurityHelper.isAuthenticated()) {
+            if (ghSecurityHelper.isAuthenticated()) {
                 model.addAttribute("isLoggedIn", true);
-                model.addAttribute("isMaster", GHPac4JSecurityHelper.isMaster(appConfig));
-                model.addAttribute("isPeer", GHPac4JSecurityHelper.isPeer(appConfig));
-                model.addAttribute("username", GHPac4JSecurityHelper.getUserProfileFromSession().getUsername());
+                model.addAttribute("isMaster", ghSecurityHelper.isMaster(appConfig));
+                model.addAttribute("isPeer", ghSecurityHelper.isPeer(appConfig));
+                model.addAttribute("username", ghSecurityHelper.getUserProfileFromSession().getUsername());
 
             } else {
                 model.addAttribute("isLoggedIn", false);

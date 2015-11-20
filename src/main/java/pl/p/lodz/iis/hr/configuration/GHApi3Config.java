@@ -73,7 +73,7 @@ class GHApi3Config {
 
     @Bean
     public CredentialsProvider jGitCredentials() {
-        GHDummy dummy = appConfig.getGitHubConfig().getDummy();
-        return new UsernamePasswordCredentialsProvider(dummy.getToken(), "");
+        GHDummy ghDummy = appConfig.getGitHubConfig().getDummy();
+        return new UsernamePasswordCredentialsProvider(ghDummy.getToken(), "");
     }
 }

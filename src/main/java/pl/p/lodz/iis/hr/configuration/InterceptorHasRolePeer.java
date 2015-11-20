@@ -1,7 +1,6 @@
 package pl.p.lodz.iis.hr.configuration;
 
 import org.pac4j.oauth.client.GitHubClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 
@@ -25,13 +24,13 @@ class InterceptorHasRolePeer extends HandlerInterceptorAdapter {
                              Object handler)
             throws IOException {
 
-        GHPac4jSecurityHelper GHPac4JSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
+        GHPac4jSecurityHelper ghSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
 
-        if (GHPac4JSecurityHelper.isAuthenticated()) {
-            if (GHPac4JSecurityHelper.isPeer(appConfig)) {
+        if (ghSecurityHelper.isAuthenticated()) {
+            if (ghSecurityHelper.isPeer(appConfig)) {
                 return true;
             } else {
-                response.sendError(HttpStatus.UNAUTHORIZED.value());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }
 
