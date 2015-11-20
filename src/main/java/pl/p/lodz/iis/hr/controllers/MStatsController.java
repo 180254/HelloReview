@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
@@ -31,7 +30,6 @@ class MStatsController {
 
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private GHTaskScheduler ghTaskScheduler;
-    @Autowired private AppConfig appConfig;
     @Autowired private CommissionRepository commissionRepository;
 
     @RequestMapping(

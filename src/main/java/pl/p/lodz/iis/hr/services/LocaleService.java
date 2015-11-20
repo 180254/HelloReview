@@ -43,10 +43,6 @@ public class LocaleService {
         return msgOrCode(() -> messageSource.getMessage(code, null, getLocale()), code);
     }
 
-    public List<String> getAsList(String code) {
-        return Collections.singletonList(get(code));
-    }
-
     public String get(String code, Object[] args, String defaultMessage) {
         return msgOrCode(() -> messageSource.getMessage(code, args, defaultMessage, getLocale()), code);
     }
@@ -57,5 +53,21 @@ public class LocaleService {
 
     public String get(MessageSourceResolvable resolvable) {
         return msgOrCode(() -> messageSource.getMessage(resolvable, getLocale()), resolvable.getCodes()[0]);
+    }
+
+    public List<String> getAsList(String code) {
+        return Collections.singletonList(get(code));
+    }
+
+    public List<String> getAsList(String code, Object[] args, String defaultMessage) {
+        return Collections.singletonList(get(code, args, defaultMessage));
+    }
+
+    public List<String> getAsList(String code, Object[] args) {
+        return Collections.singletonList(get(code, args));
+    }
+
+    public List<String> getAsList(MessageSourceResolvable resolvable) {
+        return Collections.singletonList(get(resolvable));
     }
 }

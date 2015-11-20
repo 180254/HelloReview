@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
+import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,15 @@ public class FieldValidator {
                 .collect(Collectors.toList());
     }
 
+    public void validateFieldRestEx(Object object, String fieldName, String prefix)
+            throws FieldValidationRestException {
+        List<String> errors = validateField(object, fieldName, prefix);
+
+        if (!errors.isEmpty()) {
+            throw new FieldValidationRestException(errors);
+        }
+    }
+
     public List<String> validateFields(Object object, String[] fieldNames, String[] prefixes) {
         List<String> errors = new ArrayList<>(fieldNames.length);
 
@@ -43,5 +53,14 @@ public class FieldValidator {
         }
 
         return errors;
+    }
+
+    public void validateFieldsdRestEx(Object object, String[] fieldNames, String[] prefixes)
+            throws FieldValidationRestException {
+        List<String> errors = validateFields(object, fieldNames, prefixes);
+
+        if (!errors.isEmpty()) {
+            throw new FieldValidationRestException(errors);
+        }
     }
 }

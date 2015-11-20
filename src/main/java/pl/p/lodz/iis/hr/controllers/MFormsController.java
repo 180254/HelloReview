@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
+import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
+import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Review;
@@ -20,7 +21,6 @@ import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -28,17 +28,33 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-
 @Controller
 class MFormsController {
 
-    @Autowired private FormRepository formRepository;
-    @Autowired private XmlMapperProvider xmlMapperProvider;
-    @Autowired private FormValidator formValidator;
-    @Autowired private LocaleService localeService;
-    @Autowired private FieldValidator fieldValidator;
-    @Autowired private ReviewService reviewService;
+    private final ResCommonService resCommonService;
+    private final FormRepository formRepository;
+    private final ReviewService reviewService;
+    private final FormValidator formValidator;
+    private final LocaleService localeService;
+    private final FieldValidator fieldValidator;
+    private final XmlMapperProvider xmlMapperProvider;
+
+    @Autowired
+    MFormsController(ResCommonService resCommonService,
+                     FormRepository formRepository,
+                     ReviewService reviewService,
+                     FormValidator formValidator,
+                     LocaleService localeService,
+                     FieldValidator fieldValidator,
+                     XmlMapperProvider xmlMapperProvider) {
+        this.resCommonService = resCommonService;
+        this.formRepository = formRepository;
+        this.reviewService = reviewService;
+        this.formValidator = formValidator;
+        this.localeService = localeService;
+        this.fieldValidator = fieldValidator;
+        this.xmlMapperProvider = xmlMapperProvider;
+    }
 
     @RequestMapping(
             value = "/m/forms",
@@ -47,6 +63,7 @@ class MFormsController {
     public String list(Model model) {
 
         List<Form> byTemporaryFalse = formRepository.findByTemporaryFalse();
+
         model.addAttribute("forms", byTemporaryFalse);
         model.addAttribute("newButton", true);
 
@@ -58,26 +75,21 @@ class MFormsController {
             method = RequestMethod.GET)
     @Transactional
     public String listOne(@PathVariable Long2 formID,
-                          Model model) {
+                          Model model)
+            throws ResourceNotFoundException {
 
-        if (!formRepository.exists(formID.get())) {
-            throw new ResourceNotFoundException();
-        }
-
-        Form form = formRepository.getOne(formID.get());
+        Form form = resCommonService.getOne(formRepository, formID.get());
 
         if (form.isTemporary()) {
             throw new ResourceNotFoundException();
         }
 
-        model.addAttribute("forms", singletonList(form));
+        model.addAttribute("forms", Collections.singletonList(form));
         model.addAttribute("newButton", false);
-
         model.addAttribute("addon_oneForm", true);
 
         return "m-forms";
     }
-
 
     @RequestMapping(
             value = "/m/forms/add",
@@ -94,27 +106,25 @@ class MFormsController {
     @ResponseBody
     public List<String> kAddPOST(@ModelAttribute("form-name") String formName,
                                  @ModelAttribute("form-xml") String formXML,
-                                 @ModelAttribute("action") String action,
-                                 HttpServletResponse response) {
+                                 @ModelAttribute("action") String action)
+            throws FieldValidationRestException, OtherRestProcessingException {
 
         if (!Arrays.asList("preview", "add").contains(action)) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return Collections.emptyList();
+            throw new OtherRestProcessingException("");
         }
 
         Form form;
 
         try {
-            ObjectReader xmlReader = xmlMapperProvider.getXmlMapper()
-                    .readerFor(Form.class).withView(JSONViews.FormParseXML.class);
+            ObjectReader xmlReader = xmlMapperProvider
+                    .getXmlMapper()
+                    .readerFor(Form.class)
+                    .withView(JSONViews.FormParseXML.class);
+
             form = xmlReader.readValue(formXML.trim());
 
         } catch (IOException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-
-            return singletonList(
-                    String.format("It's not valid form xml! Exception thrown: [%s]", e.getMessage())
-            );
+            throw new OtherRestProcessingException("m.forms.add.validation.not.xml", new Object[]{e.getMessage()});
         }
 
         form.setName(Strings.emptyToNull(formName));
@@ -123,16 +133,12 @@ class MFormsController {
         formRepository.delete(formRepository.findByTemporaryTrue());
         formRepository.flush();
 
-        List<String> validate = formValidator.validate(form);
-        if (!validate.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return validate;
-        }
+        formValidator.validateRestEx(form);
 
         form.fixRelations();
         formRepository.save(form);
 
-        return singletonList(String.valueOf(form.getId()));
+        return Collections.singletonList(String.valueOf(form.getId()));
     }
 
     @RequestMapping(
@@ -140,13 +146,11 @@ class MFormsController {
             method = RequestMethod.GET)
     @Transactional
     public String preview(@PathVariable Long2 formID,
-                          Model model) {
+                          Model model)
+            throws ResourceNotFoundException {
 
-        if (!formRepository.exists(formID.get())) {
-            throw new ResourceNotFoundException();
-        }
+        Form form = resCommonService.getOne(formRepository, formID.get());
 
-        Form form = formRepository.getOne(formID.get());
         model.addAttribute("form", form);
 
         return "m-forms-preview";
@@ -168,13 +172,10 @@ class MFormsController {
             produces = MediaType.APPLICATION_XML_VALUE)
     @Transactional
     @ResponseBody
-    public String xml(@PathVariable Long2 formID) throws JsonProcessingException {
+    public String xml(@PathVariable Long2 formID)
+            throws JsonProcessingException, ResourceNotFoundException {
 
-        if (!formRepository.exists(formID.get())) {
-            throw new ResourceNotFoundException();
-        }
-
-        Form form = formRepository.getOne(formID.get());
+        Form form = resCommonService.getOne(formRepository, formID.get());
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
@@ -185,25 +186,19 @@ class MFormsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") Long2 formID,
-                               HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") Long2 formID)
+            throws OtherRestProcessingException, ResourceNotFoundException {
 
-        if (!formRepository.exists(formID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
-
-        Form form = formRepository.getOne(formID.get());
+        Form form = resCommonService.getOne(formRepository, formID.get());
 
         List<Review> reviews = form.getReviews();
         if (!reviewService.canBeDeleted(reviews)) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
+            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
         reviewService.delete(reviews);
         formRepository.delete(formID.get());
-        return singletonList(localeService.get("m.forms.delete.done"));
+        return localeService.getAsList("m.forms.delete.done");
     }
 
     @RequestMapping(
@@ -213,29 +208,20 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
-                               @ModelAttribute("pk") Long2 formID,
-                               HttpServletResponse response) {
+                               @ModelAttribute("pk") Long2 formID)
+            throws ResourceNotFoundException, FieldValidationRestException {
 
-        if (!formRepository.exists(formID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
+        Form form = resCommonService.getOne(formRepository, formID.get());
 
-        List<String> nameErrors = fieldValidator.validateField(
+        fieldValidator.validateFieldRestEx(
                 new Form(newName, null),
                 "name",
                 localeService.get("m.forms.rename.validation.prefix.name")
         );
 
-        if (!nameErrors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return nameErrors;
-        }
-
-        Form form = formRepository.getOne(formID.get());
         form.setName(newName);
         formRepository.save(form);
 
-        return singletonList(localeService.get("m.forms.rename.done"));
+        return localeService.getAsList("m.forms.rename.done");
     }
 }

@@ -1,13 +1,16 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
+import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
+import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
+import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundRestException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -16,7 +19,6 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ResCommonService;
 import pl.p.lodz.iis.hr.services.ReviewService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,7 +63,8 @@ class MCoursesController {
             method = RequestMethod.GET)
     @Transactional
     public String listOne(@PathVariable Long2 courseID,
-                          Model model) {
+                          Model model)
+            throws ResourceNotFoundException {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
 
@@ -78,21 +81,16 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPost(@ModelAttribute("course-name") String courseName,
-                                 HttpServletResponse response) {
+    public List<String> kAddPost(@ModelAttribute("course-name") String courseName)
+            throws FieldValidationRestException {
 
         Course course = new Course(courseName);
 
-        List<String> errors = fieldValidator.validateField(
+        fieldValidator.validateFieldRestEx(
                 course,
                 "name",
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
-
-        if (!errors.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return errors;
-        }
 
         courseRepository.save(course);
 
@@ -105,20 +103,14 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") Long2 courseID,
-                               HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") Long2 courseID)
+            throws ResourceNotFoundRestException, OtherRestProcessingException {
 
-        Course course = resCommonService.getOneForJSON(courseRepository, courseID.get());
-
-        if (course == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return localeService.getAsList("NoResource");
-        }
+        Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
 
         List<Review> reviews = course.getReviews();
         if (!reviewService.canBeDeleted(reviews)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return localeService.getAsList("m.reviews.delete.cannot.as.comm.processing");
+            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
         reviewService.delete(reviews);
@@ -134,26 +126,16 @@ class MCoursesController {
     @Transactional
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
-                               @ModelAttribute("pk") Long2 courseID,
-                               HttpServletResponse response) {
+                               @ModelAttribute("pk") Long2 courseID)
+            throws FieldValidationRestException, ResourceNotFoundRestException {
 
-        Course course = resCommonService.getOneForJSON(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
 
-        if (course == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return localeService.getAsList("NoResource");
-        }
-
-        List<String> errors = fieldValidator.validateField(
+        fieldValidator.validateFieldRestEx(
                 new Course(newName),
                 "name",
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
-
-        if (!errors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return errors;
-        }
 
         course.setName(newName);
         courseRepository.save(course);

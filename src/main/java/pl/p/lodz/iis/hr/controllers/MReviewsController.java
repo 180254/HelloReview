@@ -12,19 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
-import pl.p.lodz.iis.hr.exceptions.InternalException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.*;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
-import pl.p.lodz.iis.hr.services.FieldValidator;
-import pl.p.lodz.iis.hr.services.GHTaskScheduler;
-import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.ReviewService;
+import pl.p.lodz.iis.hr.services.*;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +31,7 @@ import static java.util.Collections.singletonList;
 @Controller
 class MReviewsController {
 
+    @Autowired private ResCommonService resCommonService;
     @Autowired private ReviewRepository reviewRepository;
     @Autowired private ReviewService reviewService;
     @Autowired private CommissionRepository commissionRepository;
@@ -45,7 +41,7 @@ class MReviewsController {
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private LocaleService localeService;
     @Autowired private FieldValidator fieldValidator;
-    @Autowired private GHTaskScheduler GHTaskScheduler;
+    @Autowired private GHTaskScheduler ghTaskScheduler;
 
     @RequestMapping(
             value = "/m/reviews",
@@ -54,6 +50,7 @@ class MReviewsController {
     public String list(Model model) {
 
         List<Review> reviews = reviewRepository.findAll();
+
         model.addAttribute("reviews", reviews);
         model.addAttribute("newButton", true);
 
@@ -65,18 +62,14 @@ class MReviewsController {
             method = RequestMethod.GET)
     @Transactional
     public String listOne(@PathVariable Long2 reviewID,
-                          Model model) {
+                          Model model)
+            throws ResourceNotFoundException {
 
-        if (!reviewRepository.exists(reviewID.get())) {
-            throw new ResourceNotFoundException();
-        }
+        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-        Review review = reviewRepository.findOne(reviewID.get());
         model.addAttribute("reviews", singletonList(review));
         model.addAttribute("newButton", false);
-
         model.addAttribute("addon_oneReview", true);
-
 
         return "m-reviews";
     }
@@ -86,18 +79,16 @@ class MReviewsController {
             method = RequestMethod.GET)
     @Transactional
     public String listForCourse(@PathVariable Long2 courseID,
-                                Model model) {
+                                Model model)
+            throws ResourceNotFoundException {
 
-        if (!courseRepository.exists(courseID.get())) {
-            throw new ResourceNotFoundException();
-        }
+        Course course = resCommonService.getOne(courseRepository, courseID.get());
+        List<Review> reviews = course.getReviews();
 
-        Course course = courseRepository.findOne(courseID.get());
 
         model.addAttribute("course", course);
-        model.addAttribute("reviews", course.getReviews());
+        model.addAttribute("reviews", reviews);
         model.addAttribute("newButton", false);
-
         model.addAttribute("addon_forCourse", true);
 
         return "m-reviews";
@@ -109,18 +100,15 @@ class MReviewsController {
             method = RequestMethod.GET)
     @Transactional
     public String listForForm(@PathVariable Long2 formID,
-                              Model model) {
+                              Model model)
+            throws ResourceNotFoundException {
 
-        if (!formRepository.exists(formID.get())) {
-            throw new ResourceNotFoundException();
-        }
-
-        Form form = formRepository.getOne(formID.get());
+        Form form = resCommonService.getOne(formRepository, formID.get());
+        List<Review> reviews = form.getReviews();
 
         model.addAttribute("form", form);
-        model.addAttribute("reviews", form.getReviews());
+        model.addAttribute("reviews", reviews);
         model.addAttribute("newButton", false);
-
         model.addAttribute("addon_forForm", true);
 
         return "m-reviews";
@@ -146,12 +134,13 @@ class MReviewsController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> kAddRepoList(HttpServletResponse response) {
+    public List<String> kAddRepoList()
+            throws GHCommunicationRestException {
+
         List<String> repoList = new ArrayList<>(10);
 
         try {
             GHExecutor.ex(() -> {
-
                 for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
                     gitHubFail.getUser(username).listRepositories()
                             .asList().stream()
@@ -162,8 +151,7 @@ class MReviewsController {
             });
 
         } catch (GHCommunicationException e) {
-            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return singletonList(e.toString());
+            throw new GHCommunicationRestException(e.getMessage());
         }
 
         return repoList;
@@ -175,19 +163,13 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> delete(@ModelAttribute("id") Long2 reviewID,
-                               HttpServletResponse response) {
+    public List<String> delete(@ModelAttribute("id") Long2 reviewID)
+            throws ResourceNotFoundException, OtherRestProcessingException {
 
-        if (!reviewRepository.exists(reviewID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
-
-        Review review = reviewRepository.findOne(reviewID.get());
+        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
         if (!reviewService.canBeDeleted(review)) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("m.reviews.delete.cannot.as.comm.processing"));
+            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
         reviewService.delete(review);
@@ -200,15 +182,11 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> openClose(@ModelAttribute("id") Long2 reviewID,
-                                  HttpServletResponse response) {
+    public List<String> openClose(@ModelAttribute("id") Long2 reviewID)
+            throws ResourceNotFoundException {
 
-        if (!reviewRepository.exists(reviewID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
+        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-        Review review = reviewRepository.findOne(reviewID.get());
         review.setClosed(!review.isClosed());
         reviewRepository.save(review);
 
@@ -229,26 +207,17 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
-                               @ModelAttribute("pk") Long2 reviewID,
-                               HttpServletResponse response) {
+                               @ModelAttribute("pk") Long2 reviewID)
+            throws ResourceNotFoundException, FieldValidationRestException {
 
-        if (!reviewRepository.exists(reviewID.get())) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResource"));
-        }
+        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-        List<String> nameErrors = fieldValidator.validateField(
+        fieldValidator.validateFieldRestEx(
                 new Review(newName, 0L, null, null, null),
                 "name",
                 localeService.get("m.reviews.add.validation.prefix.name")
         );
 
-        if (!nameErrors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return nameErrors;
-        }
-
-        Review review = reviewRepository.getOne(reviewID.get());
         review.setName(newName);
         reviewRepository.save(review);
 
@@ -267,14 +236,14 @@ class MReviewsController {
                                  @RequestParam("review-add-form") Long2 formID,
                                  @RequestParam("review-add-repository") String repository,
                                  @RequestParam("review-add-ignore-warning") Long2 ignoreWarning,
-                                 HttpServletResponse response) {
+                                 HttpServletResponse response)
+            throws FieldValidationRestException, ResourceNotFoundRestException, GHCommunicationRestException {
 
         if (!courseRepository.exists(courseID.get())
                 || !formRepository.exists(formID.get())
                 || !repository.contains("/")) {
 
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResources"));
+            throw new ResourceNotFoundRestException();
         }
 
         GHRepository ghRepository;
@@ -282,11 +251,10 @@ class MReviewsController {
         try {
             ghRepository = GHExecutor.ex(() -> gitHubFail.getRepository(repository));
         } catch (GHCommunicationException ignored) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return singletonList(localeService.get("NoResources"));
+            throw new ResourceNotFoundRestException();
         }
 
-        List<String> errors = fieldValidator.validateFields(
+        fieldValidator.validateFieldsdRestEx(
                 new Review(name, respPerPeer.get(), null, null, name),
                 new String[]{
                         "name",
@@ -297,10 +265,6 @@ class MReviewsController {
                 }
         );
 
-        if (!errors.isEmpty()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return errors;
-        }
 
         // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
@@ -376,15 +340,12 @@ class MReviewsController {
 
             responses.stream()
                     .filter(r -> r.getStatus() != CommissionStatus.NOT_FORKED)
-                    .forEach(r -> GHTaskScheduler.registerClone(r));
+                    .forEach(r -> ghTaskScheduler.registerClone(r));
 
             return singletonList(String.valueOf(review.getId()));
 
         } catch (GHCommunicationException e) {
-            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-            return singletonList(
-                    String.format("%s %s", localeService.get("NoGitHub"), e.toString())
-            );
+            throw new GHCommunicationRestException(String.format("%s %s", localeService.get("NoGitHub"), e.toString()));
         }
     }
 
