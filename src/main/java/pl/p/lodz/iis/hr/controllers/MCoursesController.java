@@ -1,5 +1,7 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,8 @@ import java.util.List;
 
 @Controller
 class MCoursesController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MCoursesController.class);
 
     private final ResCommonService resCommonService;
     private final CourseRepository courseRepository;
@@ -92,6 +96,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
+        LOGGER.debug("Course added: {}", course);
         courseRepository.save(course);
 
         return localeService.getAsList("m.courses.add.done");
@@ -107,12 +112,13 @@ class MCoursesController {
             throws ResourceNotFoundRestException, OtherRestProcessingException {
 
         Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
-
         List<Review> reviews = course.getReviews();
+
         if (!reviewService.canBeDeleted(reviews)) {
             throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
+        LOGGER.debug("Course deleted: {}", course);
         reviewService.delete(reviews);
         courseRepository.delete(courseID.get());
 
@@ -137,6 +143,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
+        LOGGER.debug("Course renamed {} to {}", course, newName);
         course.setName(newName);
         courseRepository.save(course);
 

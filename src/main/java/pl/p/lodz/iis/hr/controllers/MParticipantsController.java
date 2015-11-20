@@ -1,5 +1,7 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Controller
 class MParticipantsController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MParticipantsController.class);
 
     private final ResCommonService resCommonService;
     private final CourseRepository courseRepository;
@@ -114,6 +118,7 @@ class MParticipantsController {
             throw new FieldValidationRestException(allErrors);
         }
 
+        LOGGER.debug("Participant added: {}", participant);
         participantRepository.save(participant);
 
         return localeService.getAsList("m.participants.add.done");
@@ -134,7 +139,9 @@ class MParticipantsController {
             throw new OtherRestProcessingException("m.participants.delete.cannot.as.comm.exist");
         }
 
-        participantRepository.delete(participantID.get());
+        LOGGER.debug("Participant deleted: {}", participant);
+        participantRepository.delete(participant);
+
         return localeService.getAsList("m.participants.delete.done");
     }
 
@@ -160,6 +167,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.participant.name")
         );
 
+        LOGGER.debug("Participant {} name changed to {}", participant, newName);
         participant.setName(newName);
         participantRepository.save(participant);
 
@@ -188,6 +196,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.github.name")
         );
 
+        LOGGER.debug("Participant {} GitHub name changed to {}", participant, newGitHubName);
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 

@@ -5,14 +5,14 @@ public class GHCommunicationRestException extends Exception {
 
     private static final long serialVersionUID = 1733028451844942478L;
 
-    private final String msg;
+    private final String errorMsg;
 
-    public GHCommunicationRestException(String msg) {
-        this.msg = msg;
+    public GHCommunicationRestException(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getErrorMsg() {
+        return errorMsg;
     }
 
 }

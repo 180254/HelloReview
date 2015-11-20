@@ -31,7 +31,7 @@ class CustomizedErrorController extends BasicErrorController {
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         ResponseEntity<Map<String, Object>> error = super.error(request);
 
-        LOGGER.error(error.toString());
+        LOGGER.error("JSON ERROR {}", error);
 
         Map<String, Object> body = new HashedMap<>(2);
         body.put("error", error.getBody().get("error"));

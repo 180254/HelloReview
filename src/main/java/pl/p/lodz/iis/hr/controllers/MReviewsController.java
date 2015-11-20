@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.controllers;
 
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,8 @@ import static java.util.Collections.singletonList;
 
 @Controller
 class MReviewsController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MReviewsController.class);
 
     @Autowired private ResCommonService resCommonService;
     @Autowired private ReviewRepository reviewRepository;
@@ -84,7 +88,6 @@ class MReviewsController {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
         List<Review> reviews = course.getReviews();
-
 
         model.addAttribute("course", course);
         model.addAttribute("reviews", reviews);
@@ -151,7 +154,7 @@ class MReviewsController {
             });
 
         } catch (GHCommunicationException e) {
-            throw new GHCommunicationRestException(e.getMessage());
+            throw (GHCommunicationRestException) new GHCommunicationRestException(e.getMessage()).initCause(e);
         }
 
         return repoList;
@@ -172,7 +175,9 @@ class MReviewsController {
             throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
+        LOGGER.debug("Review deleted: {}", review);
         reviewService.delete(review);
+
         return singletonList(localeService.get("m.reviews.delete.done"));
     }
 
@@ -187,6 +192,7 @@ class MReviewsController {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
+        LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
         review.setClosed(!review.isClosed());
         reviewRepository.save(review);
 
@@ -218,6 +224,7 @@ class MReviewsController {
                 localeService.get("m.reviews.add.validation.prefix.name")
         );
 
+        LOGGER.debug("Review {} renamed to {}", review, newName);
         review.setName(newName);
         reviewRepository.save(review);
 

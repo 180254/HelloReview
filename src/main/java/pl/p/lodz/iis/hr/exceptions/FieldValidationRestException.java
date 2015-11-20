@@ -8,13 +8,14 @@ import java.util.List;
 public class FieldValidationRestException extends Exception {
 
     private static final long serialVersionUID = -3990386793412920814L;
-    private final List<String> errors;
 
-    public FieldValidationRestException(List<String> errors) {
-        this.errors = new ArrayList<>(errors);
+    private final List<String> fieldErrors;
+
+    public FieldValidationRestException(List<String> fieldErrors) {
+        this.fieldErrors = new ArrayList<>(fieldErrors);
     }
 
-    public List<String> getErrors() {
-        return Collections.unmodifiableList(errors);
+    public List<String> getFieldErrors() {
+        return Collections.unmodifiableList(fieldErrors);
     }
 }

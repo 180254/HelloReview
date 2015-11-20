@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.controllers;
 
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.springframework.web.CallbackController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,8 @@ import java.util.List;
 )
 class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomizedExHandlerController.class);
+
     private final LocaleService localeService;
 
     @Autowired
@@ -28,20 +32,27 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(TechnicalException.class)
-    public String handleControllerException() {
+    public String handleControllerException(TechnicalException ex) {
+        LOGGER.warn("TechnicalException: ", ex);
         return "redirect:/logout?url=/github-issue";
     }
 
     @ExceptionHandler(ResourceNotFoundRestException.class)
     @ResponseBody
-    public List<String> handleResNotFoundRestEx(HttpServletResponse response) {
+    public List<String> handleResNotFoundRestEx(ResourceNotFoundRestException ex,
+                                                HttpServletResponse response) {
+
+        LOGGER.warn("ResourceNotFoundRestException: ", ex);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return localeService.getAsList("NoResource");
     }
 
     @ExceptionHandler(NotUniqueNameException.class)
     @ResponseBody
-    public List<String> notUniqueNameException(HttpServletResponse response) {
+    public List<String> notUniqueNameException(NotUniqueNameException ex,
+                                               HttpServletResponse response) {
+
+        LOGGER.warn("NotUniqueNameException: ", ex);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return localeService.getAsList("UniqueName");
     }
@@ -50,8 +61,10 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     @ResponseBody
     public List<String> handleFieldValidRestEx(FieldValidationRestException ex,
                                                HttpServletResponse response) {
+
+        LOGGER.warn("FieldValidationRestException: ", ex);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ex.getErrors();
+        return ex.getFieldErrors();
     }
 
     @ExceptionHandler(GHCommunicationRestException.class)
@@ -59,15 +72,18 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     public List<String> ghCommRestExc(GHCommunicationRestException ex,
                                       HttpServletResponse response) {
 
+        LOGGER.warn("GHCommunicationRestException: ", ex);
         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        return Collections.singletonList(ex.toString());
+        return Collections.singletonList(ex.getErrorMsg());
     }
 
     @ExceptionHandler(OtherRestProcessingException.class)
     @ResponseBody
     public List<String> handleOtherRestProcEx(OtherRestProcessingException ex,
                                               HttpServletResponse response) {
+
+        LOGGER.warn("OtherRestProcessingException: ", ex);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return localeService.getAsList(ex.getLocaleCode(), ex.getArgs());
+        return localeService.getAsList(ex.getLocaleCode(), ex.getLocaleArgs());
     }
 }

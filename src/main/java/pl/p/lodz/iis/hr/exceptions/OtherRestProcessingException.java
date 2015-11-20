@@ -6,23 +6,23 @@ public class OtherRestProcessingException extends Exception {
     private static final long serialVersionUID = -2579154103815528334L;
 
     private final String localeCode;
-    private final Object[] args;
+    private final Object[] localeArgs;
 
     public OtherRestProcessingException(String localeCode) {
         this.localeCode = localeCode;
-        this.args = null;
+        this.localeArgs = null;
     }
 
-    public OtherRestProcessingException(String localeCode, Object[] args) {
+    public OtherRestProcessingException(String localeCode, Object[] localeArgs) {
         this.localeCode = localeCode;
-        this.args = args.clone();
+        this.localeArgs = localeArgs.clone();
     }
 
     public String getLocaleCode() {
         return localeCode;
     }
 
-    public Object[] getArgs() {
-        return args.clone();
+    public Object[] getLocaleArgs() {
+        return localeArgs.clone();
     }
 }

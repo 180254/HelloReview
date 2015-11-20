@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,8 @@ import java.util.List;
 
 @Controller
 class MFormsController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MFormsController.class);
 
     private final ResCommonService resCommonService;
     private final FormRepository formRepository;
@@ -124,7 +128,10 @@ class MFormsController {
             form = xmlReader.readValue(formXML.trim());
 
         } catch (IOException e) {
-            throw new OtherRestProcessingException("m.forms.add.validation.not.xml", new Object[]{e.getMessage()});
+            throw (OtherRestProcessingException) new OtherRestProcessingException(
+                    "m.forms.add.validation.not.xml",
+                    new Object[]{e.getMessage()}
+            ).initCause(e);
         }
 
         form.setName(Strings.emptyToNull(formName));
@@ -134,8 +141,9 @@ class MFormsController {
         formRepository.flush();
 
         formValidator.validateRestEx(form);
-
         form.fixRelations();
+
+        LOGGER.debug("Form added: {}", form);
         formRepository.save(form);
 
         return Collections.singletonList(String.valueOf(form.getId()));
@@ -196,8 +204,10 @@ class MFormsController {
             throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
         }
 
+        LOGGER.debug("Form deleted: {}", form);
         reviewService.delete(reviews);
-        formRepository.delete(formID.get());
+        formRepository.delete(form);
+
         return localeService.getAsList("m.forms.delete.done");
     }
 
@@ -219,6 +229,7 @@ class MFormsController {
                 localeService.get("m.forms.rename.validation.prefix.name")
         );
 
+        LOGGER.debug("Form {} renamed to: {}", form, newName);
         form.setName(newName);
         formRepository.save(form);
 

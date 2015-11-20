@@ -8,18 +8,4 @@ public final class ResourceNotFoundException extends Exception {
 
     private static final long serialVersionUID = -5380319729199682248L;
 
-    public ResourceNotFoundException() {
-    }
-
-    public ResourceNotFoundException(String message) {
-        super(message);
-    }
-
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ResourceNotFoundException(Throwable cause) {
-        super(cause);
-    }
 }
