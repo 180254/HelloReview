@@ -38,6 +38,7 @@ public class FieldValidator {
 
     public void validateFieldRestEx(Object object, String fieldName, String prefix)
             throws LocalizedErrorRestException {
+
         List<String> errors = validateField(object, fieldName, prefix);
 
         if (!errors.isEmpty()) {
@@ -55,8 +56,9 @@ public class FieldValidator {
         return errors;
     }
 
-    public void validateFieldsdRestEx(Object object, String[] fieldNames, String[] prefixes)
+    public void validateFieldsRestEx(Object object, String[] fieldNames, String[] prefixes)
             throws LocalizedErrorRestException {
+
         List<String> errors = validateFields(object, fieldNames, prefixes);
 
         if (!errors.isEmpty()) {

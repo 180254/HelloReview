@@ -24,8 +24,7 @@ public class FormValidator {
         return new FormValidator2(validator, localeService, form).validate();
     }
 
-    public void validateRestEx(Form form)
-            throws LocalizedErrorRestException {
+    public void validateRestEx(Form form) throws LocalizedErrorRestException {
 
         List<String> validate = validate(form);
         if (!validate.isEmpty()) {

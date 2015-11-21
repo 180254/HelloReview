@@ -140,7 +140,7 @@ class MReviewsController {
         List<Course> courses = courseRepository.findAll();
         List<Form> forms = formRepository.findByTemporaryFalse();
 
-        model.addAttribute("f", new GHReviewForm());
+        model.addAttribute("f", new GHReviewAddForm());
         model.addAttribute("courses", courses);
         model.addAttribute("forms", forms);
 
@@ -240,20 +240,20 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPOST(@ModelAttribute("f") GHReviewForm ghReviewForm,
-                                 BindingResult result, // prevent error if ghReviewForm not filled
+    public List<String> kAddPOST(@ModelAttribute("f") GHReviewAddForm ghReviewAddForm,
+                                 BindingResult result, // prevent error if ghReviewAddForm not filled
                                  HttpServletResponse response)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        if (!courseRepository.exists(ghReviewForm.getCourseID())
-                || !formRepository.exists(ghReviewForm.getFormID())
-                || !ghReviewForm.getRepositoryFullName().contains("/")) {
+        if (!courseRepository.exists(ghReviewAddForm.getCourseID())
+                || !formRepository.exists(ghReviewAddForm.getFormID())
+                || !ghReviewAddForm.getRepositoryFullName().contains("/")) {
 
             throw LocalizableErrorRestException.noResource();
         }
 
-        fieldValidator.validateFieldsdRestEx(
-                new Review(ghReviewForm.getName(), ghReviewForm.getRespPerPeer(), null, null, ghReviewForm.getName()),
+        fieldValidator.validateFieldsRestEx(
+                new Review(ghReviewAddForm.getName(), ghReviewAddForm.getRespPerPeer(), null, null, ghReviewAddForm.getName()),
                 new String[]{
                         "name",
                         "commPerPeer"
@@ -267,13 +267,13 @@ class MReviewsController {
         GHRepository ghRepository;
 
         try {
-            ghRepository = ghReviewCreator.getRepositoryByName(ghReviewForm.getRepositoryFullName());
+            ghRepository = ghReviewCreator.getRepositoryByName(ghReviewAddForm.getRepositoryFullName());
         } catch (GHCommunicationException ignored) {
             throw LocalizableErrorRestException.noResource();
         }
 
-        LOGGER.debug("Review creating {}", ghReviewForm);
-        return ghReviewCreator.createReview(ghReviewForm, ghRepository, response);
+        LOGGER.debug("Review creating {}", ghReviewAddForm);
+        return ghReviewCreator.createReview(ghReviewAddForm, ghRepository, response);
     }
 }
 

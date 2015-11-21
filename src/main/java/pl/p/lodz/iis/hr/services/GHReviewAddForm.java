@@ -2,7 +2,7 @@ package pl.p.lodz.iis.hr.services;
 
 import pl.p.lodz.iis.hr.configuration.Long2;
 
-public class GHReviewForm {
+public class GHReviewAddForm {
 
     private String name;
     private Long2 respPerPeer;

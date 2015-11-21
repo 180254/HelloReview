@@ -69,17 +69,17 @@ public class GHReviewCreator {
         return GHExecutor.ex(() -> gitHubFail.getRepository(repositoryFullName));
     }
 
-    public List<String> createReview(GHReviewForm ghReviewForm,
+    public List<String> createReview(GHReviewAddForm ghReviewAddForm,
                                      GHRepository ghRepository,
                                      HttpServletResponse response)
             throws LocalizableErrorRestException {
 
         try {
-            Course course = courseRepository.getOne(ghReviewForm.getCourseID());
+            Course course = courseRepository.getOne(ghReviewAddForm.getCourseID());
             List<Participant> participants = course.getParticipants();
-            Form form = formRepository.getOne(ghReviewForm.getFormID());
-            List<GHRepository> forks = GHExecutor.ex(() -> ghRepository.listForks().asList());
+            Form form = formRepository.getOne(ghReviewAddForm.getFormID());
 
+            List<GHRepository> forks = GHExecutor.ex(() -> ghRepository.listForks().asList());
             Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
 
@@ -91,12 +91,12 @@ public class GHReviewCreator {
                     .filter(p -> !forksMap.containsKey(p.getGitHubName()))
                     .collect(Collectors.toList());
 
-            long respPerPeerVsForked = Math.min((long) partiWhoForked.size() - 1L, ghReviewForm.getRespPerPeer());
+            long respPerPeerVsForked = Math.min((long) partiWhoForked.size() - 1L, ghReviewAddForm.getRespPerPeer());
             long respPerPeer2 = Math.max(respPerPeerVsForked, 0L);
 
             boolean preconditionFailed = (!partiWhoNotForked.isEmpty()
-                    || (ghReviewForm.getRespPerPeer() != respPerPeer2));
-            if ((ghReviewForm.getIgnoreWarning() == 0L) /*&& preconditionFailed*/) {
+                    || (ghReviewAddForm.getRespPerPeer() != respPerPeer2));
+            if ((ghReviewAddForm.getIgnoreWarning() == 0L) /*&& preconditionFailed*/) {
                 response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 
                 List<String> warning = new ArrayList<>(10);
@@ -116,7 +116,7 @@ public class GHReviewCreator {
             mulParticipants.addAll(partiWhoForked); // to be sure, that is enough
 
             Review review = new Review(
-                    ghReviewForm.getName(), respPerPeer2, course, form, ghReviewForm.getRepositoryFullName()
+                    ghReviewAddForm.getName(), respPerPeer2, course, form, ghReviewAddForm.getRepositoryFullName()
             );
             Collection<Commission> responses = new ArrayList<>(10);
 
