@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -94,5 +96,10 @@ public class Question implements Serializable, RelationsAware {
         for (Input input : inputs) {
             input.setQuestion(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

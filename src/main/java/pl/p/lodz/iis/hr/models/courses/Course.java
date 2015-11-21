@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -109,5 +111,10 @@ public class Course implements Serializable {
     @PreUpdate
     protected void onUpdate() {
         updated = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }
