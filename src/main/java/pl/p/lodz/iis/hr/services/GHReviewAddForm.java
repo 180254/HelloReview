@@ -19,7 +19,11 @@ public class GHReviewAddForm {
         this.name = name;
     }
 
-    public long getRespPerPeer() {
+    public Long2 getRespPerPeer() {
+        return respPerPeer;
+    }
+
+    public long getRespPerPeerLong() {
         return (respPerPeer != null) ? respPerPeer.get() : new Long2().get();
     }
 
@@ -27,7 +31,11 @@ public class GHReviewAddForm {
         this.respPerPeer = respPerPeer;
     }
 
-    public long getCourseID() {
+    public Long2 getCourseID() {
+        return courseID;
+    }
+
+    public long getCourseIDLong() {
         return (courseID != null) ? courseID.get() : new Long2().get();
     }
 
@@ -35,7 +43,11 @@ public class GHReviewAddForm {
         this.courseID = courseID;
     }
 
-    public long getFormID() {
+    public Long2 getFormID() {
+        return formID;
+    }
+
+    public long getFormIDLong() {
         return (formID != null) ? formID.get() : new Long2().get();
     }
 

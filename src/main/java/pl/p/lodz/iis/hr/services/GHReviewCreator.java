@@ -75,9 +75,9 @@ public class GHReviewCreator {
             throws LocalizableErrorRestException {
 
         try {
-            Course course = courseRepository.getOne(ghReviewAddForm.getCourseID());
+            Course course = courseRepository.getOne(ghReviewAddForm.getCourseIDLong());
             List<Participant> participants = course.getParticipants();
-            Form form = formRepository.getOne(ghReviewAddForm.getFormID());
+            Form form = formRepository.getOne(ghReviewAddForm.getFormIDLong());
 
             List<GHRepository> forks = GHExecutor.ex(() -> ghRepository.listForks().asList());
             Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -91,11 +91,11 @@ public class GHReviewCreator {
                     .filter(p -> !forksMap.containsKey(p.getGitHubName()))
                     .collect(Collectors.toList());
 
-            long respPerPeerVsForked = Math.min((long) partiWhoForked.size() - 1L, ghReviewAddForm.getRespPerPeer());
-            long respPerPeer2 = Math.max(respPerPeerVsForked, 0L);
+            long respPerPeerVsForks = Math.min((long) partiWhoForked.size() - 1L, ghReviewAddForm.getRespPerPeerLong());
+            long respPerPeer2 = Math.max(respPerPeerVsForks, 0L);
 
             boolean preconditionFailed = (!partiWhoNotForked.isEmpty()
-                    || (ghReviewAddForm.getRespPerPeer() != respPerPeer2));
+                    || (ghReviewAddForm.getRespPerPeerLong() != respPerPeer2));
             if ((ghReviewAddForm.getIgnoreWarning() == 0L) /*&& preconditionFailed*/) {
                 response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 

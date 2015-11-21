@@ -245,15 +245,20 @@ class MReviewsController {
                                  HttpServletResponse response)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        if (!courseRepository.exists(ghReviewAddForm.getCourseID())
-                || !formRepository.exists(ghReviewAddForm.getFormID())
+        if (!courseRepository.exists(ghReviewAddForm.getCourseIDLong())
+                || !formRepository.exists(ghReviewAddForm.getFormIDLong())
                 || !ghReviewAddForm.getRepositoryFullName().contains("/")) {
 
             throw LocalizableErrorRestException.noResource();
         }
 
         fieldValidator.validateFieldsRestEx(
-                new Review(ghReviewAddForm.getName(), ghReviewAddForm.getRespPerPeer(), null, null, ghReviewAddForm.getName()),
+                new Review(
+                        ghReviewAddForm.getName(),
+                        ghReviewAddForm.getRespPerPeerLong(),
+                        null, null,
+                        ghReviewAddForm.getName()
+                ),
                 new String[]{
                         "name",
                         "commPerPeer"
