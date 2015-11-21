@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.p.lodz.iis.hr.exceptions.*;
+import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
+import pl.p.lodz.iis.hr.exceptions.NotUniqueNameException;
+import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
+import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundRestException;
 import pl.p.lodz.iis.hr.services.LocaleService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.List;
 
 @ControllerAdvice(
@@ -67,15 +69,6 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
         return ex.getFieldErrors();
     }
 
-    @ExceptionHandler(GHCommunicationRestException.class)
-    @ResponseBody
-    public List<String> ghCommRestExc(GHCommunicationRestException ex,
-                                      HttpServletResponse response) {
-
-        LOGGER.warn("GHCommunicationRestException: ", ex);
-        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        return Collections.singletonList(ex.getErrorMsg());
-    }
 
     @ExceptionHandler(OtherRestProcessingException.class)
     @ResponseBody

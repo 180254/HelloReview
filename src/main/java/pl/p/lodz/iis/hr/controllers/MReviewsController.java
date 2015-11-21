@@ -137,8 +137,7 @@ class MReviewsController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> kAddRepoList()
-            throws GHCommunicationRestException {
+    public List<String> kAddRepoList() throws FieldValidationRestException {
 
         List<String> repoList = new ArrayList<>(10);
 
@@ -154,7 +153,8 @@ class MReviewsController {
             });
 
         } catch (GHCommunicationException e) {
-            throw (GHCommunicationRestException) new GHCommunicationRestException(e.getMessage()).initCause(e);
+            throw (FieldValidationRestException)
+                    new FieldValidationRestException(e.getMessage()).initCause(e);
         }
 
         return repoList;
@@ -244,7 +244,7 @@ class MReviewsController {
                                  @RequestParam("review-add-repository") String repository,
                                  @RequestParam("review-add-ignore-warning") Long2 ignoreWarning,
                                  HttpServletResponse response)
-            throws FieldValidationRestException, ResourceNotFoundRestException, GHCommunicationRestException {
+            throws FieldValidationRestException, ResourceNotFoundRestException, OtherRestProcessingException {
 
         if (!courseRepository.exists(courseID.get())
                 || !formRepository.exists(formID.get())
@@ -352,7 +352,8 @@ class MReviewsController {
             return singletonList(String.valueOf(review.getId()));
 
         } catch (GHCommunicationException e) {
-            throw new GHCommunicationRestException(String.format("%s %s", localeService.get("NoGitHub"), e.toString()));
+            throw (OtherRestProcessingException)
+                    new OtherRestProcessingException("NoGitHub", new Object[]{e.toString()}).initCause(e);
         }
     }
 

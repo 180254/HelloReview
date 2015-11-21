@@ -11,6 +11,10 @@ public class FieldValidationRestException extends Exception {
 
     private final List<String> fieldErrors;
 
+    public FieldValidationRestException(String error) {
+        fieldErrors = Collections.singletonList(error);
+    }
+
     public FieldValidationRestException(List<String> fieldErrors) {
         this.fieldErrors = new ArrayList<>(fieldErrors);
     }
