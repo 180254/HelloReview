@@ -10,12 +10,11 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="review-add-form">
+    <form id="review-add-form" th:object="${f}">
 
-        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}"/>
+        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-        <input id="review-add-ignore-warning" name="review-add-ignore-warning" value="0" type="hidden"/>
+        <input id="review-add-ignore-warning" name="ignoreWarning" value="0" type="hidden"/>
 
         <div id="review-add-form-body" class="form-group">
 
@@ -24,7 +23,7 @@
 
                 <input type="text"
                        class="form-control"
-                       id="review-add-name" name="review-add-name"
+                       id="review-add-name" th:field="*{name}"
                        th:placeholder="#{m.reviews.add.name.placeholder}"/>
             </div>
 
@@ -33,14 +32,14 @@
 
                 <input type="number" min="1" max="10"
                        class="form-control"
-                       id="review-add-resp-per-peer" name="review-add-resp-per-peer"
+                       id="review-add-resp-per-peer" th:field="*{respPerPeer}"
                        th:placeholder="#{m.reviews.add.comm.per.peer.placeholder}"/>
             </div>
 
             <div class="input-2">
                 <label for="review-add-course" th:text="#{m.reviews.add.course}"></label>
 
-                <select id="review-add-course" name="review-add-course" class="form-control">
+                <select id="review-add-course" th:field="*{courseID}" class="form-control">
                     <option th:each="course : ${courses}"
                             th:value="${course.id}"
                             th:text="${course.name}">
@@ -51,7 +50,7 @@
             <div class="input-2">
                 <label for="review-add-form-2" th:text="#{m.reviews.add.form}"></label>
 
-                <select id="review-add-form-2" name="review-add-form" class="form-control">
+                <select id="review-add-form-2" th:field="*{formID}" class="form-control">
                     <option th:each="form : ${forms}"
                             th:value="${form.id}"
                             th:text="${form.name}">
@@ -62,7 +61,7 @@
             <div class="input-2">
                 <label for="review-add-repository" th:text="#{m.reviews.add.repository}"></label>
 
-                <select id="review-add-repository" name="review-add-repository" class="form-control">
+                <select id="review-add-repository" th:field="*{repositoryFullName}" class="form-control">
                 </select>
             </div>
 

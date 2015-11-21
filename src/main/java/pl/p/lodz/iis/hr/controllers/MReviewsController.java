@@ -1,52 +1,65 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.*;
-import pl.p.lodz.iis.hr.models.courses.*;
+import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.models.courses.Course;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.*;
-import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.singletonList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 class MReviewsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MReviewsController.class);
 
-    @Autowired private ResCommonService resCommonService;
-    @Autowired private ReviewRepository reviewRepository;
-    @Autowired private CommissionRepository commissionRepository;
-    @Autowired private CourseRepository courseRepository;
-    @Autowired private FormRepository formRepository;
+    private final ResCommonService resCommonService;
+    private final ReviewRepository reviewRepository;
+    private final CourseRepository courseRepository;
+    private final FormRepository formRepository;
+    private final ReviewService reviewService;
+    private final LocaleService localeService;
+    private final FieldValidator fieldValidator;
+    private final GHReviewCreator ghReviewCreator;
 
-    @Autowired private ReviewService reviewService;
-    @Autowired private AppConfig appConfig;
-    @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
-    @Autowired private LocaleService localeService;
-    @Autowired private FieldValidator fieldValidator;
-    @Autowired private GHTaskScheduler ghTaskScheduler;
+    @Autowired
+    MReviewsController(ResCommonService resCommonService,
+                       ReviewRepository reviewRepository,
+                       CourseRepository courseRepository,
+                       FormRepository formRepository,
+                       ReviewService reviewService,
+                       LocaleService localeService,
+                       FieldValidator fieldValidator,
+                       GHReviewCreator ghReviewCreator) {
+        this.resCommonService = resCommonService;
+        this.reviewRepository = reviewRepository;
+        this.courseRepository = courseRepository;
+        this.formRepository = formRepository;
+        this.reviewService = reviewService;
+        this.localeService = localeService;
+        this.fieldValidator = fieldValidator;
+        this.ghReviewCreator = ghReviewCreator;
+    }
 
     @RequestMapping(
             value = "/m/reviews",
@@ -72,7 +85,7 @@ class MReviewsController {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-        model.addAttribute("reviews", singletonList(review));
+        model.addAttribute("reviews", Collections.singletonList(review));
         model.addAttribute("newButton", false);
         model.addAttribute("addon_oneReview", true);
 
@@ -127,6 +140,7 @@ class MReviewsController {
         List<Course> courses = courseRepository.findAll();
         List<Form> forms = formRepository.findByTemporaryFalse();
 
+        model.addAttribute("f", new GHReviewForm());
         model.addAttribute("courses", courses);
         model.addAttribute("forms", forms);
 
@@ -141,24 +155,12 @@ class MReviewsController {
     public List<String> kAddRepoList()
             throws LocalizedErrorRestException {
 
-        List<String> repoList = new ArrayList<>(10);
-
         try {
-            GHExecutor.ex(() -> {
-                for (String username : appConfig.getGitHubConfig().getCourseRepos().getUserNames()) {
-                    gitHubFail.getUser(username).listRepositories()
-                            .asList().stream()
-                            .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
-                            .forEach(repoList::add);
-                }
-            });
-
+            return ghReviewCreator.getListOfCourseRepos();
         } catch (GHCommunicationException e) {
             throw (LocalizedErrorRestException)
                     new LocalizedErrorRestException(e.getMessage()).initCause(e);
         }
-
-        return repoList;
     }
 
     @RequestMapping(
@@ -179,7 +181,7 @@ class MReviewsController {
         LOGGER.debug("Review deleted {}", review);
         reviewService.delete(review);
 
-        return singletonList(localeService.get("m.reviews.delete.done"));
+        return localeService.getAsList("m.reviews.delete.done");
     }
 
     @RequestMapping(
@@ -229,7 +231,7 @@ class MReviewsController {
         review.setName(newName);
         reviewRepository.save(review);
 
-        return singletonList(localeService.get("m.reviews.rename.done"));
+        return localeService.getAsList("m.reviews.rename.done");
     }
 
     @RequestMapping(
@@ -238,32 +240,20 @@ class MReviewsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPOST(@RequestParam("review-add-name") String name,
-                                 @RequestParam("review-add-resp-per-peer") Long2 respPerPeer,
-                                 @RequestParam("review-add-course") Long2 courseID,
-                                 @RequestParam("review-add-form") Long2 formID,
-                                 @RequestParam("review-add-repository") String repository,
-                                 @RequestParam("review-add-ignore-warning") Long2 ignoreWarning,
+    public List<String> kAddPOST(@ModelAttribute("f") GHReviewForm ghReviewForm,
+                                 BindingResult result, // prevent error if ghReviewForm not filled
                                  HttpServletResponse response)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        if (!courseRepository.exists(courseID.get())
-                || !formRepository.exists(formID.get())
-                || !repository.contains("/")) {
+        if (!courseRepository.exists(ghReviewForm.getCourseID())
+                || !formRepository.exists(ghReviewForm.getFormID())
+                || !ghReviewForm.getRepositoryFullName().contains("/")) {
 
-            throw LocalizableErrorRestException.noResource();
-        }
-
-        GHRepository ghRepository;
-
-        try {
-            ghRepository = GHExecutor.ex(() -> gitHubFail.getRepository(repository));
-        } catch (GHCommunicationException ignored) {
             throw LocalizableErrorRestException.noResource();
         }
 
         fieldValidator.validateFieldsdRestEx(
-                new Review(name, respPerPeer.get(), null, null, name),
+                new Review(ghReviewForm.getName(), ghReviewForm.getRespPerPeer(), null, null, ghReviewForm.getName()),
                 new String[]{
                         "name",
                         "commPerPeer"
@@ -274,102 +264,15 @@ class MReviewsController {
         );
 
 
-        // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+        GHRepository ghRepository;
 
         try {
-            Course course = courseRepository.getOne(courseID.get());
-            List<Participant> participants = course.getParticipants();
-            Form form = formRepository.getOne(formID.get());
-            List<GHRepository> forks = GHExecutor.ex(() -> ghRepository.listForks().asList());
-
-            Map<String, GHRepository> forksMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-            forks.forEach(fork -> forksMap.put(fork.getOwnerName(), fork));
-
-            List<Participant> participantWhoForked = participants.stream()
-                    .filter(p -> forksMap.containsKey(p.getGitHubName()))
-                    .collect(Collectors.toList());
-
-            List<Participant> participantsWhoNotForked = participants.stream()
-                    .filter(p -> !forksMap.containsKey(p.getGitHubName()))
-                    .collect(Collectors.toList());
-
-            long respPerPeer2 = Math.max(Math.min((long) participantWhoForked.size() - 1L, respPerPeer.get()), 0L);
-
-            boolean preconditionFailed = (!participantsWhoNotForked.isEmpty() || (respPerPeer.get() != respPerPeer2));
-            if ((ignoreWarning.get() == 0L) /*&& preconditionFailed*/) {
-                response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
-
-                List<String> warning = new ArrayList<>(10);
-                warning.add(String.valueOf(respPerPeer2));
-                warning.add(String.valueOf(participantsWhoNotForked.size()));
-                warning.add(String.valueOf(participants.size()));
-                participantsWhoNotForked.forEach((p) -> warning.add(p.getName()));
-                return warning;
-            }
-
-
-            List<Participant> mulParticipants = new ArrayList<>(10);
-            long expectedMulParSize = (participants.size() * respPerPeer2);
-            while (mulParticipants.size() < expectedMulParSize) {
-                mulParticipants.addAll(participantWhoForked);
-            }
-            Collections.shuffle(mulParticipants);
-            mulParticipants.addAll(participantWhoForked); // to be sure, that is enough
-
-            Review review = new Review(name, respPerPeer2, course, form, repository);
-            Collection<Commission> responses = new ArrayList<>(10);
-
-            for (Participant participant : participantsWhoNotForked) {
-                Commission rResponse = new Commission(review, participant, null, (String) null);
-                rResponse.setStatus(CommissionStatus.NOT_FORKED);
-                responses.add(rResponse);
-            }
-
-            Collection<Participant> assessedCollection = new LinkedList<>();
-
-            for (Participant assessor : course.getParticipants()) {
-                assessedCollection.clear();
-
-                for (long lo = 0L; lo < respPerPeer2; lo++) {
-
-                    Participant assessed = popUnique(mulParticipants, assessor, assessedCollection);
-                    assessedCollection.add(assessed);
-
-                    GHRepository assessedRepo = forksMap.get(assessed.getGitHubName());
-
-                    Commission rResponse = new Commission(review, assessed, assessor, assessedRepo.getHtmlUrl());
-                    responses.add(rResponse);
-
-                }
-            }
-
-            reviewRepository.save(review);
-            commissionRepository.save(responses);
-
-            responses.stream()
-                    .filter(r -> r.getStatus() != CommissionStatus.NOT_FORKED)
-                    .forEach(r -> ghTaskScheduler.registerClone(r));
-
-            return singletonList(String.valueOf(review.getId()));
-
-        } catch (GHCommunicationException e) {
-            throw (LocalizableErrorRestException)
-                    new LocalizableErrorRestException("NoGitHub", e.toString()).initCause(e);
+            ghRepository = ghReviewCreator.getRepositoryByName(ghReviewForm.getRepositoryFullName());
+        } catch (GHCommunicationException ignored) {
+            throw LocalizableErrorRestException.noResource();
         }
+
+        return ghReviewCreator.createReview(ghReviewForm, ghRepository, response);
     }
-
-    public <T> T popUnique(Collection<T> collection, T meExclude, Collection<T> excludeCollection) {
-        for (T collElement : collection) {
-
-            if (!meExclude.equals(collElement) && !excludeCollection.contains(collElement)) {
-                collection.remove(collElement);
-                return collElement;
-            }
-
-        }
-        throw new InternalException();
-    }
-
-
 }
 
