@@ -28,9 +28,18 @@ class MStatsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
 
-    @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
-    @Autowired private GHTaskScheduler ghTaskScheduler;
-    @Autowired private CommissionRepository commissionRepository;
+    private final GitHub gitHubFail;
+    private final GHTaskScheduler ghTaskScheduler;
+    private final CommissionRepository commissionRepository;
+
+    @Autowired
+    MStatsController(@Qualifier("ghFail") GitHub gitHubFail,
+                     GHTaskScheduler ghTaskScheduler,
+                     CommissionRepository commissionRepository) {
+        this.gitHubFail = gitHubFail;
+        this.ghTaskScheduler = ghTaskScheduler;
+        this.commissionRepository = commissionRepository;
+    }
 
     @RequestMapping(
             value = "/m/stats",

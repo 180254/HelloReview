@@ -1,8 +1,8 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.kohsuke.github.GitHub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,27 +19,45 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
+import pl.p.lodz.iis.hr.services.GHReviewCreator;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ResCommonService;
-import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 @Controller
 class MCommissionsController {
 
-    @Autowired private ResCommonService resCommonService;
-    @Autowired private ReviewRepository reviewRepository;
-    @Autowired private CommissionRepository commissionRepository;
-    @Autowired private ParticipantRepository participantRepository;
-    @Autowired private LocaleService localeService;
-    @Autowired private GHTaskScheduler ghTaskScheduler;
-    @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MCommissionsController.class);
+
+    private final ResCommonService resCommonService;
+    private final ReviewRepository reviewRepository;
+    private final CommissionRepository commissionRepository;
+    private final ParticipantRepository participantRepository;
+    private final LocaleService localeService;
+    private final GHTaskScheduler ghTaskScheduler;
+    private final GHReviewCreator ghReviewCreator;
+
+    @Autowired
+    MCommissionsController(ResCommonService resCommonService,
+                           ReviewRepository reviewRepository,
+                           CommissionRepository commissionRepository,
+                           ParticipantRepository partiRepository,
+                           LocaleService localeService,
+                           GHTaskScheduler ghTaskScheduler,
+                           GHReviewCreator ghReviewCreator) {
+        this.resCommonService = resCommonService;
+        this.reviewRepository = reviewRepository;
+        this.commissionRepository = commissionRepository;
+        this.participantRepository = partiRepository;
+        this.localeService = localeService;
+        this.ghTaskScheduler = ghTaskScheduler;
+        this.ghReviewCreator = ghReviewCreator;
+    }
 
     @RequestMapping(
             value = "/m/reviews/{reviewID}/commissions",
@@ -74,7 +92,7 @@ class MCommissionsController {
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
         boolean retryButton = notCompleted == 0;
 
-        model.addAttribute("commissions", singletonList(commission));
+        model.addAttribute("commissions", Collections.singletonList(commission));
         model.addAttribute("retryButtonForProcessing", retryButton);
         model.addAttribute("addon_oneCommission", true);
 
@@ -134,24 +152,26 @@ class MCommissionsController {
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
 
         if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
-            throw new LocalizableErrorRestException("BadResource");
+            throw LocalizableErrorRestException.badResource();
         }
 
         try {
-            GHExecutor.ex(() -> gitHubFail.getRepository(comm.getReview().getRepository()));
-            ghTaskScheduler.registerClone(comm);
+            ghReviewCreator.getRepositoryByName(comm.getReview().getRepository());
 
         } catch (GHCommunicationException e) {
             throw (LocalizableErrorRestException)
-                    new LocalizableErrorRestException(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "NoGitHub", e.toString())
-                            .initCause(e);
+                    new LocalizableErrorRestException(
+                            HttpServletResponse.SC_SERVICE_UNAVAILABLE, "NoGitHub", e.toString()
+                    ).initCause(e);
 
         }
 
+        LOGGER.debug("Commission retried {}", comm);
         comm.setStatus(CommissionStatus.PROCESSING);
         commissionRepository.save(comm);
+        ghTaskScheduler.registerClone(comm);
 
-        return singletonList(localeService.get("m.commissions.retry.done"));
+        return localeService.getAsList("m.commissions.retry.done");
     }
 
 }

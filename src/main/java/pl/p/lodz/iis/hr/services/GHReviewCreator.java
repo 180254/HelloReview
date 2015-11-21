@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-class GHReviewCreator {
+public class GHReviewCreator {
 
     private final ReviewRepository reviewRepository;
     private final CommissionRepository commissionRepository;

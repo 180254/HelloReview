@@ -272,6 +272,7 @@ class MReviewsController {
             throw LocalizableErrorRestException.noResource();
         }
 
+        LOGGER.debug("Review creating {}", ghReviewForm);
         return ghReviewCreator.createReview(ghReviewForm, ghRepository, response);
     }
 }
