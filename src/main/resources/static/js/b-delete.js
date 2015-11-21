@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr*/
+/*global $, jQuery, toastr, jqXHRFailToArray*/
 
 function deleteB($deleteLink) {
     'use strict';
@@ -19,11 +19,11 @@ function deleteB($deleteLink) {
         headers: ajaxHeaders
 
     }).done(function (data) {
-        toastr.success(data.join("\n"));
+        toastr.success(data.join("<br/>\n"));
         $row.remove();
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
 
     });
 }

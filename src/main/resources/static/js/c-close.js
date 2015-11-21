@@ -21,7 +21,7 @@ function reviewOpenCloseHandler($link) {
         $link.children().html(data[1]);
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
 
     });
 }

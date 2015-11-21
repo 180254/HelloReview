@@ -11,8 +11,12 @@ $(document).ready(function () {
             return params;
         },
 
+        error: function (errors) {
+            $('main').find('.editable-error-block').html(errors.responseJSON.join("<br/>\n"));
+        },
+
         success: function (response) {
-            toastr.success(response.join("\n"));
+            toastr.success(response.join("<br/>\n"));
         }
     });
 });

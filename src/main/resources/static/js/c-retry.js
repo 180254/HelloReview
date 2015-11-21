@@ -21,8 +21,8 @@ function commissionRetryHandler($retryLink) {
         $retryLink.remove();
 
     }).fail(function (jqXHR) {
-        var errors = jqXHRFailToArray(jqXHR);
-        toastr.error(errors[0]);
+        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
+
     });
 }
 
