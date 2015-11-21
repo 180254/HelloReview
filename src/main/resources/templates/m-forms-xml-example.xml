@@ -4,8 +4,7 @@
         Praca jest dostępna pod adresem: <strong>{copyurl}</strong>.<br/>
         <br/>
         Odpowiedź na wszystkie pytania jest obowiązkowa.<br/>
-        Obowiązkowe pola są oznaczaone znakiem *.<br/>
-        Czas na udzielenie odpowiedzi mija: {deadline}.]]>
+        Obowiązkowe pola w pytaniu są oznaczaone znakiem *.]]>
     </description>
 
     <question>

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
-import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,7 +141,7 @@ class MFormsController {
         formValidator.validateRestEx(form);
         form.fixRelations();
 
-        LOGGER.debug("Form added {}", SerializationUtils.clone(form));
+        LOGGER.debug("Form added {}", form);
         formRepository.save(form);
 
         return Collections.singletonList(String.valueOf(form.getId()));
@@ -203,7 +202,7 @@ class MFormsController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Form deleted {}", SerializationUtils.clone(form));
+        LOGGER.debug("Form deleted {}", form);
         reviewService.delete(reviews);
         formRepository.delete(form);
 
@@ -228,7 +227,7 @@ class MFormsController {
                 localeService.get("m.forms.rename.validation.prefix.name")
         );
 
-        LOGGER.debug("Form {} renamed to {}", SerializationUtils.clone(form), newName);
+        LOGGER.debug("Form {} renamed to {}", form, newName);
         form.setName(newName);
         formRepository.save(form);
 

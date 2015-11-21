@@ -2,6 +2,7 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Length;
@@ -172,6 +173,17 @@ public class Review implements Serializable {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("commPerPeer", commPerPeer)
+                .add("course", course.getId())
+                .add("form", form.getId())
+                .add("repository", repository)
+                .add("commissions", commissions)
+                .add("closed", closed)
+                .add("created", created)
+                .add("updated", updated)
+                .toString();
     }
 }

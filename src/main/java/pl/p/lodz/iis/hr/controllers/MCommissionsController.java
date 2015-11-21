@@ -1,6 +1,5 @@
 package pl.p.lodz.iis.hr.controllers;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,7 +166,7 @@ class MCommissionsController {
 
         }
 
-        LOGGER.debug("Commission retried {}", SerializationUtils.clone(comm));
+        LOGGER.debug("Commission retried {}", comm);
         comm.setStatus(CommissionStatus.PROCESSING);
         commissionRepository.save(comm);
         ghTaskScheduler.registerClone(comm);

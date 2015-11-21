@@ -1,6 +1,7 @@
 package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.base.MoreObjects;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -81,5 +82,15 @@ public class InputScale extends Input {
 
     /* package */ void setToS(Long toS) {
         this.toS = toS;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("fromLabel", fromLabel)
+                .add("fromS", fromS)
+                .add("toLabel", toLabel)
+                .add("toS", toS)
+                .toString();
     }
 }
