@@ -75,8 +75,7 @@
 
             <td th:if="${commission.status.shouldBeRetried(retryButtonForProcessing)}">
                 <a href="#" class="commission-retry"
-                   th:attr="data-retry-url=@{/m/reviews/commissions/retry}"
-                   th:attr="data-id=${commission.id}"
+                   th:attr="data-retry-url=@{/m/reviews/commissions/retry}, data-id=${commission.id}"
                    th:text="#{m.commissions.tbody.retry}">
                 </a>
             </td>
