@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
-import pl.p.lodz.iis.hr.exceptions.InternalException;
+import pl.p.lodz.iis.hr.exceptions.InternalServerErrorException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.models.courses.*;
 import pl.p.lodz.iis.hr.models.forms.Form;
@@ -168,6 +168,7 @@ public class GHReviewCreator {
             }
 
         }
-        throw new InternalException();
+
+        throw new InternalServerErrorException();
     }
 }

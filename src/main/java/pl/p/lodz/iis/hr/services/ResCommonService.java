@@ -3,7 +3,7 @@ package pl.p.lodz.iis.hr.services;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 
 import java.io.Serializable;
 
@@ -11,10 +11,10 @@ import java.io.Serializable;
 public class ResCommonService {
 
     public <T, K extends Serializable> T getOne(JpaRepository<T, K> repository, K id)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         if (!repository.exists(id)) {
-            throw new ResourceNotFoundException();
+            throw new NotFoundException();
         }
 
         return repository.getOne(id);

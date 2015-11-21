@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
@@ -80,12 +80,12 @@ class MFormsController {
     @Transactional
     public String listOne(@PathVariable Long2 formID,
                           Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
         if (form.isTemporary()) {
-            throw new ResourceNotFoundException();
+            throw new NotFoundException();
         }
 
         model.addAttribute("forms", Collections.singletonList(form));
@@ -153,7 +153,7 @@ class MFormsController {
     @Transactional
     public String preview(@PathVariable Long2 formID,
                           Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
@@ -179,7 +179,7 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public String xml(@PathVariable Long2 formID)
-            throws JsonProcessingException, ResourceNotFoundException {
+            throws JsonProcessingException, NotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
@@ -193,7 +193,7 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 formID)
-            throws LocalizableErrorRestException, ResourceNotFoundException {
+            throws LocalizableErrorRestException, NotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
@@ -217,7 +217,7 @@ class MFormsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 formID)
-            throws ResourceNotFoundException, LocalizedErrorRestException {
+            throws NotFoundException, LocalizedErrorRestException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 

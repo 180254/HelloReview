@@ -14,7 +14,7 @@ import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
@@ -81,7 +81,7 @@ class MReviewsController {
     @Transactional
     public String listOne(@PathVariable Long2 reviewID,
                           Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
@@ -98,7 +98,7 @@ class MReviewsController {
     @Transactional
     public String listForCourse(@PathVariable Long2 courseID,
                                 Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
         List<Review> reviews = course.getReviews();
@@ -118,7 +118,7 @@ class MReviewsController {
     @Transactional
     public String listForForm(@PathVariable Long2 formID,
                               Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
         List<Review> reviews = form.getReviews();
@@ -170,7 +170,7 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 reviewID)
-            throws ResourceNotFoundException, LocalizableErrorRestException {
+            throws NotFoundException, LocalizableErrorRestException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
@@ -191,7 +191,7 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> openClose(@ModelAttribute("id") Long2 reviewID)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
@@ -217,7 +217,7 @@ class MReviewsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 reviewID)
-            throws ResourceNotFoundException, LocalizedErrorRestException {
+            throws NotFoundException, LocalizedErrorRestException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 

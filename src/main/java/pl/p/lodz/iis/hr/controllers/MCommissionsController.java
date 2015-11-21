@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.courses.Participant;
@@ -65,7 +65,7 @@ class MCommissionsController {
     @Transactional
     public String list1(@PathVariable Long2 reviewID,
                         Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
@@ -86,7 +86,7 @@ class MCommissionsController {
     @Transactional
     public String list2(@PathVariable Long2 commissionID,
                         Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Commission commission = resCommonService.getOne(commissionRepository, commissionID.get());
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
@@ -105,7 +105,7 @@ class MCommissionsController {
     @Transactional
     public String list3(@PathVariable Long2 participantID,
                         Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Participant participant = resCommonService.getOne(participantRepository, participantID.get());
         List<Commission> commissions = participant.getCommissions();
@@ -146,7 +146,7 @@ class MCommissionsController {
     @Transactional
     @ResponseBody
     public List<String> retry(@ModelAttribute("commission-id") Long2 commissionID)
-            throws ResourceNotFoundException, LocalizableErrorRestException {
+            throws NotFoundException, LocalizableErrorRestException {
 
         Commission comm = resCommonService.getOne(commissionRepository, commissionID.get());
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
+import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -53,7 +53,7 @@ class MParticipantsController {
     @Transactional
     public String list(@PathVariable Long2 courseID,
                        Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
         List<Participant> participants = course.getParticipants();
@@ -72,7 +72,7 @@ class MParticipantsController {
     @Transactional
     public String listOne(@PathVariable Long2 participantID,
                           Model model)
-            throws ResourceNotFoundException {
+            throws NotFoundException {
 
         Participant participant = resCommonService.getOne(participantRepository, participantID.get());
         Course course = participant.getCourse();
