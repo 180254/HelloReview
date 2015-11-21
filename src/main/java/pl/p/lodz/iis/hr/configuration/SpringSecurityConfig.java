@@ -105,8 +105,12 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             X-UA-Compatible as IE=edge in head.html
          */
         http.headers().addHeaderWriter(getCSPHeaderSelf());
-
         http.csrf().ignoringAntMatchers("/csp-reports");
+
+        /*
+        Disable default authorization. It is done manually using spring-webmvc-pac4j.
+        However, the basic auth is used for security of h2-console.
+         */
         http.authorizeRequests().anyRequest().permitAll();
     }
 }
