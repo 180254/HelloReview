@@ -15,6 +15,44 @@ import java.util.Map;
 @Order(Ordered.LOWEST_PRECEDENCE - 10) /* order caused by https://github.com/spring-projects/spring-boot/issues/3734 */
 class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private HeaderWriter cspMapToHeader(Map<String, String> cspMap) {
+        String cspString =
+                cspMap.entrySet().stream()
+                        .map(cspEntry -> String.format("%s %s", cspEntry.getKey(), cspEntry.getValue()))
+                        .reduce((s1, s2) -> String.format("%s; %s", s1, s2))
+                        .get();
+
+        return new StaticHeadersWriter("Content-Security-Policy", cspString);
+    }
+
+    private HeaderWriter getCSPHeaderSelf() {
+        Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
+                // @formatter:off
+                .put("default-src",     "'none'")
+
+                .put("connect-src",     "'self'")
+                .put("font-src",        "'self'")
+                .put("img-src",         "'self'")
+             // .put("media-src ",      "'none'") // unnecessary - default-src
+             // .put("object-src",      "'none'") // unnecessary - default-src
+                .put("script-src",      "'self")
+                .put("style-src",       "'self' 'unsafe-inline'")
+             // .put("frame-src",       "") // deprecated in CSP2, SHOULD use the child-src directive instead.
+             // .put("sandbox",         "") // unnecessary -  object-src is none
+                .put("form-action",     "'self' github.com") // necessary - form-action doesn't fall back to the default
+                .put("frame-ancestors", "'none'") // necessary - frame-ancestors doesn't fall back to the default src
+             // .put("plugin-types",    "") // unnecessary -  object-src is none
+             // .put("base-uri",        "") // just self, don't define base-uri
+             // .put("child-src",       "'none'") // unnecessary - default-src
+
+                .put("report-uri ", "/csp-reports")
+                .build();
+                // @formatter:on
+
+        return cspMapToHeader(cspMap);
+    }
+
+
     private HeaderWriter getCSPHeader() {
         Map<String, String> cspMap = new ImmutableMap.Builder<String, String>()
                 // @formatter:off
@@ -26,8 +64,8 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .put("default-src",     "'none'")
 
                 .put("connect-src",     "'self'")
-                .put("font-src ",       "'self' cdnjs.cloudflare.com")
-                .put("img-src ",        "'self' data: cdnjs.cloudflare.com")
+                .put("font-src",        "'self' cdnjs.cloudflare.com")
+                .put("img-src",         "'self' data: cdnjs.cloudflare.com")
              // .put("media-src ",      "'none'") // unnecessary - default-src
              // .put("object-src",      "'none'") // unnecessary - default-src
                 .put("script-src",      "'self' cdnjs.cloudflare.com")
@@ -44,13 +82,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .build();
                 // @formatter:on
 
-        String cspString =
-                cspMap.entrySet().stream()
-                        .map(cspEntry -> String.format("%s %s", cspEntry.getKey(), cspEntry.getValue()))
-                        .reduce((s1, s2) -> String.format("%s; %s", s1, s2))
-                        .get();
-
-        return new StaticHeadersWriter("Content-Security-Policy", cspString);
+        return cspMapToHeader(cspMap);
     }
 
     @Override
@@ -72,7 +104,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          - meta
             X-UA-Compatible as IE=edge in head.html
          */
-        http.headers().addHeaderWriter(getCSPHeader());
+        http.headers().addHeaderWriter(getCSPHeaderSelf());
 
         http.csrf().ignoringAntMatchers("/csp-reports");
         http.authorizeRequests().anyRequest().permitAll();
