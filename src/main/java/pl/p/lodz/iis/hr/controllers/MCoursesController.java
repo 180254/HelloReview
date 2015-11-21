@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
-        LOGGER.debug("Course added {}", course);
+        LOGGER.debug("Course added {}", SerializationUtils.clone(course));
         courseRepository.save(course);
 
         return localeService.getAsList("m.courses.add.done");
@@ -117,7 +118,7 @@ class MCoursesController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Course deleted {}", course);
+        LOGGER.debug("Course deleted {}", SerializationUtils.clone(course));
         reviewService.delete(reviews);
         courseRepository.delete(courseID.get());
 
@@ -142,7 +143,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
-        LOGGER.debug("Course renamed {} to {}", course, newName);
+        LOGGER.debug("Course renamed {} to {}", SerializationUtils.clone(course), newName);
         course.setName(newName);
         courseRepository.save(course);
 

@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,7 +179,7 @@ class MReviewsController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Review deleted {}", review);
+        LOGGER.debug("Review deleted {}", SerializationUtils.clone(review));
         reviewService.delete(review);
 
         return localeService.getAsList("m.reviews.delete.done");
@@ -195,7 +196,7 @@ class MReviewsController {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-        LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
+        LOGGER.debug("Review closed state changes {} to {}", SerializationUtils.clone(review), !review.isClosed());
         review.setClosed(!review.isClosed());
         reviewRepository.save(review);
 
@@ -227,7 +228,7 @@ class MReviewsController {
                 localeService.get("m.reviews.add.validation.prefix.name")
         );
 
-        LOGGER.debug("Review {} renamed to {}", review, newName);
+        LOGGER.debug("Review {} renamed to {}", SerializationUtils.clone(review), newName);
         review.setName(newName);
         reviewRepository.save(review);
 
@@ -277,7 +278,7 @@ class MReviewsController {
             throw LocalizableErrorRestException.noResource();
         }
 
-        LOGGER.debug("Review creating {}", ghReviewAddForm);
+        LOGGER.debug("Review creating {}", SerializationUtils.clone(ghReviewAddForm));
         return ghReviewCreator.createReview(ghReviewAddForm, ghRepository, response);
     }
 }

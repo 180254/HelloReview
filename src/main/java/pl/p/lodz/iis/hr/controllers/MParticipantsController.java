@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +121,7 @@ class MParticipantsController {
             throw new LocalizedErrorRestException(allErrors);
         }
 
-        LOGGER.debug("Participant added {}", participant);
+        LOGGER.debug("Participant added {}", SerializationUtils.clone(participant));
         participantRepository.save(participant);
 
         return localeService.getAsList("m.participants.add.done");
@@ -141,7 +142,7 @@ class MParticipantsController {
             throw new LocalizableErrorRestException("m.participants.delete.cannot.as.comm.exist");
         }
 
-        LOGGER.debug("Participant deleted {}", participant);
+        LOGGER.debug("Participant deleted {}", SerializationUtils.clone(participant));
         participantRepository.delete(participant);
 
         return localeService.getAsList("m.participants.delete.done");
@@ -169,7 +170,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.participant.name")
         );
 
-        LOGGER.debug("Participant {} name changed to {}", participant, newName);
+        LOGGER.debug("Participant {} name changed to {}", SerializationUtils.clone(participant), newName);
         participant.setName(newName);
         participantRepository.save(participant);
 
@@ -198,7 +199,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.github.name")
         );
 
-        LOGGER.debug("Participant {} GitHub name changed to {}", participant, newGitHubName);
+        LOGGER.debug("Participant {} GitHub name changed to {}", SerializationUtils.clone(participant), newGitHubName);
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 
