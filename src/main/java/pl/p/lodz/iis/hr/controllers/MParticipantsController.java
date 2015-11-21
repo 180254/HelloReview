@@ -189,7 +189,7 @@ class MParticipantsController {
         Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
 
         if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
-            throw LocalizableErrorRestException.noResource();
+            throw LocalizableErrorRestException.notUniqueName();
         }
 
         fieldValidator.validateFieldRestEx(
