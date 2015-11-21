@@ -34,14 +34,14 @@
 
                 <input type="number" min="1" max="10"
                        class="form-control"
-                       id="review-add-resp-per-peer" th:field="*{respPerPeerLong}"
+                       id="review-add-resp-per-peer" th:field="*{respPerPeer}"
                        th:placeholder="#{m.reviews.add.comm.per.peer.placeholder}"/>
             </div>
 
             <div class="input-2">
                 <label for="review-add-course" th:text="#{m.reviews.add.course}"></label>
 
-                <select id="review-add-course" th:field="*{courseIDLong}" class="form-control">
+                <select id="review-add-course" th:field="*{courseID}" class="form-control">
                     <option th:each="course : ${courses}"
                             th:value="${course.id}"
                             th:text="${course.name}">
@@ -52,7 +52,7 @@
             <div class="input-2">
                 <label for="review-add-form-2" th:text="#{m.reviews.add.form}"></label>
 
-                <select id="review-add-form-2" th:field="*{formIDLong}" class="form-control">
+                <select id="review-add-form-2" th:field="*{formID}" class="form-control">
                     <option th:each="form : ${forms}"
                             th:value="${form.id}"
                             th:text="${form.name}">

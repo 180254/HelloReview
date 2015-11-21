@@ -249,7 +249,7 @@ class MReviewsController {
                 || !formRepository.exists(ghReviewAddForm.getFormIDLong())
                 || !ghReviewAddForm.getRepositoryFullName().contains("/")) {
 
-            throw LocalizableErrorRestException.noResource();
+            throw LocalizableErrorRestException.noResources();
         }
 
         fieldValidator.validateFieldsRestEx(

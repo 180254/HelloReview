@@ -28,6 +28,10 @@ public class LocalizableErrorRestException extends Exception {
         return new LocalizableErrorRestException("NoResource");
     }
 
+    public static LocalizableErrorRestException noResources() {
+        return new LocalizableErrorRestException("NoResources");
+    }
+
     public static LocalizableErrorRestException badResource() {
         return new LocalizableErrorRestException("BadResource");
     }
