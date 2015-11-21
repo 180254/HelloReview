@@ -11,7 +11,7 @@ function commissionRetryHandler($retryLink) {
 
     $.ajax({
         type: 'POST',
-        url: '/m/reviews/commissions/retry',
+        url: $retryLink.attr('data-retry-url'),
         data: 'commission-id=' + $retryLink.attr('data-id'),
         headers: ajaxHeaders
 

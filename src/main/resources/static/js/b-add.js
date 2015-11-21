@@ -20,7 +20,8 @@ function jqXHRFailToArray(jqXHR) {
 function formAddHandler(action) {
     'use strict';
 
-    var serialized = $('#form-add-form').serialize() + '&action=' + action,
+    var $formAdd = $('#form-add-form'),
+        serialized = $formAdd.serialize() + '&action=' + action,
         $errorsDiv = $('#form-add-error'),
         $errorsList = $('#form-add-error-list'),
         $buttonPreview = $('#form-add-button-preview'),
@@ -34,18 +35,18 @@ function formAddHandler(action) {
 
     $.ajax({
         type: 'POST',
-        url: '/m/forms/add',
+        url: $formAdd.attr('data-add-url'),
         data: serialized
 
     }).done(function (data) {
         var url;
 
         if (action === 'add') {
-            url = '/m/forms';
+            url = $formAdd.attr('data-forms-url');
             window.location = url;
 
         } else {
-            url = '/m/forms/preview/' + data;
+            url = $formAdd.attr('data-preview-url') + data;
             $previewUrlDiv.find('a').attr('href', url).text(url);
             $errorsDiv.hide();
             $previewUrlDiv.fadeIn();
@@ -85,7 +86,7 @@ function reviewDownloadRepoList() {
 
     $.ajax({
         type: 'GET',
-        url: '/m/reviews/add/repolist'
+        url: $select.attr('data-repolist-url')
 
     }).done(function (data) {
         var i, len;
@@ -117,6 +118,7 @@ function reviewAddHandler() {
     'use strict';
 
     var serialized,
+        $reviewAdd = $('#review-add-form'),
         $button = $('#review-add-submit'),
         $errorsDiv = $('#review-add-error'),
         $errorsList = $('#review-add-error-list'),
@@ -129,7 +131,7 @@ function reviewAddHandler() {
         $allInputs = $('#review-add-form select, #review-add-form input');
 
     $allInputs.prop('disabled', false);
-    serialized = $('#review-add-form').serialize();
+    serialized = $reviewAdd.serialize();
     $warningIgnore.val('0');
 
     $errorsDiv.hide();
@@ -141,11 +143,11 @@ function reviewAddHandler() {
 
     $.ajax({
         type: 'POST',
-        url: '/m/reviews/add',
+        url: $reviewAdd.attr('data-add-url'),
         data: serialized
 
     }).done(function () {
-        window.location = '/m/reviews';
+        window.location = $reviewAdd.attr('data-reviews-url');
 
 
     }).fail(function (jqXHR) {
@@ -182,7 +184,7 @@ function reviewAddHandler() {
 }
 /*             course + participants                */
 
-function courseParticipantAddHandler(prefix, url) {
+function courseParticipantAddHandler(prefix, $element) {
     'use strict';
 
     var serialized = $('#' + prefix + '-add-form').serialize(),
@@ -197,7 +199,7 @@ function courseParticipantAddHandler(prefix, url) {
 
     $.ajax({
         type: 'POST',
-        url: url,
+        url: $element.attr('data-add-url'),
         data: serialized
 
     }).done(function (data) {
@@ -253,12 +255,12 @@ $(document).ready(function () {
 
     //course
     $('#course-add-form').submit(function () {
-        courseParticipantAddHandler('course', '/m/courses/add');
+        courseParticipantAddHandler('course', $(this));
         return false;
     });
 
     $('#course-add-button-submit').click(function () {
-        courseParticipantAddHandler('course', '/m/courses/add');
+        courseParticipantAddHandler('course', $(this));
     });
 
     $('#course-add').on('show.bs.modal', function () {
@@ -267,12 +269,12 @@ $(document).ready(function () {
 
     //course participant
     $('#course-participant-add-form').submit(function () {
-        courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
+        courseParticipantAddHandler('course-participant', $(this));
         return false;
     });
 
     $('#course-participant-add-button-submit').click(function () {
-        courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
+        courseParticipantAddHandler('course-participant', $(this));
     });
 
     $('#course-participant-add').on('show.bs.modal', function () {
@@ -281,7 +283,7 @@ $(document).ready(function () {
 
     $('#participant-name,#participant-github-name').keyup(function (e) {
         if (e.keyCode === 13) {
-            courseParticipantAddHandler('course-participant', '/m/courses/participants/add');
+            courseParticipantAddHandler('course-participant', $(this));
         }
     });
 

@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="course-add-form">
+                    <form id="course-add-form" th:attr="data-add-url=@{/m/courses/add}">
                         <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}"/>
 
@@ -108,6 +108,7 @@
                             th:text="#{m.courses.add.button.close}">
                     </button>
                     <button id="course-add-button-submit" type="button" class="btn btn-primary"
+                            th:attr="data-add-url=@{/m/courses/add}"
                             th:text="#{m.courses.add.button.submit}">
                     </button>
                 </div>

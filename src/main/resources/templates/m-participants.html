@@ -91,7 +91,9 @@
                     <h4 class="modal-title" th:text="#{m.participants.add.title}"></h4>
                 </div>
 
-                <div class="modal-body">
+                <div class="modal-body"
+                     th:attr="data-add-url=@{/m/courses/participants/add}">
+
                     <form id="course-participant-add-form">
                         <input type="hidden" name="course-id" th:value="${course.id}"/>
                         <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
@@ -104,6 +106,7 @@
                             <input type="text"
                                    class="form-control"
                                    id="participant-name" name="participant-name"
+                                   th:attr="data-add-url=@{/m/courses/participants/add}"
                                    th:placeholder="#{m.participants.add.input.participant.name.placeholder}"/>
                         </div>
 
@@ -114,6 +117,7 @@
                             <input type="text"
                                    class="form-control"
                                    id="participant-github-name" name="participant-github-name"
+                                   th:attr="data-add-url=@{/m/courses/participants/add}"
                                    th:placeholder="#{m.participants.add.input.github.name.placeholder}"/>
                         </div>
                     </form>
@@ -132,6 +136,7 @@
                     </button>
 
                     <button id="course-participant-add-button-submit" type="button" class="btn btn-primary"
+                            th:attr="data-add-url=@{/m/courses/participants/add}"
                             th:text="#{m.participants.add.button.submit}">
                     </button>
                 </div>

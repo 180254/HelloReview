@@ -10,7 +10,9 @@
 <main class="container form-main">
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
-    <form id="review-add-form" th:object="${f}">
+    <form id="review-add-form"
+          th:object="${f}"
+          th:attr="data-add-url=@{/m/reviews/add}, data-reviews-url=@{/m/reviews}">
 
         <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
@@ -61,7 +63,8 @@
             <div class="input-2">
                 <label for="review-add-repository" th:text="#{m.reviews.add.repository}"></label>
 
-                <select id="review-add-repository" th:field="*{repositoryFullName}" class="form-control">
+                <select id="review-add-repository" th:field="*{repositoryFullName}" class="form-control"
+                        th:attr="data-repolist-url=@{/m/reviews/add/repolist}">
                 </select>
             </div>
 
