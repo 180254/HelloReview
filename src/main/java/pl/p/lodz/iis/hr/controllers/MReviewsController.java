@@ -37,10 +37,11 @@ class MReviewsController {
 
     @Autowired private ResCommonService resCommonService;
     @Autowired private ReviewRepository reviewRepository;
-    @Autowired private ReviewService reviewService;
     @Autowired private CommissionRepository commissionRepository;
     @Autowired private CourseRepository courseRepository;
     @Autowired private FormRepository formRepository;
+
+    @Autowired private ReviewService reviewService;
     @Autowired private AppConfig appConfig;
     @Autowired @Qualifier("ghFail") private GitHub gitHubFail;
     @Autowired private LocaleService localeService;
@@ -137,7 +138,8 @@ class MReviewsController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> kAddRepoList() throws FieldValidationRestException {
+    public List<String> kAddRepoList()
+            throws LocalizedErrorRestException {
 
         List<String> repoList = new ArrayList<>(10);
 
@@ -148,13 +150,12 @@ class MReviewsController {
                             .asList().stream()
                             .map(ghRepo -> String.format("%s/%s", ghRepo.getOwnerName(), ghRepo.getName()))
                             .forEach(repoList::add);
-
                 }
             });
 
         } catch (GHCommunicationException e) {
-            throw (FieldValidationRestException)
-                    new FieldValidationRestException(e.getMessage()).initCause(e);
+            throw (LocalizedErrorRestException)
+                    new LocalizedErrorRestException(e.getMessage()).initCause(e);
         }
 
         return repoList;
@@ -167,15 +168,15 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 reviewID)
-            throws ResourceNotFoundException, OtherRestProcessingException {
+            throws ResourceNotFoundException, LocalizableErrorRestException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
         if (!reviewService.canBeDeleted(review)) {
-            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
+            throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Review deleted: {}", review);
+        LOGGER.debug("Review deleted {}", review);
         reviewService.delete(review);
 
         return singletonList(localeService.get("m.reviews.delete.done"));
@@ -214,7 +215,7 @@ class MReviewsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 reviewID)
-            throws ResourceNotFoundException, FieldValidationRestException {
+            throws ResourceNotFoundException, LocalizedErrorRestException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
@@ -244,13 +245,13 @@ class MReviewsController {
                                  @RequestParam("review-add-repository") String repository,
                                  @RequestParam("review-add-ignore-warning") Long2 ignoreWarning,
                                  HttpServletResponse response)
-            throws FieldValidationRestException, ResourceNotFoundRestException, OtherRestProcessingException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         if (!courseRepository.exists(courseID.get())
                 || !formRepository.exists(formID.get())
                 || !repository.contains("/")) {
 
-            throw new ResourceNotFoundRestException();
+            throw LocalizableErrorRestException.noResource();
         }
 
         GHRepository ghRepository;
@@ -258,7 +259,7 @@ class MReviewsController {
         try {
             ghRepository = GHExecutor.ex(() -> gitHubFail.getRepository(repository));
         } catch (GHCommunicationException ignored) {
-            throw new ResourceNotFoundRestException();
+            throw LocalizableErrorRestException.noResource();
         }
 
         fieldValidator.validateFieldsdRestEx(
@@ -352,8 +353,8 @@ class MReviewsController {
             return singletonList(String.valueOf(review.getId()));
 
         } catch (GHCommunicationException e) {
-            throw (OtherRestProcessingException)
-                    new OtherRestProcessingException("NoGitHub", new Object[]{e.toString()}).initCause(e);
+            throw (LocalizableErrorRestException)
+                    new LocalizableErrorRestException("NoGitHub", e.toString()).initCause(e);
         }
     }
 

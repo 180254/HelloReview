@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
-import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +37,11 @@ public class FieldValidator {
     }
 
     public void validateFieldRestEx(Object object, String fieldName, String prefix)
-            throws FieldValidationRestException {
+            throws LocalizedErrorRestException {
         List<String> errors = validateField(object, fieldName, prefix);
 
         if (!errors.isEmpty()) {
-            throw new FieldValidationRestException(errors);
+            throw new LocalizedErrorRestException(errors);
         }
     }
 
@@ -56,11 +56,11 @@ public class FieldValidator {
     }
 
     public void validateFieldsdRestEx(Object object, String[] fieldNames, String[] prefixes)
-            throws FieldValidationRestException {
+            throws LocalizedErrorRestException {
         List<String> errors = validateFields(object, fieldNames, prefixes);
 
         if (!errors.isEmpty()) {
-            throw new FieldValidationRestException(errors);
+            throw new LocalizedErrorRestException(errors);
         }
     }
 }

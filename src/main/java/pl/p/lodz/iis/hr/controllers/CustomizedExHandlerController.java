@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
-import pl.p.lodz.iis.hr.exceptions.NotUniqueNameException;
-import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.services.LocaleService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,44 +37,25 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
         return "redirect:/logout?url=/github-issue";
     }
 
-    @ExceptionHandler(ResourceNotFoundRestException.class)
+
+    @ExceptionHandler(LocalizedErrorRestException.class)
     @ResponseBody
-    public List<String> handleResNotFoundRestEx(ResourceNotFoundRestException ex,
-                                                HttpServletResponse response) {
+    public List<String> handleLocalizedErrRestEx(LocalizedErrorRestException ex,
+                                                 HttpServletResponse response) {
 
-        LOGGER.warn("ResourceNotFoundRestException: ", ex);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return localeService.getAsList("NoResource");
-    }
-
-    @ExceptionHandler(NotUniqueNameException.class)
-    @ResponseBody
-    public List<String> notUniqueNameException(NotUniqueNameException ex,
-                                               HttpServletResponse response) {
-
-        LOGGER.warn("NotUniqueNameException: ", ex);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return localeService.getAsList("UniqueName");
-    }
-
-    @ExceptionHandler(FieldValidationRestException.class)
-    @ResponseBody
-    public List<String> handleFieldValidRestEx(FieldValidationRestException ex,
-                                               HttpServletResponse response) {
-
-        LOGGER.warn("FieldValidationRestException: ", ex);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ex.getFieldErrors();
+        LOGGER.warn("LocalizedErrorRestException", ex);
+        response.setStatus(ex.getStatusCode());
+        return ex.getErrors();
     }
 
 
-    @ExceptionHandler(OtherRestProcessingException.class)
+    @ExceptionHandler(LocalizableErrorRestException.class)
     @ResponseBody
-    public List<String> handleOtherRestProcEx(OtherRestProcessingException ex,
-                                              HttpServletResponse response) {
+    public List<String> handleLocalizableErrRestEx(LocalizableErrorRestException ex,
+                                                   HttpServletResponse response) {
 
-        LOGGER.warn("OtherRestProcessingException: ", ex);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        LOGGER.warn("LocalizableErrorRestException", ex);
+        response.setStatus(ex.getStatusCode());
         return localeService.getAsList(ex.getLocaleCode(), ex.getLocaleArgs());
     }
 }

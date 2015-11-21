@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
-import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Review;
@@ -111,10 +111,10 @@ class MFormsController {
     public List<String> kAddPOST(@ModelAttribute("form-name") String formName,
                                  @ModelAttribute("form-xml") String formXML,
                                  @ModelAttribute("action") String action)
-            throws FieldValidationRestException, OtherRestProcessingException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         if (!Arrays.asList("preview", "add").contains(action)) {
-            throw new OtherRestProcessingException("");
+            throw new LocalizableErrorRestException("");
         }
 
         Form form;
@@ -128,10 +128,8 @@ class MFormsController {
             form = xmlReader.readValue(formXML.trim());
 
         } catch (IOException e) {
-            throw (OtherRestProcessingException) new OtherRestProcessingException(
-                    "m.forms.add.validation.not.xml",
-                    new Object[]{e.getMessage()}
-            ).initCause(e);
+            throw (LocalizableErrorRestException)
+                    new LocalizableErrorRestException("m.forms.add.validation.not.xml", e.getMessage()).initCause(e);
         }
 
         form.setName(Strings.emptyToNull(formName));
@@ -143,7 +141,7 @@ class MFormsController {
         formValidator.validateRestEx(form);
         form.fixRelations();
 
-        LOGGER.debug("Form added: {}", form);
+        LOGGER.debug("Form added {}", form);
         formRepository.save(form);
 
         return Collections.singletonList(String.valueOf(form.getId()));
@@ -195,16 +193,16 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 formID)
-            throws OtherRestProcessingException, ResourceNotFoundException {
+            throws LocalizableErrorRestException, ResourceNotFoundException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
         List<Review> reviews = form.getReviews();
         if (!reviewService.canBeDeleted(reviews)) {
-            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
+            throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Form deleted: {}", form);
+        LOGGER.debug("Form deleted {}", form);
         reviewService.delete(reviews);
         formRepository.delete(form);
 
@@ -219,7 +217,7 @@ class MFormsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 formID)
-            throws ResourceNotFoundException, FieldValidationRestException {
+            throws ResourceNotFoundException, LocalizedErrorRestException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
@@ -229,7 +227,7 @@ class MFormsController {
                 localeService.get("m.forms.rename.validation.prefix.name")
         );
 
-        LOGGER.debug("Form {} renamed to: {}", form, newName);
+        LOGGER.debug("Form {} renamed to {}", form, newName);
         form.setName(newName);
         formRepository.save(form);
 

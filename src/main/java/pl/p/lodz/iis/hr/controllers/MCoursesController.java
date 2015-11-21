@@ -9,10 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
-import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
-import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundRestException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -86,7 +85,7 @@ class MCoursesController {
     @Transactional
     @ResponseBody
     public List<String> kAddPost(@ModelAttribute("course-name") String courseName)
-            throws FieldValidationRestException {
+            throws LocalizedErrorRestException {
 
         Course course = new Course(courseName);
 
@@ -96,7 +95,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
-        LOGGER.debug("Course added: {}", course);
+        LOGGER.debug("Course added {}", course);
         courseRepository.save(course);
 
         return localeService.getAsList("m.courses.add.done");
@@ -109,16 +108,16 @@ class MCoursesController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 courseID)
-            throws ResourceNotFoundRestException, OtherRestProcessingException {
+            throws LocalizableErrorRestException {
 
         Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
         List<Review> reviews = course.getReviews();
 
         if (!reviewService.canBeDeleted(reviews)) {
-            throw new OtherRestProcessingException("m.reviews.delete.cannot.as.comm.processing");
+            throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Course deleted: {}", course);
+        LOGGER.debug("Course deleted {}", course);
         reviewService.delete(reviews);
         courseRepository.delete(courseID.get());
 
@@ -133,7 +132,7 @@ class MCoursesController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 courseID)
-            throws FieldValidationRestException, ResourceNotFoundRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
 

@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
-import pl.p.lodz.iis.hr.exceptions.OtherRestProcessingException;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
@@ -128,13 +128,13 @@ class MCommissionsController {
     @Transactional
     @ResponseBody
     public List<String> retry(@ModelAttribute("commission-id") Long2 commissionID)
-            throws ResourceNotFoundException, OtherRestProcessingException {
+            throws ResourceNotFoundException, LocalizableErrorRestException {
 
         Commission comm = resCommonService.getOne(commissionRepository, commissionID.get());
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
 
         if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
-            throw new OtherRestProcessingException("BadResource");
+            throw new LocalizableErrorRestException("BadResource");
         }
 
         try {
@@ -142,9 +142,8 @@ class MCommissionsController {
             ghTaskScheduler.registerClone(comm);
 
         } catch (GHCommunicationException e) {
-            throw (OtherRestProcessingException)
-                    new OtherRestProcessingException("NoGitHub", new Object[]{e.toString()})
-                            .setStatusCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE)
+            throw (LocalizableErrorRestException)
+                    new LocalizableErrorRestException(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "NoGitHub", e.toString())
                             .initCause(e);
 
         }

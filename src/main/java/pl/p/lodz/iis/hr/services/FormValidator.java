@@ -3,7 +3,7 @@ package pl.p.lodz.iis.hr.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
-import pl.p.lodz.iis.hr.exceptions.FieldValidationRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.models.forms.Form;
 
 import java.util.List;
@@ -25,11 +25,11 @@ public class FormValidator {
     }
 
     public void validateRestEx(Form form)
-            throws FieldValidationRestException {
+            throws LocalizedErrorRestException {
 
         List<String> validate = validate(form);
         if (!validate.isEmpty()) {
-            throw new FieldValidationRestException(validate);
+            throw new LocalizedErrorRestException(validate);
         }
     }
 }

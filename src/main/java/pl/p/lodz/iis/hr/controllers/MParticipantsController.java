@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
-import pl.p.lodz.iis.hr.exceptions.*;
+import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
+import pl.p.lodz.iis.hr.exceptions.ResourceNotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -92,7 +94,7 @@ class MParticipantsController {
     public List<String> kAddPOST(@ModelAttribute("course-id") Long2 courseID,
                                  @ModelAttribute("participant-name") String name,
                                  @ModelAttribute("participant-github-name") String gitHubName)
-            throws ResourceNotFoundRestException, FieldValidationRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
         Participant participant = new Participant(course, name, gitHubName);
@@ -115,10 +117,10 @@ class MParticipantsController {
         }
 
         if (!allErrors.isEmpty()) {
-            throw new FieldValidationRestException(allErrors);
+            throw new LocalizedErrorRestException(allErrors);
         }
 
-        LOGGER.debug("Participant added: {}", participant);
+        LOGGER.debug("Participant added {}", participant);
         participantRepository.save(participant);
 
         return localeService.getAsList("m.participants.add.done");
@@ -131,15 +133,15 @@ class MParticipantsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 participantID)
-            throws ResourceNotFoundRestException, OtherRestProcessingException {
+            throws LocalizableErrorRestException {
 
         Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
 
         if (!participant.getCommissions().isEmpty()) {
-            throw new OtherRestProcessingException("m.participants.delete.cannot.as.comm.exist");
+            throw new LocalizableErrorRestException("m.participants.delete.cannot.as.comm.exist");
         }
 
-        LOGGER.debug("Participant deleted: {}", participant);
+        LOGGER.debug("Participant deleted {}", participant);
         participantRepository.delete(participant);
 
         return localeService.getAsList("m.participants.delete.done");
@@ -153,12 +155,12 @@ class MParticipantsController {
     @ResponseBody
     public List<String> renameName(@ModelAttribute("value") String newName,
                                    @ModelAttribute("pk") Long2 participantID)
-            throws ResourceNotFoundRestException, NotUniqueNameException, FieldValidationRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
 
         if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
-            throw new NotUniqueNameException();
+            throw LocalizableErrorRestException.notUniqueName();
         }
 
         fieldValidator.validateFieldRestEx(
@@ -182,12 +184,12 @@ class MParticipantsController {
     @ResponseBody
     public List<String> renameGitHubName(@ModelAttribute("value") String newGitHubName,
                                          @ModelAttribute("pk") Long2 participantID)
-            throws ResourceNotFoundRestException, NotUniqueNameException, FieldValidationRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
 
         if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
-            throw new NotUniqueNameException();
+            throw LocalizableErrorRestException.noResource();
         }
 
         fieldValidator.validateFieldRestEx(
