@@ -11,13 +11,13 @@
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
     <h4 th:if="${addon_allParticipants != null and addon_allParticipants == true}" class="pre-table-addon">
-        <a th:href="'/m/courses/'+ ${course.id}">
+        <a th:href="@{/m/courses/{courseID}(courseID=${course.id})}">
             <strong th:text="${course.name}"></strong></a><span
             th:text="#{m.participants.table.head.addon.allParticipants}"></span>
     </h4>
 
     <h4 th:if="${addon_oneParticipant != null and addon_oneParticipant == true}" class="pre-table-addon">
-        <a th:href="'/m/courses/'+ ${course.id}">
+        <a th:href="@{/m/courses/{courseID}(courseID=${course.id})}">
             <strong th:text="${course.name}"></strong></a><span
             th:text="#{m.participants.table.head.addon.oneParticipant}"></span>
     </h4>
@@ -52,7 +52,7 @@
             </td>
 
             <td>
-                <a th:href="'/m/reviews/commissions/for/participant/'+ ${participant.id}">
+                <a th:href="@{/m/reviews/commissions/for/participant/{partiID}(partiID=${participant.id})}">
                     <strong th:text="${participant.commissions.size()}"></strong>
                     <span th:text="#{m.participants.tbody.commissions}"></span>
                 </a>

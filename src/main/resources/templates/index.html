@@ -24,7 +24,7 @@
 
     <div th:if="${isLoggedIn}" class="social-button1 center-block">
 
-        <a class="btn btn-block btn-social btn-github" th:href="'https://github.com/' + ${username}">
+        <a class="btn btn-block btn-social btn-github" th:href="@{'https://github.com/' + ${username}}">
             <i class="fa fa-github"></i>
             <span th:text="#{index.hello}"></span>
             [<span th:text="${username}" class="username"></span>] !

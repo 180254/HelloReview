@@ -38,14 +38,14 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${course.id} + '/participants'">
+                <a th:href="@{/m/courses/{courseID}/participants(courseID=${course.id})}">
                     <strong th:text="${course.participants.size()}"></strong>
                     <span th:text="#{m.courses.tbody.participants}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/reviews/for/course/'+ ${course.id}">
+                <a th:href="@{/m/reviews/for/course/{courseID}(courseID=${course.id})}">
                     <strong th:text="${course.reviews.size()}"></strong>
                     <span th:text="#{m.courses.tbody.reviews}"></span>
                 </a>

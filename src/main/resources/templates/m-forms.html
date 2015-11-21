@@ -37,12 +37,12 @@
             </td>
 
             <td>
-                <a th:href="'/m/forms/preview/'+ ${form.id}" th:text="#{m.forms.tbody.as.html}"></a>,
-                <a th:href="'/m/forms/xml/'+ ${form.id}" th:text="#{m.forms.tbody.as.xml}"></a>
+                <a th:href="@{/m/forms/preview/{formID}(formID=${form.id})}" th:text="#{m.forms.tbody.as.html}"></a>,
+                <a th:href="@{/m/forms/xml/{formID}(formID=${form.id})}" th:text="#{m.forms.tbody.as.xml}"></a>
             </td>
 
             <td>
-                <a th:href="'/m/reviews/for/form/'+ ${form.id}">
+                <a th:href="@{/m/reviews/for/form/{formID}(form=${form.id})}">
                     <strong th:text="${form.reviews.size()}"></strong>
                     <span th:text="#{m.forms.tbody.reviews}"></span>
                 </a>

@@ -16,14 +16,14 @@
 
     <h4 th:if="${addon_forCourse!= null and addon_forCourse == true}" class="pre-table-addon">
         <span th:text="#{m.reviews.table.head.addon.forCourse}"></span>
-        <a th:href="'/m/courses/'+ ${course.id}">
+        <a th:href="@{/m/courses/{courseID}(courseID=${course.id})}">
             <strong th:text="${course.name}"></strong>
         </a>
     </h4>
 
     <h4 th:if="${addon_forForm!= null and addon_forForm == true}" class="pre-table-addon">
         <span th:text="#{m.reviews.table.head.addon.forForm}"></span>
-        <a th:href="'/m/forms/'+ ${form.id}">
+        <a th:href="@{/m/forms/{formID}(formID=${form.id})}">
             <strong th:text="${form.name}"></strong>
         </a>
     </h4>
@@ -56,13 +56,13 @@
             </td>
 
             <td>
-                <a th:href="'/m/courses/'+ ${review.course.id}">
+                <a th:href="@{/m/courses/{courseID}(courseID=${review.course.id})}">
                     <span th:text="${review.course.name}"></span>
                 </a>
             </td>
 
             <td>
-                <a th:href="'/m/forms/'+ ${review.form.id}">
+                <a th:href="@{/m/forms/{formID}(formID=${review.form.id})}">
                     <span th:text="${review.form.name}"></span>
                 </a>
             </td>
@@ -75,7 +75,7 @@
             <td th:text="${review.commPerPeer}"></td>
 
             <td>
-                <a th:href="'/m/reviews/'+ ${review.id} + '/commissions'">
+                <a th:href="@{/m/reviews/{reviewID}/commissions(reviewID=${review.id})}">
                     <strong th:text="${review.commissions.size()}"></strong>
                     <span th:text="#{m.reviews.tbody.commissions}"></span>
                 </a>
