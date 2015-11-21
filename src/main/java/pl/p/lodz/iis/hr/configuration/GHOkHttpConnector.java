@@ -14,7 +14,7 @@ import java.net.URL;
  *
  * - Set own Cache-control to bypass header sent by gihub api,
  *   which tells "private, max-age=60, s-maxage=60",
- *   so client should not/cannot(?) sent request within 60s, even with "if-none-match" header, just use cache.
+ *   so client should not/must not(?) sent request within 60s, even with "if-none-match" header, just use cache.
  *
  *   OkHttpClient now will use my cache-control directive "max-age=0, must-revalidate"
  *   - will sent request every time, but still will ask if resource is modified, and use cache if not.
