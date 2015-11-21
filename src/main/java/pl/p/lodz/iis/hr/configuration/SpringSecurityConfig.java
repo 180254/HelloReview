@@ -32,7 +32,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .put("connect-src",     "'self'")
                 .put("font-src",        "'self'")
-                .put("img-src",         "'self'")
+                .put("img-src",         "'self' data:")
              // .put("media-src ",      "'none'") // unnecessary - default-src
              // .put("object-src",      "'none'") // unnecessary - default-src
                 .put("script-src",      "'self")
