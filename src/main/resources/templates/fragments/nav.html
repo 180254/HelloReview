@@ -34,9 +34,9 @@
         </li>
 
         <li th:if="${isPeer}"
-            th:class="${#httpServletRequest.requestURI.equals('/p')} ? active : ''"
+            th:class="${#httpServletRequest.requestURI.contains('/p/commissions')} ? active : ''"
             role="presentation">
-            <a th:href="@{/p}">Peer</a>
+            <a th:href="@{/p/commissions}"  th:text="#{nav.p.commissions}"></a>
         </li>
 
         <li th:if="${isLoggedIn}"

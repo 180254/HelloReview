@@ -52,6 +52,10 @@ public enum CommissionStatus {
         return cssClass;
     }
 
+    public boolean isUnfilled() {
+        return code == UNFILLED.code;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

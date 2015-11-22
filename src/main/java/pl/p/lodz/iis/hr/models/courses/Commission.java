@@ -2,8 +2,6 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -12,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Entity
@@ -88,6 +87,10 @@ public class Commission implements Serializable {
         return uuid;
     }
 
+    public String getUuidShotVersion() {
+        return String.format("%s...", uuid.toString().substring(0, 14));
+    }
+
     /* package */ void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -147,6 +150,10 @@ public class Commission implements Serializable {
 
     public LocalDateTime getCreated() {
         return created;
+    }
+
+    public String getCreatedDate() {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(created);
     }
 
     /* package */ void setCreated(LocalDateTime created) {

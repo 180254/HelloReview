@@ -160,8 +160,16 @@ header pre {
     /* table-layout: fixed; */
 }
 
+.table.fixed {
+    table-layout: fixed;
+}
+
 .table th:first-child {
     width: 8%;
+}
+
+.table th.wide-id {
+    width: auto;
 }
 
 .add-new > .btn {
@@ -221,5 +229,9 @@ header pre {
 
 .comm-status-filled {
     color: gray;
+}
+
+.comm-unfilled {
+    background-color: hsla(0, 4%, 66%, 0.2);
 }
 

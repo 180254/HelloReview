@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<noscript th:replace="fragments/noscript :: noscript"></noscript>
+<div th:replace="fragments/nooldie :: nooldie"></div>
+<header th:replace="fragments/header :: header"></header>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<main class="container">
+
+    <table class="table table-hover fixed">
+        <thead>
+        <tr>
+            <th th:text="#{p.commissions.table.head.date}" class="wide-id"></th>
+            <th th:text="#{p.commissions.table.head.project}"></th>
+            <th th:text="#{p.commissions.table.head.review.status}"></th>
+            <th th:text="#{p.commissions.table.head.commission.status}"></th>
+            <th th:text="#{p.commissions.table.head.form.url}"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="commission : ${commissions}"
+            th:class="${commission.status.isUnfilled() and commission.review.closed == false} ? 'comm-unfilled' : ''">
+
+            <td th:text="${commission.getCreatedDate()}"></td>
+
+            <td>
+                <a th:href="'https://github.com/'+${commission.review.repository}"
+                   th:text="${commission.review.repository}"></a>
+            </td>
+
+            <td th:if="${commission.review.closed == true}" th:text="#{p.commissions.review.close}"></td>
+            <td th:if="${commission.review.closed == false}" th:text="#{p.commissions.review.open}"></td>
+
+            <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
+
+            <td>
+                <a th:href="@{/p/commissions/{uuid}(uuid=${commission.uuid})}"
+                   th:text="${commission.getUuidShotVersion()}"></a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</main>
+
+</body>
+</html>
