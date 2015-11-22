@@ -137,7 +137,7 @@ class MParticipantsController {
 
         Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
 
-        if (!participant.getCommissions().isEmpty()) {
+        if (!participant.getCommissionsAsAssessor().isEmpty()) {
             throw new LocalizableErrorRestException("m.participants.delete.cannot.as.comm.exist");
         }
 

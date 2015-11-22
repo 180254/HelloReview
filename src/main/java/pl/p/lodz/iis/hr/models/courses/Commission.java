@@ -179,7 +179,7 @@ public class Commission implements Serializable {
                 .add("uuid", uuid)
                 .add("review", review.getId())
                 .add("assessed", assessed.getId())
-                .add("assessor", assessor.getId())
+                .add("assessor", (assessor == null) ? "null" : assessor.getId())
                 .add("assessedGhUrl", assessedGhUrl)
                 .add("ghUrl", ghUrl)
                 .add("status", status)

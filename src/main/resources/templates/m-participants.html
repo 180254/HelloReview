@@ -53,7 +53,7 @@
 
             <td>
                 <a th:href="@{/m/reviews/commissions/for/participant/{partiID}(partiID=${participant.id})}">
-                    <strong th:text="${participant.commissions.size()}"></strong>
+                    <strong th:text="${participant.commissionsAsAssessor.size()}"></strong>
                     <span th:text="#{m.participants.tbody.commissions}"></span>
                 </a>
             </td>

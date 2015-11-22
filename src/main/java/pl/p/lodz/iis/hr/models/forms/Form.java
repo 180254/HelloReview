@@ -48,7 +48,7 @@ public class Form implements Serializable, RelationsAware {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
     @JsonView
-    @JsonProperty("reviews")
+    @JsonProperty("review")
     private List<Review> reviews;
 
     @Column(nullable = false)

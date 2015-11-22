@@ -3,8 +3,6 @@ package pl.p.lodz.iis.hr.models.courses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -38,8 +36,13 @@ public class Participant implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "assessor", orphanRemoval = true)
     @JsonView
-    @JsonProperty("commission")
-    private List<Commission> commissions;
+    @JsonProperty("commissionAsAssessor")
+    private List<Commission> commissionsAsAssessor;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "assessed", orphanRemoval = true)
+    @JsonView
+    @JsonProperty("commissionAsAssessed")
+    private List<Commission> commissionsAsAssessed;
 
     @Column(nullable = false)
     @JsonView
@@ -86,12 +89,20 @@ public class Participant implements Serializable {
         return course;
     }
 
-    public List<Commission> getCommissions() {
-        return commissions;
+    public List<Commission> getCommissionsAsAssessor() {
+        return commissionsAsAssessor;
     }
 
-    /* package */ void setCommissions(List<Commission> commissions) {
-        this.commissions = commissions;
+    /* package */ void setCommissionsAsAssessor(List<Commission> commissionsAsAssessor) {
+        this.commissionsAsAssessor = commissionsAsAssessor;
+    }
+
+    public List<Commission> getCommissionsAsAssessed() {
+        return commissionsAsAssessed;
+    }
+
+    /* package */ void setCommissionsAsAssessed(List<Commission> commissionsAsAssessed) {
+        this.commissionsAsAssessed = commissionsAsAssessed;
     }
 
     /* package */ void setCourse(Course course) {
@@ -132,7 +143,8 @@ public class Participant implements Serializable {
                 .add("name", name)
                 .add("gitHubName", gitHubName)
                 .add("course", course.getId())
-                .add("commissions", commissions)
+                .add("commissionsAsAssessor", commissionsAsAssessor)
+                .add("commissionsAsAssessed", commissionsAsAssessed)
                 .add("created", created)
                 .add("updated", updated)
                 .toString();

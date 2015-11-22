@@ -108,7 +108,7 @@ class MCommissionsController {
             throws NotFoundException {
 
         Participant participant = resCommonService.getOne(participantRepository, participantID.get());
-        List<Commission> commissions = participant.getCommissions();
+        List<Commission> commissions = participant.getCommissionsAsAssessor();
         int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
         boolean retryButton = notCompleted == 0;
 
