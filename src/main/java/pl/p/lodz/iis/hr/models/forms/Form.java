@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @JacksonXmlRootElement(localName = "form")
@@ -152,6 +153,19 @@ public class Form implements Serializable, RelationsAware {
             question.setForm(this);
             question.fixRelations();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || !(obj instanceof Form)) return false;
+        Form that = (Form) obj;
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

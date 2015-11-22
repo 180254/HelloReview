@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Course implements Serializable {
@@ -110,6 +111,19 @@ public class Course implements Serializable {
     @PreUpdate
     protected void onUpdate() {
         updated = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || !(obj instanceof Course)) return false;
+        Course that = (Course) obj;
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

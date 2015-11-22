@@ -11,6 +11,7 @@ import pl.p.lodz.iis.hr.models.JSONViews;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -78,6 +79,19 @@ public abstract class Input implements Serializable {
 
     /* package */  void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || !(obj instanceof Input)) return false;
+        Input that = (Input) obj;
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

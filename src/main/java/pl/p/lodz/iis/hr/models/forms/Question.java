@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Question implements Serializable, RelationsAware {
@@ -95,6 +96,19 @@ public class Question implements Serializable, RelationsAware {
         for (Input input : inputs) {
             input.setQuestion(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || !(obj instanceof Question)) return false;
+        Question that = (Question) obj;
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override
