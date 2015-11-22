@@ -23,6 +23,10 @@ public class GHTaskScheduler {
         executor.submit(new GHTaskDelete(repoName));
     }
 
+    public void registerDirectoryRemove(String path) {
+        executor.submit(new GHTaskDirRemove(path));
+    }
+
     public int getApproxNumberOfScheduledTasks() {
         if (executor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;

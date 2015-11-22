@@ -23,11 +23,6 @@ import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.Set;
@@ -42,6 +37,7 @@ class GHTaskClone implements Runnable {
     private final String uuid;
     private final Commission commission;
 
+    private GHTaskDirRemove ghTaskDirRemove;
     private GitHub ghWait;
     private CredentialsProvider jGitCredentials;
     private CommissionRepository commissionRepository;
@@ -76,6 +72,7 @@ class GHTaskClone implements Runnable {
         LOGGER.debug("{} Dependencies init.", uuid);
 
         AppConfig appConfig = ApplicationContextProvider.getBean(AppConfig.class);
+        ghTaskDirRemove = ApplicationContextProvider.getBean(GHTaskDirRemove.class);
         ghWait = ApplicationContextProvider.getBean("ghWait", GitHub.class);
         jGitCredentials = ApplicationContextProvider.getBean(CredentialsProvider.class);
         commissionRepository = ApplicationContextProvider.getBean(CommissionRepository.class);
@@ -177,7 +174,7 @@ class GHTaskClone implements Runnable {
         );
 
         if (exists) {
-            deleteDirectoryNIO(directoryForClone.toPath());
+            ghTaskDirRemove.deleteDirectoryNIOWait(directoryForClone.toPath());
             LOGGER.debug("{} Directory for clone deleted.", uuid);
         }
     }
@@ -245,7 +242,7 @@ class GHTaskClone implements Runnable {
     private void removeGitSubdirInClone() throws IOException {
         LOGGER.debug("{} Removing .git subdir in clone.", uuid);
 
-        deleteDirectoryNIO(directoryForCloneGitSubdir.toPath());
+        ghTaskDirRemove.deleteDirectoryNIOWait(directoryForCloneGitSubdir.toPath());
 
         LOGGER.debug("{} Removed .git subdir in clone.", uuid);
     }
@@ -322,7 +319,8 @@ class GHTaskClone implements Runnable {
 
             Awaitility.await("push is visible by GitHub api")
                     .atMost(2L, TimeUnit.MINUTES)
-                    .pollDelay(2L, TimeUnit.SECONDS)
+                    .pollDelay(3L, TimeUnit.SECONDS)
+                    .pollInterval(3L, TimeUnit.SECONDS)
                     .until(() -> GHExecutor.ex(() -> targetRepo.getBranches().keySet().contains(branch)));
 
         } catch (Throwable ex) {
@@ -339,44 +337,5 @@ class GHTaskClone implements Runnable {
         GHExecutor.ex(() -> targetRepo.setDefaultBranch(defaultBranch));
 
         LOGGER.debug("{} Set default branch.", uuid);
-    }
-
-    private void deleteDirectoryNIO(Path path) throws IOException {
-        Files.walkFileTree(path, new GHTaskClone.DeleteFileVisitor());
-    }
-
-    private static class DeleteFileVisitor extends SimpleFileVisitor<Path> {
-
-        private static final Logger LOGGER1 = LoggerFactory.getLogger(GHTaskClone.DeleteFileVisitor.class);
-
-        DeleteFileVisitor() {
-        }
-
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-
-            setWritable(file);
-            Files.delete(file);
-
-            return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-            if (exc == null) {
-
-                Files.delete(dir);
-
-                return FileVisitResult.CONTINUE;
-            } else {
-                throw exc;
-            }
-        }
-
-        private void setWritable(Path pathToBeWritable) {
-            if (!new File(pathToBeWritable.toString()).setWritable(true)) {
-                LOGGER1.warn("Failed to set {} as writable.", pathToBeWritable);
-            }
-        }
     }
 }

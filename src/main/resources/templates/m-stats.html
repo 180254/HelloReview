@@ -36,8 +36,18 @@
         <span th:text="${junkRepo}"></span>
 
         <a th:if="${notCompleted == 0 and junkRepo > 0}"
-           th:href="@{/m/stats/junkclean}"
+           th:href="@{/m/stats/junkclean/repo}"
            th:text="#{m.stats.junkRepo.clean}">
+        </a>
+    </p>
+
+    <p>
+        <span th:text="#{m.stats.junkTempDir}"></span>
+        <span th:text="${junkTempDir}"></span>
+
+        <a th:if="${notCompleted == 0 and junkTempDir > 0}"
+           th:href="@{/m/stats/junkclean/tempdir}"
+           th:text="#{m.stats.junkTempDir.clean}">
         </a>
     </p>
 

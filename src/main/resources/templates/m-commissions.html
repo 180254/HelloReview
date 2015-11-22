@@ -50,7 +50,7 @@
         <tbody>
         <tr th:each="commission : ${commissions}">
 
-            <td th:text="${commission.id}"></td>
+            <td th:text="${commission.id}" th:title="${commission.uuid}"></td>
 
             <td>
                 <a th:href="@{m/reviews/{reviewID}(reviewID=${commission.review.id})}">

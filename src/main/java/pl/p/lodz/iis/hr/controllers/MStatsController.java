@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
@@ -19,6 +20,11 @@ import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,17 +32,22 @@ import java.util.stream.Collectors;
 class MStatsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
+    public static final double TO_PERCENT = 100.0;
 
+    private final AppConfig appConfig;
     private final GitHub gitHubFail;
     private final GHTaskScheduler ghTaskScheduler;
     private final CommissionRepository commissionRepository;
     private final Cache okHttpCache;
 
+
     @Autowired
-    MStatsController(@Qualifier("ghFail") GitHub gitHubFail,
+    MStatsController(AppConfig appConfig,
+                     @Qualifier("ghFail") GitHub gitHubFail,
                      GHTaskScheduler ghTaskScheduler,
                      CommissionRepository commissionRepository,
                      Cache okHttpCache) {
+        this.appConfig = appConfig;
         this.gitHubFail = gitHubFail;
         this.ghTaskScheduler = ghTaskScheduler;
         this.commissionRepository = commissionRepository;
@@ -56,6 +67,11 @@ class MStatsController {
         } catch (GHCommunicationException e) {
             model.addAttribute("rateLimit", e);
         }
+
+        long okCacheHitPercent = Math.round(
+                ((double) okHttpCache.getHitCount() / (double) okHttpCache.getRequestCount()) * TO_PERCENT
+        );
+        model.addAttribute("okCacheHitPercent", okCacheHitPercent);
 
         try {
             GHExecutor.ex(() -> {
@@ -82,29 +98,34 @@ class MStatsController {
             model.addAttribute("junkRepo", e);
         }
 
+        String tempDir = appConfig.getGeneralConfig().getTempDir();
+        try (DirectoryStream<Path> stream = getDirectoryStream(tempDir)) {
+
+            int[] counter = {0};
+            stream.forEach(p -> counter[0] += 1);
+            model.addAttribute("junkTempDir", counter[0]);
+
+        } catch (IOException e) {
+            model.addAttribute("junkTempDir", e);
+        }
 
         model.addAttribute("submitted", ghTaskScheduler.getApproxNumberOfSubmittedTasks());
         model.addAttribute("notCompleted", ghTaskScheduler.getApproxNumberOfScheduledTasks());
         model.addAttribute("processing", commissionRepository.findByStatus(CommissionStatus.PROCESSING).size());
 
-        long okCacheHitPercent = Math.round(
-                ((double) okHttpCache.getHitCount() / (double) okHttpCache.getRequestCount()) * 100.0
-        );
-        model.addAttribute("okCacheHitPercent", okCacheHitPercent);
-
         return "m-stats";
     }
 
     @RequestMapping(
-            value = "/m/stats/junkclean",
+            value = "/m/stats/junkclean/repo",
             method = RequestMethod.GET)
-    public String junkClean() {
+    public String junkCleanRepo() {
         try {
             GHExecutor.ex(() -> {
 
                 Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
-                
+
                 Map<String, Commission> repoUrlToComm = new HashMap<>(10);
                 dbRepos.stream().forEach(comm -> repoUrlToComm.put(comm.getGhUrl(), comm));
 
@@ -115,9 +136,31 @@ class MStatsController {
                         .forEach(r -> ghTaskScheduler.registerDelete(r.getName()));
             });
         } catch (GHCommunicationException e) {
-            LOGGER.error("Exception while junk clean", e);
+            LOGGER.error("Exception while junk repo clean", e);
         }
 
         return "redirect:/m/stats";
+    }
+
+    @RequestMapping(
+            value = "/m/stats/junkclean/tempdir",
+            method = RequestMethod.GET)
+    public String junkCleanTempDir() {
+
+        String tempDir = appConfig.getGeneralConfig().getTempDir();
+        try (DirectoryStream<Path> stream = getDirectoryStream(tempDir)) {
+
+            stream.forEach(p -> ghTaskScheduler.registerDirectoryRemove(p.toAbsolutePath().toString()));
+
+        } catch (IOException e) {
+            LOGGER.error("Exception while scheduling junk tempdir clean", e);
+        }
+
+        return "redirect:/m/stats";
+    }
+
+    private DirectoryStream<Path> getDirectoryStream(String dir) throws IOException {
+        DirectoryStream.Filter<? super Path> isDirectoryFilter = entry -> entry.toFile().isDirectory();
+        return Files.newDirectoryStream(Paths.get(dir), isDirectoryFilter);
     }
 }
