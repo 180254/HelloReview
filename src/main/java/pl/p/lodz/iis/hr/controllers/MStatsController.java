@@ -19,9 +19,7 @@ import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -69,15 +67,16 @@ class MStatsController {
                         .map(r -> r.getHtmlUrl().toString())
                         .collect(Collectors.toList());
 
-                List<String> dbReposUrl = dbRepos.stream()
+                List<String> dbNotClosedReposUrl = dbRepos.stream()
+                        .filter(comm -> !comm.getReview().isClosed())
                         .map(Commission::getGhUrl)
                         .collect(Collectors.toList());
 
-                Collection<String> diff = new ArrayList<>(10);
-                diff.addAll(gitRepoUrls);
-                diff.removeAll(dbReposUrl);
+                Collection<String> junkRepo = new ArrayList<>(10);
+                junkRepo.addAll(gitRepoUrls);
+                junkRepo.removeAll(dbNotClosedReposUrl);
 
-                model.addAttribute("junkRepo", diff.size() - 1);
+                model.addAttribute("junkRepo", junkRepo.size() - 1);
             });
         } catch (GHCommunicationException e) {
             model.addAttribute("junkRepo", e);
@@ -89,7 +88,7 @@ class MStatsController {
         model.addAttribute("processing", commissionRepository.findByStatus(CommissionStatus.PROCESSING).size());
 
         long okCacheHitPercent = Math.round(
-                ((double)okHttpCache.getHitCount() / (double)okHttpCache.getRequestCount())*100.0
+                ((double) okHttpCache.getHitCount() / (double) okHttpCache.getRequestCount()) * 100.0
         );
         model.addAttribute("okCacheHitPercent", okCacheHitPercent);
 
@@ -105,13 +104,13 @@ class MStatsController {
 
                 Collection<GHRepository> gitRepos = gitHubFail.getMyself().getRepositories().values();
                 List<Commission> dbRepos = commissionRepository.findAll();
-
-                List<String> dbReposUrl = dbRepos.stream()
-                        .map(Commission::getGhUrl)
-                        .collect(Collectors.toList());
+                
+                Map<String, Commission> repoUrlToComm = new HashMap<>(10);
+                dbRepos.stream().forEach(comm -> repoUrlToComm.put(comm.getGhUrl(), comm));
 
                 gitRepos.stream()
-                        .filter(r -> !dbReposUrl.contains(r.getHtmlUrl().toString()))
+                        .filter(r -> (repoUrlToComm.get(r.getHtmlUrl().toString()) == null) // doesn't exist in db
+                                || repoUrlToComm.get(r.getHtmlUrl().toString()).getReview().isClosed()) // or is closed
                         .filter(r -> !r.getName().equals("fix"))
                         .forEach(r -> ghTaskScheduler.registerDelete(r.getName()));
             });
