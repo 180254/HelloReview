@@ -29,16 +29,21 @@ class GHApi3Config {
 
     @Autowired private AppConfig appConfig;
 
-    @Bean(name = "okHttpConnector")
-    public HttpConnector okHttpConnector() {
-        String appName = appConfig.getGitHubConfig().getApplication().getAppName();
+    @Bean(name="okHttpCache")
+    public Cache cache() {
         String cacheDir = appConfig.getGeneralConfig().getCacheDir();
 
         File cacheDirFile = new File(cacheDir);
         long cacheSizeBytes = Math.round(ByteUnit.MIB.toBytes(CACHE_SIZE_MB));
 
-        Cache cache = new Cache(cacheDirFile, cacheSizeBytes);
-        OkHttpClient okHttpClient = new OkHttpClient().setCache(cache);
+        return new Cache(cacheDirFile, cacheSizeBytes);
+    }
+
+    @Bean(name = "okHttpConnector")
+    public HttpConnector okHttpConnector() {
+        String appName = appConfig.getGitHubConfig().getApplication().getAppName();
+
+        OkHttpClient okHttpClient = new OkHttpClient().setCache(cache());
         OkUrlFactory okUrlFactory = new OkUrlFactory(okHttpClient);
         return new GHOkHttpConnector(okUrlFactory, appName);
     }

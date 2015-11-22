@@ -11,6 +11,10 @@
     <p th:text="${rateLimit}"></p>
 
     <p>
+        <span th:text="#{m.stats.cache(${okCacheHitPercent})}"></span>
+    </p>
+
+    <p>
         <span th:text="#{m.stats.submitted}"></span>
         <span th:text="${submitted}"></span>
     </p>

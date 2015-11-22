@@ -118,7 +118,7 @@ class MCoursesController {
         }
 
         LOGGER.debug("Course deleted {}", course);
-
+        reviewService.delete(reviews);
         courseRepository.delete(courseID.get());
 
         return localeService.getAsList("m.courses.delete.done");

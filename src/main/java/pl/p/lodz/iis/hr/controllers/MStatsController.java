@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.controllers;
 
+import com.squareup.okhttp.Cache;
 import org.kohsuke.github.GHRateLimit;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
@@ -31,14 +32,17 @@ class MStatsController {
     private final GitHub gitHubFail;
     private final GHTaskScheduler ghTaskScheduler;
     private final CommissionRepository commissionRepository;
+    private final Cache okHttpCache;
 
     @Autowired
     MStatsController(@Qualifier("ghFail") GitHub gitHubFail,
                      GHTaskScheduler ghTaskScheduler,
-                     CommissionRepository commissionRepository) {
+                     CommissionRepository commissionRepository,
+                     Cache okHttpCache) {
         this.gitHubFail = gitHubFail;
         this.ghTaskScheduler = ghTaskScheduler;
         this.commissionRepository = commissionRepository;
+        this.okHttpCache = okHttpCache;
     }
 
     @RequestMapping(
@@ -79,9 +83,16 @@ class MStatsController {
             model.addAttribute("junkRepo", e);
         }
 
+
         model.addAttribute("submitted", ghTaskScheduler.getApproxNumberOfSubmittedTasks());
         model.addAttribute("notCompleted", ghTaskScheduler.getApproxNumberOfScheduledTasks());
         model.addAttribute("processing", commissionRepository.findByStatus(CommissionStatus.PROCESSING).size());
+
+
+        long okCacheHitPercent = Math.round(
+                ((double)okHttpCache.getHitCount() / (double)okHttpCache.getRequestCount())*100.0
+        );
+        model.addAttribute("okCacheHitPercent", okCacheHitPercent);
         return "m-stats";
 
     }
