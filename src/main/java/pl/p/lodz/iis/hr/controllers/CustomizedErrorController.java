@@ -34,8 +34,16 @@ class CustomizedErrorController extends BasicErrorController {
         LOGGER.error("JSON ERROR {}", error);
 
         Map<String, Object> body = new HashedMap<>(2);
-        body.put("error", error.getBody().get("error"));
         body.put("status", error.getBody().get("status"));
+        body.put("error", error.getBody().get("error"));
+
+        Object message = error.getBody().get("message");
+        if(message instanceof String) {
+            if(((String)message).contains("Invalid CSRF Token")) {
+                String csrfError = String.format("%s as Invalid CSRF Token", body.get("error").toString());
+                body.put("error", csrfError);
+            }
+        }
 
         return new ResponseEntity<>(body, error.getStatusCode());
     }

@@ -88,13 +88,12 @@ class MStatsController {
         model.addAttribute("notCompleted", ghTaskScheduler.getApproxNumberOfScheduledTasks());
         model.addAttribute("processing", commissionRepository.findByStatus(CommissionStatus.PROCESSING).size());
 
-
         long okCacheHitPercent = Math.round(
                 ((double)okHttpCache.getHitCount() / (double)okHttpCache.getRequestCount())*100.0
         );
         model.addAttribute("okCacheHitPercent", okCacheHitPercent);
-        return "m-stats";
 
+        return "m-stats";
     }
 
     @RequestMapping(
