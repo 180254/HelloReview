@@ -270,7 +270,7 @@ class GHTaskClone implements Runnable {
 
         StoredConfig gitTargetConfig = gitTarget.getRepository().getConfig();
         gitTargetConfig.setString("user", null, "name", GHExecutor.ex(() -> ghMyself.getName()));
-        gitTargetConfig.setString("user", null, "email", GHExecutor.ex(() -> ghMyself.getEmail()));
+        gitTargetConfig.setString("user", null, "email", GHExecutor.ex(() -> ghMyself.getEmails2().get(0).getEmail()));
         gitTargetConfig.setBoolean("core", null, "autocrlf", true);
         gitTargetConfig.save();
 
