@@ -14,15 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
+import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -79,13 +80,12 @@ class MFormsController {
             method = RequestMethod.GET)
     @Transactional
     public String listOne(@PathVariable Long2 formID,
-                          Model model)
-            throws NotFoundException {
+                          Model model) throws ErrorPageException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
         if (form.isTemporary()) {
-            throw new NotFoundException();
+            throw new ErrorPageException(HttpServletResponse.SC_NOT_FOUND);
         }
 
         model.addAttribute("forms", Collections.singletonList(form));
@@ -153,7 +153,7 @@ class MFormsController {
     @Transactional
     public String preview(@PathVariable Long2 formID,
                           Model model)
-            throws NotFoundException {
+            throws ErrorPageException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
@@ -179,7 +179,7 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public String xml(@PathVariable Long2 formID)
-            throws JsonProcessingException, NotFoundException {
+            throws JsonProcessingException, ErrorPageException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
@@ -193,9 +193,9 @@ class MFormsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 formID)
-            throws LocalizableErrorRestException, NotFoundException {
+            throws LocalizableErrorRestException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOneForRest(formRepository, formID.get());
 
         List<Review> reviews = form.getReviews();
         if (!reviewService.canBeDeleted(reviews)) {
@@ -217,9 +217,9 @@ class MFormsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 formID)
-            throws NotFoundException, LocalizedErrorRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOneForRest(formRepository, formID.get());
 
         fieldValidator.validateFieldRestEx(
                 new Form(newName, null),

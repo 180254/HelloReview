@@ -11,10 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
+import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
@@ -80,8 +80,7 @@ class MReviewsController {
             method = RequestMethod.GET)
     @Transactional
     public String listOne(@PathVariable Long2 reviewID,
-                          Model model)
-            throws NotFoundException {
+                          Model model) throws ErrorPageException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
@@ -97,8 +96,7 @@ class MReviewsController {
             method = RequestMethod.GET)
     @Transactional
     public String listForCourse(@PathVariable Long2 courseID,
-                                Model model)
-            throws NotFoundException {
+                                Model model) throws ErrorPageException {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
         List<Review> reviews = course.getReviews();
@@ -118,7 +116,7 @@ class MReviewsController {
     @Transactional
     public String listForForm(@PathVariable Long2 formID,
                               Model model)
-            throws NotFoundException {
+            throws ErrorPageException {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
         List<Review> reviews = form.getReviews();
@@ -170,9 +168,9 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> delete(@ModelAttribute("id") Long2 reviewID)
-            throws NotFoundException, LocalizableErrorRestException {
+            throws LocalizableErrorRestException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
 
         if (!reviewService.canBeDeleted(review)) {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
@@ -191,9 +189,9 @@ class MReviewsController {
     @Transactional
     @ResponseBody
     public List<String> openClose(@ModelAttribute("id") Long2 reviewID)
-            throws NotFoundException {
+            throws LocalizableErrorRestException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
 
         LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
         review.setClosed(!review.isClosed());
@@ -217,9 +215,9 @@ class MReviewsController {
     @ResponseBody
     public List<String> rename(@ModelAttribute("value") String newName,
                                @ModelAttribute("pk") Long2 reviewID)
-            throws NotFoundException, LocalizedErrorRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
 
         fieldValidator.validateFieldRestEx(
                 new Review(newName, 0L, null, null, null),

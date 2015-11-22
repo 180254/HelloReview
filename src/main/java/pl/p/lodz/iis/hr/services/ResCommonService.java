@@ -2,19 +2,20 @@ package pl.p.lodz.iis.hr.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
 @Service
 public class ResCommonService {
 
     public <T, K extends Serializable> T getOne(JpaRepository<T, K> repository, K id)
-            throws NotFoundException {
+            throws ErrorPageException {
 
         if (!repository.exists(id)) {
-            throw new NotFoundException();
+            throw new ErrorPageException(HttpServletResponse.SC_NOT_FOUND);
         }
 
         return repository.getOne(id);

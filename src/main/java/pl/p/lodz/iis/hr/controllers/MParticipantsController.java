@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.p.lodz.iis.hr.configuration.Long2;
+import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
-import pl.p.lodz.iis.hr.exceptions.NotFoundException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -53,7 +53,7 @@ class MParticipantsController {
     @Transactional
     public String list(@PathVariable Long2 courseID,
                        Model model)
-            throws NotFoundException {
+            throws ErrorPageException {
 
         Course course = resCommonService.getOne(courseRepository, courseID.get());
         List<Participant> participants = course.getParticipants();
@@ -72,7 +72,7 @@ class MParticipantsController {
     @Transactional
     public String listOne(@PathVariable Long2 participantID,
                           Model model)
-            throws NotFoundException {
+            throws ErrorPageException {
 
         Participant participant = resCommonService.getOne(participantRepository, participantID.get());
         Course course = participant.getCourse();

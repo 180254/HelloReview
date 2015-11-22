@@ -7,6 +7,7 @@ import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface CommissionRepository extends JpaRepository<Commission, Long> {
@@ -16,4 +17,6 @@ public interface CommissionRepository extends JpaRepository<Commission, Long> {
     List<Commission> findByStatusIn(List<CommissionStatus> statuses);
 
     List<Commission> findByAssessorIn(List<Participant> participants);
+
+    Commission findByUuid(UUID uuid);
 }

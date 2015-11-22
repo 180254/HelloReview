@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.services.LocaleService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @ControllerAdvice(
@@ -42,7 +44,6 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     @ResponseBody
     public List<String> handleLocalizedErrRestEx(LocalizedErrorRestException ex,
                                                  HttpServletResponse response) {
-
         LOGGER.warn("LocalizedErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return ex.getErrors();
@@ -53,9 +54,15 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     @ResponseBody
     public List<String> handleLocalizableErrRestEx(LocalizableErrorRestException ex,
                                                    HttpServletResponse response) {
-
         LOGGER.warn("LocalizableErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return localeService.getAsList(ex.getLocaleCode(), ex.getLocaleArgs());
+    }
+
+    @ExceptionHandler(ErrorPageException.class)
+    public void handleErrorPageEx(ErrorPageException ex,
+                                  HttpServletResponse response)
+            throws IOException {
+        response.sendError(ex.getStatusCode());
     }
 }
