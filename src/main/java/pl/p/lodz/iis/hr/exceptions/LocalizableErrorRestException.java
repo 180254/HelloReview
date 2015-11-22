@@ -35,6 +35,7 @@ public class LocalizableErrorRestException extends Exception {
     public static LocalizableErrorRestException badResource() {
         return new LocalizableErrorRestException("BadResource");
     }
+
     public static LocalizableErrorRestException notUniqueName() {
         return new LocalizableErrorRestException("UniqueName");
     }

@@ -17,13 +17,12 @@ package pl.p.lodz.iis.hr.utils;
  */
 
 /**
- *
  * @author Fabian Barney
- *
  */
 public enum ByteUnit {
 
-    /** <pre>
+    /**
+     * <pre>
      * Byte (B)
      * 1 Byte
      */
@@ -39,7 +38,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Kibibyte (KiB)
      * 2^10 Byte = 1.024 Byte
      */
@@ -55,7 +55,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Mebibyte (MiB)
      * 2^20 Byte = 1.024 * 1.024 Byte = 1.048.576 Byte
      */
@@ -71,7 +72,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Gibibyte (GiB)
      * 2^30 Byte = 1.024 * 1.024 * 1.024 Byte = 1.073.741.824 Byte
      */
@@ -87,7 +89,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Tebibyte (TiB)
      * 2^40 Byte = 1.024 * 1.024 * 1.024 * 1.024 Byte = 1.099.511.627.776 Byte
      */
@@ -103,7 +106,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Pebibyte (PiB)
      * 2^50 Byte = 1.024 * 1.024 * 1.024 * 1.024 * 1.024 Byte = 1.125.899.906.842.624 Byte
      */
@@ -119,7 +123,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Kilobyte (kB)
      * 10^3 Byte = 1.000 Byte
      */
@@ -135,7 +140,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Megabyte (MB)
      * 10^6 Byte = 1.000.000 Byte
      */
@@ -151,7 +157,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Gigabyte (GB)
      * 10^9 Byte = 1.000.000.000 Byte
      */
@@ -167,7 +174,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Terabyte (TB)
      * 10^12 Byte = 1.000.000.000.000 Byte
      */
@@ -183,7 +191,8 @@ public enum ByteUnit {
         }
     },
 
-    /** <pre>
+    /**
+     * <pre>
      * Petabyte (PB)
      * 10^15 Byte = 1.000.000.000.000.000 Byte
      */
@@ -200,7 +209,6 @@ public enum ByteUnit {
     };
 
 
-
     static final double C_KIB = Math.pow(2d, 10d);
     static final double C_MIB = Math.pow(2d, 20d);
     static final double C_GIB = Math.pow(2d, 30d);
@@ -215,7 +223,6 @@ public enum ByteUnit {
 
 
     private static final double MAX = Double.MAX_VALUE;
-
 
 
     static final double safeMulti(double d, double multi) {
@@ -274,7 +281,6 @@ public enum ByteUnit {
     public final double toPB(double d) {
         return toBytes(d) / C_PB;
     }
-
 
 
     public abstract double convert(double d, ByteUnit u);

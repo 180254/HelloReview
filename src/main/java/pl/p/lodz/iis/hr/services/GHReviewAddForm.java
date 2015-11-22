@@ -4,7 +4,7 @@ import pl.p.lodz.iis.hr.configuration.Long2;
 
 import java.io.Serializable;
 
-public class GHReviewAddForm implements Serializable{
+public class GHReviewAddForm implements Serializable {
 
     private static final long serialVersionUID = 7269786683104395211L;
 

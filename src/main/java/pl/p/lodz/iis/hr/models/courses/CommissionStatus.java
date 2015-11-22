@@ -1,8 +1,6 @@
 package pl.p.lodz.iis.hr.models.courses;
 
 import com.google.common.base.MoreObjects;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 public enum CommissionStatus {
 

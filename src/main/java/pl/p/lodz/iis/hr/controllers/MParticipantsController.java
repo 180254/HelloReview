@@ -198,7 +198,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.github.name")
         );
 
-        LOGGER.debug("Participant {} GitHub name changed to {}",participant, newGitHubName);
+        LOGGER.debug("Participant {} GitHub name changed to {}", participant, newGitHubName);
         participant.setGitHubName(newGitHubName);
         participantRepository.save(participant);
 

@@ -29,7 +29,7 @@ class GHApi3Config {
 
     @Autowired private AppConfig appConfig;
 
-    @Bean(name="okHttpCache")
+    @Bean(name = "okHttpCache")
     public Cache cache() {
         String cacheDir = appConfig.getGeneralConfig().getCacheDir();
 
