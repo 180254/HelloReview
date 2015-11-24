@@ -9,8 +9,8 @@
 
 <main class="container form-main">
 
-    <form>
-        <div class="form-description" th:utext="${form.description}"></div>
+    <form id="p-form" th:attr="data-form-action=@{/p/response}, data-comm-id=${commission.uuid}">
+        <div class="form-description" th:utext="${commission.getFilledFormDescription()}"></div>
 
         <div class="form-group" th:each="question : ${form.questions}">
             <h2 class="question-text" th:utext="${question.questionText}"></h2>
@@ -18,27 +18,31 @@
 
             <div class="input" th:each="input : ${question.inputs}">
 
-                <div class="input-2"
-                     th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputScale)}">
+                <div class="input-2" th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputScale)}">
+
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <span th:if="${input.required}" class="form-required">*</span>
 
                     <br/> <b class="input-scale-b" th:utext="${input.fromLabel}"></b>
                     <input title="" class="slider"
                            th:id="'input' + ${input.id}"
-                           data-th-attr="data-slider-min=${input.fromS},
-                               data-slider-max=${input.toS},
-                               data-slider-value=${(input.toS - input.fromS)/2}"
+                           data-th-attr="
+                                data-slider-min=${input.fromS},
+                                data-slider-max=${input.toS},
+                                data-slider-value=${(input.toS - input.fromS)/2},
+                                data-input-id=${input.id}"
                            data-slider-step="1"/>
                     <b class="input-scale-b" th:utext="${input.toLabel}"></b>
                 </div>
 
-                <div class="input-2"
-                     th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputText)}">
+                <div class="input-2" th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputText)}">
+
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <span th:if="${input.required}" class="form-required">*</span>
 
-                    <textarea title="" th:id="'input' + ${input.id}" class="form-control" rows="2" maxlength="1000">
+                    <textarea title="" class="form-control" rows="2" maxlength="1000"
+                              th:id="'input' + ${input.id}"
+                              data-th-attr="data-input-id=${input.id}">
                     </textarea>
                 </div>
             </div>
@@ -46,7 +50,7 @@
         </div>
 
         <div class="form-submit text-center">
-            <button class="btn btn-default btn-info">Submit</button>
+            <button type="button" class="btn btn-default btn-info" id="p-form-submit">Submit</button>
         </div>
 
     </form>

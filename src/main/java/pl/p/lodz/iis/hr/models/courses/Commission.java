@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.p.lodz.iis.hr.models.response.Response;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,11 +14,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 public class Commission implements Serializable {
 
     private static final long serialVersionUID = 7967942829146568225L;
+    private static final Pattern DESC_PROJECT = Pattern.compile("\\{project\\}");
+    private static final Pattern DESC_URL = Pattern.compile("\\{url\\}");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +60,11 @@ public class Commission implements Serializable {
     @Enumerated(EnumType.STRING)
     @JsonView
     private CommissionStatus status;
+
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(nullable = true)
+    @JsonView
+    private Response response;
 
     @Column(nullable = false)
     @JsonView
@@ -167,6 +177,21 @@ public class Commission implements Serializable {
 
     /* package */ void setUpdated(LocalDateTime updated) {
         this.updated = updated;
+    }
+
+    public Response getResponse() {
+        return response;
+    }
+
+    /* package */ void setResponse(Response response) {
+        this.response = response;
+    }
+
+    public String getFilledFormDescription() {
+        String desc = review.getForm().getDescription();
+        desc = DESC_PROJECT.matcher(desc).replaceAll(Matcher.quoteReplacement(review.getRepository()));
+        desc = DESC_URL.matcher(desc).replaceAll(Matcher.quoteReplacement(ghUrl));
+        return desc;
     }
 
     @PrePersist

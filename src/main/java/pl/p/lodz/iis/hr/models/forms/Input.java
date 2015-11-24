@@ -1,16 +1,16 @@
 package pl.p.lodz.iis.hr.models.forms;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
+import pl.p.lodz.iis.hr.models.response.Answer;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -43,12 +43,18 @@ public abstract class Input implements Serializable {
     @JsonView(JSONViews.FormParseXML.class)
     private String label;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "input", orphanRemoval = true)
+    @JsonView
+    @JsonProperty("answer")
+    private List<Answer> answers;
+
     Input() {
     }
 
     protected Input(Question question, String label) {
         this.question = question;
         this.label = label;
+        this.answers = new ArrayList<>(3);
     }
 
     public long getId() {
@@ -77,8 +83,16 @@ public abstract class Input implements Serializable {
         return label;
     }
 
-    /* package */  void setLabel(String label) {
+    /* package */ void setLabel(String label) {
         this.label = label;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    /* package */ void setAnswers(List<Answer> answer) {
+        this.answers = answer;
     }
 
     @Override

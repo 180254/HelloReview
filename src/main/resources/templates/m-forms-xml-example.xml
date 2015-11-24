@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-    <description><![CDATA[Proszę ocenić pracę z projektu: <strong>{projectname}</strong>.<br/>
-        Praca jest dostępna pod adresem: <strong>{copyurl}</strong>.<br/>
+    <description><![CDATA[Proszę ocenić pracę z projektu: <strong>{project}</strong>.<br/>
+        Praca jest dostępna pod adresem: <strong>{url}</strong>.<br/>
         <br/>
         Odpowiedź na wszystkie pytania jest obowiązkowa.<br/>
         Obowiązkowe pola w pytaniu są oznaczaone znakiem *.]]>

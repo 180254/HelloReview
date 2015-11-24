@@ -12,6 +12,7 @@ import pl.p.lodz.iis.hr.configuration.GHPac4jSecurityHelper;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Participant;
+import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class PCommissionsController {
+class PCommissionsController {
 
     @Autowired private GitHubClient gitHubClient;
     @Autowired private ParticipantRepository participantRepository;
@@ -62,6 +63,12 @@ public class PCommissionsController {
         if (!byGitHubName.contains(byUuid.getAssessor())) {
             throw new ErrorPageException(HttpServletResponse.SC_FORBIDDEN);
         }
+
+        Form form = byUuid.getReview().getForm();
+
+        model.addAttribute("commission", byUuid);
+        model.addAttribute("form", form);
+
 
         return "p-form";
     }

@@ -25,11 +25,11 @@ public class LocalizableErrorRestException extends Exception {
     }
 
     public static LocalizableErrorRestException noResource() {
-        return new LocalizableErrorRestException("NoResource");
+        return new LocalizableErrorRestException(HttpServletResponse.SC_NOT_FOUND, "NoResource");
     }
 
     public static LocalizableErrorRestException noResources() {
-        return new LocalizableErrorRestException("NoResources");
+        return new LocalizableErrorRestException(HttpServletResponse.SC_NOT_FOUND, "NoResources");
     }
 
     public static LocalizableErrorRestException badResource() {
