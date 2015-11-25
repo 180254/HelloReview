@@ -93,9 +93,9 @@ class PCommissionsController {
 
         AnswerProvider answerProvider = new AnswerProvider(commission.getResponse());
 
-        model.addAttribute("commission", commission);
-        model.addAttribute("review", review);
         model.addAttribute("form", form);
+        model.addAttribute("review", review);
+        model.addAttribute("commission", commission);
         model.addAttribute("answerProvider", answerProvider);
         model.addAttribute("proxyService", proxyService);
 

@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-class PFormController {
+class PResponseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PFormController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PResponseController.class);
 
     private final ObjectMapper objectMapper;
     private final ResponseConverter responseConverter;
@@ -37,11 +37,11 @@ class PFormController {
     private final LocaleService localeService;
 
     @Autowired
-    PFormController(ObjectMapper objectMapper,
-                    ResponseConverter responseConverter,
-                    ResponseValidator responseValidator,
-                    ResponseRepository responseRepository,
-                    LocaleService localeService) {
+    PResponseController(ObjectMapper objectMapper,
+                        ResponseConverter responseConverter,
+                        ResponseValidator responseValidator,
+                        ResponseRepository responseRepository,
+                        LocaleService localeService) {
         this.objectMapper = objectMapper;
         this.responseConverter = responseConverter;
         this.responseValidator = responseValidator;

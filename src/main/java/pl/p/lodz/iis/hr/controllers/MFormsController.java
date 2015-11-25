@@ -18,6 +18,7 @@ import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.models.JSONViews;
+import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
@@ -43,6 +44,7 @@ class MFormsController {
     private final LocaleService localeService;
     private final FieldValidator fieldValidator;
     private final XmlMapperProvider xmlMapperProvider;
+    private final ProxyService proxyService;
 
     @Autowired
     MFormsController(ResCommonService resCommonService,
@@ -51,7 +53,8 @@ class MFormsController {
                      FormValidator formValidator,
                      LocaleService localeService,
                      FieldValidator fieldValidator,
-                     XmlMapperProvider xmlMapperProvider) {
+                     XmlMapperProvider xmlMapperProvider,
+                     ProxyService proxyService) {
         this.resCommonService = resCommonService;
         this.formRepository = formRepository;
         this.reviewService = reviewService;
@@ -59,6 +62,7 @@ class MFormsController {
         this.localeService = localeService;
         this.fieldValidator = fieldValidator;
         this.xmlMapperProvider = xmlMapperProvider;
+        this.proxyService = proxyService;
     }
 
     @RequestMapping(
@@ -157,9 +161,19 @@ class MFormsController {
 
         Form form = resCommonService.getOne(formRepository, formID.get());
 
-        model.addAttribute("form", form);
+        Review review = new Review(null, 0L, null, form, "user/repo1_1");
+        Commission commission = new Commission(review, null, null, (String) null);
+        commission.setGhUrl("https://github.com/user1/84cc4672-c4fd-46dd-ab8a-378323cfce19");
 
-        return "m-forms-preview";
+        AnswerProvider answerProvider = new AnswerProvider(null);
+
+        model.addAttribute("form", form);
+        model.addAttribute("review", review);
+        model.addAttribute("commission", commission);
+        model.addAttribute("answerProvider", answerProvider);
+        model.addAttribute("proxyService", proxyService);
+
+        return "p-form";
     }
 
     @RequestMapping(
