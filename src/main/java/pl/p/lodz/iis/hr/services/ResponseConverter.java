@@ -49,7 +49,7 @@ public class ResponseConverter implements Converter<JSONResponse, Response> {
         Response response = new Response(comm);
 
         for (JSONAnswer jsonAnswer : jsonResponse.getJsonAnswers()) {
-            if (inputRepository.exists(jsonAnswer.getInputID())) {
+            if (!inputRepository.exists(jsonAnswer.getInputID())) {
                 return null;
             }
 

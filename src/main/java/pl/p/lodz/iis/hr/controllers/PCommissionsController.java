@@ -28,7 +28,9 @@ class PCommissionsController {
     @Autowired private ParticipantRepository participantRepository;
     @Autowired private CommissionRepository commissionRepository;
 
-    @RequestMapping("/p/commissions")
+    @RequestMapping(
+            value = "/p/commissions",
+            method = RequestMethod.GET)
     @Transactional
     public String commissions(HttpServletRequest request,
                               HttpServletResponse response,
@@ -68,7 +70,6 @@ class PCommissionsController {
 
         model.addAttribute("commission", byUuid);
         model.addAttribute("form", form);
-
 
         return "p-form";
     }

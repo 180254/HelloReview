@@ -104,11 +104,11 @@ public class ResponseValidator {
         }
     }
 
-    public boolean isBetweenInclusiveInt(int x, int min, int max) {
+    private boolean isBetweenInclusiveInt(int x, int min, int max) {
         return (x >= min) && (x <= max);
     }
 
-    public boolean isBetweenInclusiveLong(long x, long min, long max) {
+    private boolean isBetweenInclusiveLong(long x, long min, long max) {
         return (x >= min) && (x <= max);
     }
 }

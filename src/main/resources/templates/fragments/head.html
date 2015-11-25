@@ -35,14 +35,20 @@
     <script defer="defer" th:src="@{/lib/autosize.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.13/autosize.min.js"></script>
     <script defer="defer" th:src="@{/lib/toastr.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
 
-    <script defer="defer"                     th:src="@{/js/ajax-loader.js}"></script>
-    <script defer="defer"                     th:src="@{/js/plugins-options.js}"></script>
-    <script defer="defer"                     th:src="@{/js/form-enhancer.js}"></script>
+    <script defer="defer"                     th:src="@{/js/a-ajax-loader.js}"></script>
+    <script defer="defer"                     th:src="@{/js/a-plugins-options.js}"></script>
+    <script defer="defer"                     th:src="@{/js/a-form-enhancer.js}"></script>
+    <script defer="defer"                     th:src="@{/js/a-utils.js}"></script>
+
+
     <script defer="defer" th:if="${isMaster}" th:src="@{/js/b-add.js}"></script>
     <script defer="defer" th:if="${isMaster}" th:src="@{/js/b-delete.js}"></script>
     <script defer="defer" th:if="${isMaster}" th:src="@{/js/b-rename.js}"></script>
     <script defer="defer" th:if="${isMaster}" th:src="@{/js/c-close.js}"></script>
     <script defer="defer" th:if="${isMaster}" th:src="@{/js/c-retry.js}"></script>
+
+    <script defer="defer" th:if="${isPeer}"   th:src="@{/js/d-form.js}"></script>
+
 </head>
     <!-- // @formatter:on  -->
 </html>
