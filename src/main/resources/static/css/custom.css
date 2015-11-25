@@ -151,6 +151,10 @@ header pre {
     display: none;
 }
 
+.form-not-yet {
+    font-size: 1.5em;
+}
+
 /*                displaying table                  */
 .add-new {
     margin-right: 1rem;
@@ -220,7 +224,7 @@ header pre {
 }
 
 .comm-status-processing {
-    color: gray;
+    color: rgb(212, 110, 110);
 }
 
 .comm-status-unfilled {
@@ -233,5 +237,11 @@ header pre {
 
 .comm-unfilled {
     background-color: hsla(0, 4%, 66%, 0.2);
+    border-left: 1px solid red;
+    border-right: 1px solid red;
 }
 
+#p-comm-table .comm-status-processing-failed {
+    color: rgb(212, 110, 110);
+    font-weight: normal;
+}

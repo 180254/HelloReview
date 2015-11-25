@@ -8,10 +8,11 @@ import pl.p.lodz.iis.hr.models.JSONViews;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
 @Entity
-//@PrimaryKeyJoinColumn(name = "id")
+@PrimaryKeyJoinColumn(name = "id")
 public class InputScale extends Input {
 
     private static final long serialVersionUID = -2230675781077172644L;

@@ -50,6 +50,14 @@ function responseSubmitHandler() {
 
 }
 
+function disableResponseForm() {
+    'use strict';
+
+    $('input.slider').slider("disable");
+    $('textarea,input').prop('readonly', true);
+    $('button').remove();
+}
+
 $(document).ready(function () {
     'use strict';
 
@@ -57,4 +65,9 @@ $(document).ready(function () {
         responseSubmitHandler();
         return false;
     });
+
+    if ($('#p-form.f-disabled').length === 1) {
+        disableResponseForm();
+    }
+
 });

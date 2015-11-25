@@ -36,6 +36,10 @@ public enum CommissionStatus {
         return code >= UNFILLED.code;
     }
 
+    public boolean isAvailableForPeer() {
+        return code >= UNFILLED.code;
+    }
+
     public boolean shouldBeRetried(boolean retryOnProcessing) {
         boolean shouldBeRetried = this == PROCESSING_FAILED;
         shouldBeRetried |= retryOnProcessing && (this == PROCESSING);
@@ -52,6 +56,10 @@ public enum CommissionStatus {
 
     public boolean isUnfilled() {
         return code == UNFILLED.code;
+    }
+
+    public boolean isFilled() {
+        return code == FILLED.code;
     }
 
     @Override

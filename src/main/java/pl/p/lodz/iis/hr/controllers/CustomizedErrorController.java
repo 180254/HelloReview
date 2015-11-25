@@ -40,8 +40,7 @@ class CustomizedErrorController extends BasicErrorController {
         Object message = error.getBody().get("message");
         if (message instanceof String) {
             if (((String) message).contains("CSRF")) {
-                String csrfError = String.format("%s as Invalid CSRF Token", body.get("error").toString());
-                body.put("error", csrfError);
+                body.put("error", "Invalid CSRF Token");
             }
         }
 

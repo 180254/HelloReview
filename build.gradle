@@ -73,7 +73,7 @@ dependencies {
     compile("org.eclipse.jgit:org.eclipse.jgit:4.1.0.201509280440-r")
 
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3")
-    compile("org.codehaus.woodstox:woodstox-core-asl:4.4.1");
+    compile("org.codehaus.woodstox:woodstox-core-asl:4.4.1")
 
     compile("org.jetbrains:annotations:15.0")
     compile("org.apache.commons:commons-collections4:4.0")

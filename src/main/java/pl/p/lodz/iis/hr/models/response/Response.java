@@ -3,6 +3,8 @@ package pl.p.lodz.iis.hr.models.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import pl.p.lodz.iis.hr.models.RelationsAware;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 
@@ -22,12 +24,14 @@ public class Response implements Serializable, RelationsAware {
     @JsonView
     private long id;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
     @JoinColumn(nullable = false)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Commission commission;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "response", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "response", orphanRemoval = true)
+    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")
     private List<Answer> answers;

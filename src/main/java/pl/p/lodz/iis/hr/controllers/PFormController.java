@@ -1,6 +1,8 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,9 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-class PResponseController {
+class PFormController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PFormController.class);
 
     private final ObjectMapper objectMapper;
     private final ResponseConverter responseConverter;
@@ -33,11 +37,11 @@ class PResponseController {
     private final LocaleService localeService;
 
     @Autowired
-    PResponseController(ObjectMapper objectMapper,
-                        ResponseConverter responseConverter,
-                        ResponseValidator responseValidator,
-                        ResponseRepository responseRepository,
-                        LocaleService localeService) {
+    PFormController(ObjectMapper objectMapper,
+                    ResponseConverter responseConverter,
+                    ResponseValidator responseValidator,
+                    ResponseRepository responseRepository,
+                    LocaleService localeService) {
         this.objectMapper = objectMapper;
         this.responseConverter = responseConverter;
         this.responseValidator = responseValidator;
@@ -71,6 +75,10 @@ class PResponseController {
         }
 
         if (response1.getCommission().getStatus() != CommissionStatus.UNFILLED) {
+            throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        if (response1.getCommission().getReview().isClosed()) {
             throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
         }
 

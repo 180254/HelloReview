@@ -2,6 +2,8 @@ package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -14,8 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@DiscriminatorColumn(name="TYPE")
+@Inheritance(strategy = InheritanceType.JOINED)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -31,8 +32,9 @@ public abstract class Input implements Serializable {
     @JsonView
     private long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
     @JoinColumn(nullable = false)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Question question;
 
@@ -44,7 +46,8 @@ public abstract class Input implements Serializable {
     @JsonView(JSONViews.FormParseXML.class)
     private String label;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "input", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "input", orphanRemoval = true)
+    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("answer")
     private List<Answer> answers;

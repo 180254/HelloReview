@@ -2,8 +2,8 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.response.Response;
@@ -35,19 +35,21 @@ public class Commission implements Serializable {
     @JsonView
     private UUID uuid;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
     @JoinColumn(nullable = false)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Review review;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
     @JoinColumn(nullable = false)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Participant assessed;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(nullable = true)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Participant assessor;
 
@@ -64,8 +66,9 @@ public class Commission implements Serializable {
     @JsonView
     private CommissionStatus status;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = true)
     @JoinColumn(nullable = true)
+    @Fetch(FetchMode.JOIN)
     @JsonView
     private Response response;
 

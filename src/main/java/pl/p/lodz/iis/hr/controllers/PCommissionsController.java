@@ -14,12 +14,12 @@ import pl.p.lodz.iis.hr.configuration.GHPac4jSecurityHelper;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Participant;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
-import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.services.AnswerProvider;
-import pl.p.lodz.iis.hr.services.InstanceOfChecker;
+import pl.p.lodz.iis.hr.services.ProxyService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,13 +29,24 @@ import java.util.UUID;
 @Controller
 class PCommissionsController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PCommissionsController.class);
 
-    @Autowired private GitHubClient gitHubClient;
-    @Autowired private ParticipantRepository participantRepository;
-    @Autowired private CommissionRepository commissionRepository;
-    @Autowired private InstanceOfChecker instanceOfChecker;
-    @Autowired private FormRepository formRepository;
+    private final GitHubClient gitHubClient;
+    private final ParticipantRepository participantRepository;
+    private final CommissionRepository commissionRepository;
+    private final ProxyService proxyService;
+
+    @Autowired
+    PCommissionsController(GitHubClient gitHubClient,
+                           ParticipantRepository partiRepository,
+                           CommissionRepository commissionRepository,
+                           ProxyService proxyService) {
+        this.gitHubClient = gitHubClient;
+        this.participantRepository = partiRepository;
+        this.commissionRepository = commissionRepository;
+        this.proxyService = proxyService;
+    }
+
     @RequestMapping(
             value = "/p/commissions",
             method = RequestMethod.GET)
@@ -51,7 +62,6 @@ class PCommissionsController {
         return "p-commissions";
     }
 
-
     @RequestMapping(
             value = "/p/commissions/{uuid}",
             method = RequestMethod.GET)
@@ -64,25 +74,30 @@ class PCommissionsController {
 
         UUID uuid1 = getUuidFromString(uuid);
 
-        Commission byUuid = commissionRepository.findByUuid(uuid1);
-        if (byUuid == null) {
+        Commission commission = commissionRepository.findByUuid(uuid1);
+        if (commission == null) {
             throw new ErrorPageException(HttpServletResponse.SC_NOT_FOUND);
         }
 
         List<Participant> byGitHubName = meAsParticipant(request, response);
-        if (!byGitHubName.contains(byUuid.getAssessor())) {
+        if (!byGitHubName.contains(commission.getAssessor())) {
             throw new ErrorPageException(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        Form form = byUuid.getReview().getForm();
-        AnswerProvider answerProvider = new AnswerProvider(byUuid.getResponse());
+        if (!commission.getStatus().isAvailableForPeer()) {
+            return "p-form-not-yet";
+        }
 
-        LOGGER.error("CLAZZ TEST: {}", form.getQuestions().get(0).getInputs().get(0).getClass());
+        Review review = commission.getReview();
+        Form form = review.getForm();
 
-        model.addAttribute("commission", byUuid);
+        AnswerProvider answerProvider = new AnswerProvider(commission.getResponse());
+
+        model.addAttribute("commission", commission);
+        model.addAttribute("review", review);
         model.addAttribute("form", form);
         model.addAttribute("answerProvider", answerProvider);
-        model.addAttribute("instanceOfChecker", instanceOfChecker);
+        model.addAttribute("proxyService", proxyService);
 
         return "p-form";
     }
