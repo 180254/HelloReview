@@ -11,7 +11,7 @@ function textareaLettersCounter($textareas) {
             class: 'pull-right t-letter-counter'
         }).insertAfter($(this));
 
-        $(this).next().html('0 / ' + textMax);
+        $(this).next().html($(this).val().length + ' / ' + textMax);
 
         $(this).keyup(function () {
             var textLength = $(this).val().length;
