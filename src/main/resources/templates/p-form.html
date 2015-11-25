@@ -23,13 +23,15 @@
 
             <div class="input" th:each="input : ${question.inputs}">
 
-                <div class="input-2" th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputScale)}">
+                <div class="input-2"
+                     th:if="${instanceOfChecker.check(input, T(pl.p.lodz.iis.hr.models.forms.InputScale))}">
 
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <span th:if="${input.required}" class="form-required">*</span>
 
                     <br/><b class="input-scale-b" th:utext="${input.fromLabel}"></b>
-                    <input title="" class="slider" value=""
+                    <input title="" class="slider"
+                           th:value="${answerProvider.get(input.id)}"
                            th:id="'input' + ${input.id}"
                            data-th-attr="
                                 data-slider-min=${input.fromS},
@@ -40,12 +42,14 @@
                     <b class="input-scale-b" th:utext="${input.toLabel}"></b>
                 </div>
 
-                <div class="input-2" th:if="${input instanceof T(pl.p.lodz.iis.hr.models.forms.InputText)}">
+                <div class="input-2"
+                     th:if="${instanceOfChecker.check(input, T(pl.p.lodz.iis.hr.models.forms.InputText))}">
 
                     <label th:for="'input' + ${input.id}" th:utext="${input.label}"></label>
                     <span th:if="${input.required}" class="form-required">*</span>
 
                     <textarea title="" class="form-control" rows="2" maxlength="1000"
+                              th:text="${answerProvider.get(input.id)}"
                               th:id="'input' + ${input.id}"
                               data-th-attr="data-input-id=${input.id}"></textarea>
                 </div>

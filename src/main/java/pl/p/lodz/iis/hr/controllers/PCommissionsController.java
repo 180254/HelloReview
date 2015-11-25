@@ -1,6 +1,8 @@
 package pl.p.lodz.iis.hr.controllers;
 
 import org.pac4j.oauth.client.GitHubClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,10 @@ import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
+import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
+import pl.p.lodz.iis.hr.services.AnswerProvider;
+import pl.p.lodz.iis.hr.services.InstanceOfChecker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,10 +29,13 @@ import java.util.UUID;
 @Controller
 class PCommissionsController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MStatsController.class);
+
     @Autowired private GitHubClient gitHubClient;
     @Autowired private ParticipantRepository participantRepository;
     @Autowired private CommissionRepository commissionRepository;
-
+    @Autowired private InstanceOfChecker instanceOfChecker;
+    @Autowired private FormRepository formRepository;
     @RequestMapping(
             value = "/p/commissions",
             method = RequestMethod.GET)
@@ -52,7 +60,7 @@ class PCommissionsController {
                        HttpServletRequest request,
                        HttpServletResponse response,
                        Model model)
-            throws ErrorPageException {
+            throws ErrorPageException, InterruptedException {
 
         UUID uuid1 = getUuidFromString(uuid);
 
@@ -67,9 +75,14 @@ class PCommissionsController {
         }
 
         Form form = byUuid.getReview().getForm();
+        AnswerProvider answerProvider = new AnswerProvider(byUuid.getResponse());
+
+        LOGGER.error("CLAZZ TEST: {}", form.getQuestions().get(0).getInputs().get(0).getClass());
 
         model.addAttribute("commission", byUuid);
         model.addAttribute("form", form);
+        model.addAttribute("answerProvider", answerProvider);
+        model.addAttribute("instanceOfChecker", instanceOfChecker);
 
         return "p-form";
     }

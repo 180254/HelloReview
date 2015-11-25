@@ -70,8 +70,13 @@ class PResponseController {
             throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
         }
 
+        if (response1.getCommission().getStatus() != CommissionStatus.UNFILLED) {
+            throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
         responseValidator.validate(response1);
 
+        response1.getCommission().setResponse(response1);
         response1.getCommission().setStatus(CommissionStatus.FILLED);
         responseRepository.save(response1);
 

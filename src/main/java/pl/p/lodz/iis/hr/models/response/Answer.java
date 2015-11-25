@@ -60,6 +60,10 @@ public class Answer implements Serializable {
         return answer;
     }
 
+    public String getNotNullAnswer() {
+        return (answer == null) ? "" : answer;
+    }
+
     public long getAnswerAsNumber() {
         return Long.valueOf(answer);
     }

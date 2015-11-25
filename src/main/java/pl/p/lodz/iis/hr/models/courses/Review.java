@@ -3,6 +3,8 @@ package pl.p.lodz.iis.hr.models.courses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
@@ -40,8 +42,10 @@ public class Review implements Serializable {
     @JsonView
     private Course course;
 
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     @JsonView
     private Form form;
 

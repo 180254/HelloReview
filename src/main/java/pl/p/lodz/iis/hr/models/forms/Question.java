@@ -37,7 +37,7 @@ public class Question implements Serializable, RelationsAware {
     @JsonView(JSONViews.FormParseXML.class)
     private String additionalTips;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question", orphanRemoval = true)
     @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("input")
     private List<Input> inputs;
