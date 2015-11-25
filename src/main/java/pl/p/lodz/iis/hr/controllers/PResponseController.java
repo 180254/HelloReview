@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,14 +12,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.models.JSONResponse;
+import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.response.Response;
+import pl.p.lodz.iis.hr.repositories.ResponseRepository;
 import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.ResponseConverter;
 import pl.p.lodz.iis.hr.services.ResponseValidator;
-import pl.p.lodz.iis.hr.services.XmlMapperProvider;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 class PResponseController {
@@ -28,16 +29,19 @@ class PResponseController {
     private final ObjectMapper objectMapper;
     private final ResponseConverter responseConverter;
     private final ResponseValidator responseValidator;
+    private final ResponseRepository responseRepository;
     private final LocaleService localeService;
 
     @Autowired
     PResponseController(ObjectMapper objectMapper,
                         ResponseConverter responseConverter,
                         ResponseValidator responseValidator,
+                        ResponseRepository responseRepository,
                         LocaleService localeService) {
         this.objectMapper = objectMapper;
         this.responseConverter = responseConverter;
         this.responseValidator = responseValidator;
+        this.responseRepository = responseRepository;
         this.localeService = localeService;
     }
 
@@ -47,7 +51,7 @@ class PResponseController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public String response(@ModelAttribute("response") String response)
+    public List<String> response(@ModelAttribute("response") String response)
             throws ErrorPageException, LocalizableErrorRestException {
 
         JSONResponse jsonResponse;
@@ -62,12 +66,15 @@ class PResponseController {
         }
 
         Response response1 = responseConverter.convert(jsonResponse);
-        if(response1 == null) {
+        if (response1 == null) {
             throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
         }
 
         responseValidator.validate(response1);
 
-        return "";
+        response1.getCommission().setStatus(CommissionStatus.FILLED);
+        responseRepository.save(response1);
+
+        return localeService.getAsList("p.response.done");
     }
 }

@@ -28,7 +28,7 @@ public class Answer implements Serializable {
     @JsonView
     private Input input;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = true, length = 1000)
     @JsonView
     private String answer;
 

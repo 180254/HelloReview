@@ -13,8 +13,7 @@
           th:attr="
                 data-form-action=@{/p/response},
                 data-comm-id=${commission.uuid},
-                data-redirect-to=@{p/commission}"
-    >
+                data-redirect-to=@{/p/commissions}">
 
         <div class="form-description" th:utext="${commission.getFilledFormDescription()}"></div>
 

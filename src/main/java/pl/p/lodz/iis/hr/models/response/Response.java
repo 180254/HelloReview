@@ -18,6 +18,10 @@ public class Response implements Serializable, RelationsAware {
     private static final long serialVersionUID = -8893726458275377148L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView
+    private long id;
+
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @JsonView
@@ -28,7 +32,11 @@ public class Response implements Serializable, RelationsAware {
     @JsonProperty("review")
     private List<Answer> answers;
 
-    Response(){
+    Response() {
+    }
+
+    public long getId() {
+        return id;
     }
 
     public Response(Commission commission) {

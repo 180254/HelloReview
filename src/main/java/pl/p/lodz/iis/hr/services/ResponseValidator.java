@@ -100,7 +100,7 @@ public class ResponseValidator {
                 .allMatch(answer1 -> answer1.getAnswer() != null);
 
         if (!allAnswersGiven) {
-            throw new LocalizableErrorRestException("p.commissions.validate.missing.answer");
+            throw new LocalizableErrorRestException("p.response.validate.missing.answer");
         }
     }
 
