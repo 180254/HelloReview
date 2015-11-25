@@ -1,16 +1,12 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr, jqXHRFailToArray*/
+/*global $, jQuery, toastr, jqXHRFailToArray, getAjaxHeader*/
 
 function deleteB($deleteLink) {
     'use strict';
 
     var $row = $deleteLink.closest('tr'),
         id = $deleteLink.attr('data-id'),
-        ajaxHeaders = {};
-
-    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
-        $("meta[name='_csrf']").attr('content');
-
+        ajaxHeaders = getAjaxHeader();
 
     $.ajax({
         type: 'POST',
@@ -19,11 +15,11 @@ function deleteB($deleteLink) {
         headers: ajaxHeaders
 
     }).done(function (data) {
-        toastr.success(data.join("<br/>\n"));
+        toastr.success(data.toBrNL());
         $row.remove();
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).toBrNL());
 
     });
 }

@@ -1,14 +1,10 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr,jqXHRFailToArray*/
+/*global $, jQuery, toastr, jqXHRFailToArray, getAjaxHeader*/
 
 function reviewOpenCloseHandler($link) {
     'use strict';
 
-    var ajaxHeaders = {};
-
-    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
-        $("meta[name='_csrf']").attr('content');
-
+    var ajaxHeaders = getAjaxHeader();
 
     $.ajax({
         type: 'POST',
@@ -21,7 +17,7 @@ function reviewOpenCloseHandler($link) {
         $link.children().html(data[1]);
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).toBrNL());
 
     });
 }

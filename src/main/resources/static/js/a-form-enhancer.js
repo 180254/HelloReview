@@ -26,6 +26,7 @@ $(document).ready(function () {
     var $textareas = $('textarea');
 
     $("input.slider").slider();
+
     autosize($textareas);
     textareaLettersCounter($textareas);
 });

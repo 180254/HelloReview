@@ -1,13 +1,10 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr,jqXHRFailToArray*/
+/*global $, jQuery, toastr, jqXHRFailToArray, getAjaxHeader*/
 
 function commissionRetryHandler($retryLink) {
     'use strict';
 
-    var ajaxHeaders = {};
-
-    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
-        $("meta[name='_csrf']").attr('content');
+    var ajaxHeaders = getAjaxHeader();
 
     $.ajax({
         type: 'POST',
@@ -21,7 +18,7 @@ function commissionRetryHandler($retryLink) {
         $retryLink.remove();
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).toBrNL());
 
     });
 }

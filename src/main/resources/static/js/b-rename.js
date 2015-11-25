@@ -1,22 +1,22 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr*/
+/*global $, jQuery, toastr, getAjaxParameter, responseJSONToArray*/
 
 $(document).ready(function () {
     'use strict';
 
     $('.b-rename-link').editable({
         params: function (params) {
-            params[$("meta[name='_csrf_parameterName']").attr('content')] =
-                $("meta[name='_csrf']").attr('content');
+            jQuery.extend(params, getAjaxParameter());
             return params;
         },
 
         error: function (errors) {
-            $('main').find('.editable-error-block').html(errors.responseJSON.join("<br/>\n"));
+            var errors1 = responseJSONToArray(errors.responseJSON).toBrNL();
+            $('main').find('.editable-error-block').html(errors1);
         },
 
         success: function (response) {
-            toastr.success(response.join("<br/>\n"));
+            toastr.success(response.toBrNL());
         }
     });
 });

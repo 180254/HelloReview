@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr, jqXHRFailToArray*/
+/*global $, jQuery, toastr, jqXHRFailToArray, getAjaxHeader*/
 
 function responseSubmitHandler() {
     'use strict';
@@ -7,12 +7,10 @@ function responseSubmitHandler() {
         $button = $('#p-form-submit'),
         serialize = {},
         $input,
-        ajaxHeaders = {};
+        ajaxHeaders = getAjaxHeader();
 
     $button.prop('disabled', true);
 
-    ajaxHeaders[$("meta[name='_csrf_header']").attr('content')] =
-        $("meta[name='_csrf']").attr('content');
 
     serialize.commID = $form.attr('data-comm-id');
     serialize.answers = [];
@@ -39,14 +37,14 @@ function responseSubmitHandler() {
 
     }).done(function (data) {
 
-        toastr.success(data[0], {
+        toastr.success(data[0], '', {
             onHidden: function () {
                 window.location = $form.attr('data-redirect-to');
             }
         });
 
     }).fail(function (jqXHR) {
-        toastr.error(jqXHRFailToArray(jqXHR).join("<br/>\n"));
+        toastr.error(jqXHRFailToArray(jqXHR).toBrNL());
         $button.prop('disabled', false);
     });
 

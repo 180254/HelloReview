@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, toastr*/
+/*global $, jQuery, toastr*/
 
 $(document).ready(function () {
     'use strict';

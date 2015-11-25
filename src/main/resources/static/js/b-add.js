@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr*/
+/*global $, jQuery, toastr, jqXHRFailToArray*/
 
 /*                  form                              */
 function formAddHandler(action) {
@@ -188,14 +188,13 @@ function courseParticipantAddHandler(prefix, $element) {
         data: serialized
 
     }).done(function (data) {
-        var reloadAfter = 1200;
-
         $errorsDiv.hide();
-        toastr.success(data[0]);
 
-        window.setTimeout(function () {
-            location.reload();
-        }, reloadAfter);
+        toastr.success(data[0], '', {
+            onHidden: function () {
+                location.reload();
+            }
+        });
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),
