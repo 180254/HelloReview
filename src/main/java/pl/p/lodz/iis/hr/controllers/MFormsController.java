@@ -21,6 +21,7 @@ import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
+import pl.p.lodz.iis.hr.models.forms.InputScale;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.*;
 
@@ -144,6 +145,12 @@ class MFormsController {
 
         formValidator.validateRestEx(form);
         form.fixRelations();
+
+        // input scale must be required
+        form.getQuestions().stream()
+                .flatMap(q -> q.getInputs().stream())
+                .filter(input -> input instanceof InputScale)
+                .forEach(input -> input.setRequired(true));
 
         LOGGER.debug("Form added {}", form);
         formRepository.save(form);
