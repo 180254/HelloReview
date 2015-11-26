@@ -81,12 +81,12 @@ public class Answer implements Serializable {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Answer)) return false;
         Answer that = (Answer) obj;
-        return getInput().getId() == that.getInput().getId();
+        return input.getId() == that.input.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getInput().getId());
+        return Objects.hash(input.getId());
     }
 
     @Override

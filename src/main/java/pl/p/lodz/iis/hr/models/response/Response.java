@@ -10,6 +10,7 @@ import pl.p.lodz.iis.hr.models.courses.Commission;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,10 @@ public class Response implements Serializable, RelationsAware {
     @JsonProperty("review")
     private List<Answer> answers;
 
+    @Column(nullable = false)
+    @JsonView
+    private LocalDateTime created;
+
     Response() {
     }
 
@@ -52,7 +57,7 @@ public class Response implements Serializable, RelationsAware {
         return commission;
     }
 
-    public void setCommission(Commission commission) {
+    /* package */ void setCommission(Commission commission) {
         this.commission = commission;
     }
 
@@ -60,8 +65,21 @@ public class Response implements Serializable, RelationsAware {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    /* package */ void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    /* package */ void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
     }
 
     @Override
@@ -69,12 +87,12 @@ public class Response implements Serializable, RelationsAware {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Response)) return false;
         Response that = (Response) obj;
-        return getCommission().getId() == that.getCommission().getId();
+        return commission.getId() == that.commission.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCommission().getId());
+        return Objects.hash(commission.getId());
     }
 
     @Override
@@ -82,6 +100,7 @@ public class Response implements Serializable, RelationsAware {
         return MoreObjects.toStringHelper(this)
                 .add("commission", commission.getId())
                 .add("answers", answers)
+                .add("created", created)
                 .toString();
     }
 

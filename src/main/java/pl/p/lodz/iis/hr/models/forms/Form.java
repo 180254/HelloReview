@@ -164,12 +164,12 @@ public class Form implements Serializable, RelationsAware {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Form)) return false;
         Form that = (Form) obj;
-        return getId() == that.getId();
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

@@ -71,15 +71,17 @@ dependencies {
     compile("com.squareup.okhttp:okhttp-urlconnection:2.5.0")
 
     compile("org.eclipse.jgit:org.eclipse.jgit:4.1.0.201509280440-r")
-
     compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3")
     compile("org.codehaus.woodstox:woodstox-core-asl:4.4.1")
+
+    compile("org.apache.poi:poi:3.13")
+    compile("org.apache.poi:poi-ooxml:3.13")
+    compile("com.jayway.awaitility:awaitility:1.6.5")
 
     compile("org.jetbrains:annotations:15.0")
     compile("org.apache.commons:commons-collections4:4.0")
     compile("org.apache.commons:commons-lang3:3.4")
     compile("com.google.guava:guava:19.0-rc2")
-    compile("com.jayway.awaitility:awaitility:1.6.5")
 
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     testCompile("junit:junit:4.12")

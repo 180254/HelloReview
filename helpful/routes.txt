@@ -36,8 +36,14 @@
 + POST    rest   /m/reviews/delete
 + POST    rest   /m/reviews/rename
 
-+ GET     html   /m/reviews/1/commissions/
++ GET     html   /m/reviews/1/commissions
 + GET     html   /m/reviews/commissions/1
 + GET     html   /m/reviews/commissions/for/participant/1
 + GET     html   /m/reviews/commissions/failed
 + POST    rest   /m/reviews/commissions/retry
+
++ GET     html   /m/reviews/1/responses
+
++ GET     html   /p/commissions
++ GET     html   /p/commissions/{uuid}
++ POST    rest   /p/response

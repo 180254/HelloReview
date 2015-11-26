@@ -147,12 +147,12 @@ public class Participant implements Serializable {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Participant)) return false;
         Participant that = (Participant) obj;
-        return getId() == that.getId();
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

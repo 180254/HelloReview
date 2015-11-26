@@ -122,12 +122,12 @@ public class Course implements Serializable {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Course)) return false;
         Course that = (Course) obj;
-        return getId() == that.getId();
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

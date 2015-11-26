@@ -216,12 +216,12 @@ public class Commission implements Serializable {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Commission)) return false;
         Commission that = (Commission) obj;
-        return getId() == that.getId();
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

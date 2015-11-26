@@ -180,12 +180,12 @@ public class Review implements Serializable {
         if (this == obj) return true;
         if ((obj == null) || !(obj instanceof Review)) return false;
         Review that = (Review) obj;
-        return getId() == that.getId();
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

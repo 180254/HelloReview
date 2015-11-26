@@ -41,6 +41,7 @@ class MReviewsController {
     private final LocaleService localeService;
     private final FieldValidator fieldValidator;
     private final GHReviewCreator ghReviewCreator;
+    private final ResponsesToExcelConverter respToExcelConverter;
 
     @Autowired
     MReviewsController(ResCommonService resCommonService,
@@ -50,7 +51,8 @@ class MReviewsController {
                        ReviewService reviewService,
                        LocaleService localeService,
                        FieldValidator fieldValidator,
-                       GHReviewCreator ghReviewCreator) {
+                       GHReviewCreator ghReviewCreator,
+                       ResponsesToExcelConverter respToExcelConverter) {
         this.resCommonService = resCommonService;
         this.reviewRepository = reviewRepository;
         this.courseRepository = courseRepository;
@@ -59,6 +61,7 @@ class MReviewsController {
         this.localeService = localeService;
         this.fieldValidator = fieldValidator;
         this.ghReviewCreator = ghReviewCreator;
+        this.respToExcelConverter = respToExcelConverter;
     }
 
     @RequestMapping(
@@ -277,6 +280,26 @@ class MReviewsController {
 
         LOGGER.debug("Review creating {}", ghReviewAddForm);
         return ghReviewCreator.createReview(ghReviewAddForm, ghRepository, response);
+    }
+
+
+    @RequestMapping(
+            value = "/m/reviews/{reviewID}/responses",
+            method = RequestMethod.GET,
+            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Transactional
+    @ResponseBody
+    public byte[] responses(@PathVariable Long2 reviewID,
+                            HttpServletResponse response)
+            throws ErrorPageException {
+
+        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+
+//        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=somefile.xlsx");
+        response.setHeader("Content-Transfer-Encoding", "binary");
+
+        return respToExcelConverter.convert(review);
     }
 }
 
