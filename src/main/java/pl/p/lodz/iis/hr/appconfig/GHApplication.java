@@ -2,8 +2,7 @@ package pl.p.lodz.iis.hr.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 public final class GHApplication {
 
@@ -37,6 +36,10 @@ public final class GHApplication {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return MoreObjects.toStringHelper(this)
+                .add("appName", appName)
+                .add("clientID", clientID)
+                .add("clientSecret", clientSecret)
+                .toString();
     }
 }

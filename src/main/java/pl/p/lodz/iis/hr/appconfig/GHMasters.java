@@ -2,8 +2,7 @@ package pl.p.lodz.iis.hr.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +25,8 @@ public final class GHMasters {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return MoreObjects.toStringHelper(this)
+                .add("userNames", userNames)
+                .toString();
     }
 }

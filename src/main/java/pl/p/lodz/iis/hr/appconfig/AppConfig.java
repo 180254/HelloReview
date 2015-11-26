@@ -3,17 +3,15 @@ package pl.p.lodz.iis.hr.appconfig;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 @JacksonXmlRootElement(localName = "hello")
 public final class AppConfig {
 
-    @JsonProperty("generalConfig")
-    private final GeneralConfig generalConfig;
-
-    @JsonProperty("github")
-    private final GHConfig gitHubConfig;
+    /* @formatter:off */
+    @JsonProperty("generalConfig") private final GeneralConfig generalConfig;
+    @JsonProperty("github")        private final GHConfig gitHubConfig;
+    /* @formatter:on */
 
     @JsonCreator
     AppConfig(@JsonProperty("general") GeneralConfig generalConfig,
@@ -33,6 +31,9 @@ public final class AppConfig {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return MoreObjects.toStringHelper(this)
+                .add("generalConfig", generalConfig)
+                .add("gitHubConfig", gitHubConfig)
+                .toString();
     }
 }

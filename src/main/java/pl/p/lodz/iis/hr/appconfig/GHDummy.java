@@ -2,8 +2,7 @@ package pl.p.lodz.iis.hr.appconfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.google.common.base.MoreObjects;
 
 public final class GHDummy {
 
@@ -13,10 +12,7 @@ public final class GHDummy {
     /* @formatter:on */
 
     @JsonCreator
-    GHDummy(@JsonProperty("username") String username,
-            @JsonProperty("token") String token,
-            @JsonProperty("name") String name,
-            @JsonProperty("email") String email,
+    GHDummy(@JsonProperty("token") String token,
             @JsonProperty("commitmsg") String commitMsg) {
 
         this.token = token;
@@ -34,6 +30,9 @@ public final class GHDummy {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return MoreObjects.toStringHelper(this)
+                .add("token", token)
+                .add("commitMsg", commitMsg)
+                .toString();
     }
 }
