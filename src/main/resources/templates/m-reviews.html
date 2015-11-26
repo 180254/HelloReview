@@ -82,7 +82,14 @@
             </td>
 
             <td>
-                0/10 responses
+                <a th:href="@{/m/reviews/{reviewID}/responses(reviewID=${review.id})}"
+                   th:utext="#{m.reviews.tbody.responses(
+                       ${review.getNumberOfFilledCommissions()},
+                       ${review.getNumberOfCommissionsToBeFilled()}
+                   )}">
+
+                </a>
+
             </td>
 
             <td>

@@ -24,14 +24,18 @@ import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Controller
 class MReviewsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MReviewsController.class);
+    private static final Pattern FILENAME_NOT_SAFE_CHARS = Pattern.compile("[^a-zA-Z0-9.-]");
 
     private final ResCommonService resCommonService;
     private final ReviewRepository reviewRepository;
@@ -295,11 +299,18 @@ class MReviewsController {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
 
-//        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=somefile.xlsx");
+        String filename = String.format("%s_%s.xlsx",
+                review.getName(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm"))
+        );
+        String safeFilename = FILENAME_NOT_SAFE_CHARS.matcher(filename).replaceAll("_");
+
+        response.setHeader("Content-Disposition", String.format("attachment; filename=%s", safeFilename));
         response.setHeader("Content-Transfer-Encoding", "binary");
 
         return respToExcelConverter.convert(review);
     }
+
+
 }
 

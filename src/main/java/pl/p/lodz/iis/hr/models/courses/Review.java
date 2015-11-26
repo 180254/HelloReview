@@ -140,6 +140,19 @@ public class Review implements Serializable {
         this.commissions = commissions;
     }
 
+
+    public long getNumberOfCommissionsToBeFilled() {
+        return commissions.stream()
+                .filter(commission -> commission.getStatus().isAvailableForPeer())
+                .count();
+    }
+
+    public long getNumberOfFilledCommissions() {
+        return commissions.stream()
+                .filter(commission -> commission.getStatus() == CommissionStatus.FILLED)
+                .count();
+    }
+
     public boolean isClosed() {
         return closed;
     }
