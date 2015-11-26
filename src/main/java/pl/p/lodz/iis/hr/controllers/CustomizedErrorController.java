@@ -13,6 +13,17 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * Controller to customize handling error pages.<br/>
+ * <br/>
+ * If request was non-ajax keep default action.<br/>
+ * - error.html template will be rendered.<br/>
+ * <br/>
+ * If request was ajax:<br/>
+ * - Full information about error is logged in by logger.<br/>
+ * - Only status code (404, 500, etc) and code message (Not Found, Internal Server Errror, etc) are sent to client.<br/>
+ * - If error was coursed by missing or expired CSRF token, code message is replaced to "Invalid CSRF Token".<br/>
+ */
 @Controller
 class CustomizedErrorController extends BasicErrorController {
 
@@ -31,7 +42,7 @@ class CustomizedErrorController extends BasicErrorController {
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         ResponseEntity<Map<String, Object>> error = super.error(request);
 
-        LOGGER.error("JSON ERROR {}", error);
+        LOGGER.warn("JSON ERROR {}", error);
 
         Map<String, Object> body = new HashedMap<>(2);
         body.put("status", error.getBody().get("status"));

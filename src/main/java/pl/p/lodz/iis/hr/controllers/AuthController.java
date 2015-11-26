@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * /login  - pl.p.lodz.iis.hr.controllers.AuthController
- * /logout - org.pac4j.springframework.web.ApplicationLogoutController
- * /callback - org.pac4j.springframework.web.CallbackController
- * /callback customize - pl.p.lodz.iis.hr.controllers.CustomizedCallbackController
+ * Controller for actions related to authorizations.<br/>
+ * <br/>
+ * /login    - pl.p.lodz.iis.hr.controllers.AuthController<br/>
+ * /logout   - org.pac4j.springframework.web.ApplicationLogoutController<br/>
+ * /callback - org.pac4j.springframework.web.CallbackController<br/>
  */
 @Controller
 class AuthController {
