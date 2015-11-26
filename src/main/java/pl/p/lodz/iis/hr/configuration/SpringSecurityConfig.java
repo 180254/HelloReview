@@ -11,6 +11,11 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 import java.util.Map;
 
+/**
+ * General spring security configuration.<br/>
+ * <br/>
+ * For now request headers are customized here, to be more secure.<br/>
+ */
 @Configuration
 @Order(Ordered.LOWEST_PRECEDENCE - 10) /* order caused by https://github.com/spring-projects/spring-boot/issues/3734 */
 class SpringSecurityConfig extends WebSecurityConfigurerAdapter {

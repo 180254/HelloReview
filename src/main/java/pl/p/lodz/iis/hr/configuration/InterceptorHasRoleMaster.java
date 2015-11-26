@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Interceptor to check if logged in user has "master" role.
+ */
 class InterceptorHasRoleMaster extends HandlerInterceptorAdapter {
 
     private final GitHubClient gitHubClient;

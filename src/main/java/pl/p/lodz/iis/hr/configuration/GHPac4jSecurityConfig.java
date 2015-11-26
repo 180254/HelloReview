@@ -11,6 +11,9 @@ import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.appconfig.GHApplication;
 import pl.p.lodz.iis.hr.appconfig.GeneralConfig;
 
+/**
+ * Configuration of beans that are provide possibility of log in using OAuth by GitHub.
+ */
 @Configuration
 @ComponentScan(basePackages = "org.pac4j.springframework.web")
 class GHPac4jSecurityConfig {

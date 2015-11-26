@@ -11,9 +11,9 @@ import java.io.Serializable;
  * server will throw code 500.<br/>
  * <br/>
  * If own type is used:<br/>
- * RequestParam("xx") long id<br/>
+ * RequestParam("xx") Long2 id<br/>
  * and such parameter doesn't exist,<br/>
- * server will throw 'better; code 400.<br/>
+ * server will throw 'better' code 400.<br/>
  * <br/>
  * Problem descriptions:<br/>
  * http://stackoverflow.com/questions/27851775/spring-mvc-data-binding-primitive-types<br/>

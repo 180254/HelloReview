@@ -7,6 +7,9 @@ import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
+/**
+ * @see Hibernate5Config
+ */
 public class Hibernate5PhyNamStrategy implements PhysicalNamingStrategy {
 
     private final Converter<String, String> caseConverter

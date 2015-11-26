@@ -10,6 +10,12 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
+/**
+ * Internationalization config.<br/>
+ * - Default locale is english.<br/>
+ * - Change is possible by ?lang parameter on any request.<br>
+ * - Change is "permanent" (to session expire or next change).
+ */
 @Configuration
 class I18nConfiguration extends WebMvcConfigurerAdapter {
 

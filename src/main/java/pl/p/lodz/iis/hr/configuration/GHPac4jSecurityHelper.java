@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.function.Supplier;
 
+/**
+ * Pac4j security helper class. Provide profile od current logged in used, and operations related to it.
+ */
 public class GHPac4jSecurityHelper {
 
     private final GitHubClient gitHubClient;

@@ -9,6 +9,14 @@ import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Interceptor to append basic info:<br/>
+ * - isLoggedIn<br/>
+ * - isMaster<br/>
+ * - isPeer<br/>
+ * - username<br/>
+ * about current user to each request.
+ */
 class InterceptorUserInfoAppender extends HandlerInterceptorAdapter {
 
     private final GitHubClient gitHubClient;

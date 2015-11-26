@@ -21,6 +21,16 @@ import pl.p.lodz.iis.hr.utils.ByteUnit;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Configuration of beans that are used to communicate with GitHub.<br/>
+ * <br/>
+ * First used lib is org.kohsuke.github - to use GitHub rest API v3.<br/>
+ * Second used lib is org.eclipse.jgit - to do general git operations (pull, checkcout, commit, push, etc).<br/>
+ * <br/>
+ * Additionally OkHttp is used, as proposed by org.kohsuke.github documentation, to cache github api responses.<br/>
+ * "304 response does not count against your Rate Limit," - as mentioned in GH api documentation.<br/>
+ * More info about rate limit: https://developer.github.com/v3/#rate-limiting
+ */
 @Configuration
 @DependsOn("appConfig")
 class GHApi3Config {
@@ -57,6 +67,7 @@ class GHApi3Config {
                     .withRateLimitHandler(rateLimitHandler)
                     .withOAuthToken(dummy.getToken())
                     .build();
+
         } catch (IOException e) {
             throw new UnableToInitializeException(
                     GHApi3Config.class,
@@ -65,12 +76,23 @@ class GHApi3Config {
         }
     }
 
-
+    /**
+     * GitHub bean, which gives GitHub API access, with FAIL as RateLimitHandler.<br/>
+     * FAIL means "Fail immediately.", and throw error.
+     *
+     * @return GitHub, with FAIL as as RateLimitHandler.
+     */
     @Bean(name = "ghFail")
     public GitHub gitHubFail() {
         return gitHub(RateLimitHandler.FAIL);
     }
 
+    /**
+     * GitHub bean, which gives GitHub API access, with WAIT as RateLimitHandler.<br/>
+     * FAIL means "Block until the API rate limit is reset. Useful for long-running batch processing.",<br/>
+     *
+     * @return GitHub, with WAIT as as RateLimitHandler.
+     */
     @Bean(name = "ghWait")
     public GitHub gitHubWait() {
         return gitHub(RateLimitHandler.WAIT);
