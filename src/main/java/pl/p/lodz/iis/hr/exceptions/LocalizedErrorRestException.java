@@ -1,7 +1,5 @@
 package pl.p.lodz.iis.hr.exceptions;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +14,7 @@ public class LocalizedErrorRestException extends Exception {
     private final List<String> errors;
 
     public LocalizedErrorRestException(int statusCode, String error) {
-        super(StringUtils.join(error, ","));
+        super(String.join(",", error));
 
         this.statusCode = statusCode;
         this.errors = Collections.singletonList(error);
@@ -24,21 +22,21 @@ public class LocalizedErrorRestException extends Exception {
     }
 
     public LocalizedErrorRestException(int statusCode, List<String> errors) {
-        super(StringUtils.join(errors, ","));
+        super(String.join(",", errors));
 
         this.statusCode = statusCode;
         this.errors = new ArrayList<>(errors);
     }
 
     public LocalizedErrorRestException(String error) {
-        super(StringUtils.join(error, ","));
+        super(String.join(",", error));
 
         this.statusCode = HttpServletResponse.SC_BAD_REQUEST;
         this.errors = Collections.singletonList(error);
     }
 
     public LocalizedErrorRestException(List<String> errors) {
-        super(StringUtils.join(errors, ","));
+        super(String.join(",", errors));
 
         this.statusCode = HttpServletResponse.SC_BAD_REQUEST;
         this.errors = new ArrayList<>(errors);

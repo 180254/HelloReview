@@ -1,8 +1,6 @@
 package pl.p.lodz.iis.hr.exceptions;
 
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
@@ -16,7 +14,7 @@ public class LocalizableErrorRestException extends Exception {
 
 
     public LocalizableErrorRestException(int statusCode, String localeCode, String... localeArgs) {
-        super(StringUtils.join(Arrays.asList(String.valueOf(statusCode), localeCode, localeArgs), ","));
+        super(String.join(",", Arrays.<String>asList(String.valueOf(statusCode), localeCode, ezFormat(localeArgs))));
 
         this.statusCode = statusCode;
         this.localeCode = localeCode;
@@ -24,7 +22,7 @@ public class LocalizableErrorRestException extends Exception {
     }
 
     public LocalizableErrorRestException(String localeCode, String... localeArgs) {
-        super(StringUtils.join(Arrays.asList(localeCode, localeArgs), ","));
+        super(String.join(",", Arrays.asList(localeCode, ezFormat(localeArgs))));
 
         this.statusCode = HttpServletResponse.SC_BAD_REQUEST;
         this.localeCode = localeCode;
@@ -57,5 +55,10 @@ public class LocalizableErrorRestException extends Exception {
 
     public Object[] getLocaleArgs() {
         return localeArgs.clone();
+    }
+
+    public static String ezFormat(Object[] args) {
+        String format = new String(new char[args.length]).replace("\0", "[ %s ]");
+        return String.format(format, args);
     }
 }
