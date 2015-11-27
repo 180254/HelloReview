@@ -7,6 +7,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * GHTask* classes should not be executed in same thread as principal class.<br/>
+ * They executing lot of time, and should be scheduled in another thread.<br/>
+ * THis class is to schedule these tasks to be executed.
+ */
 @Service
 public class GHTaskScheduler {
 
@@ -17,10 +22,10 @@ public class GHTaskScheduler {
     }
 
     /**
-     * @param repoName simple repo name (ex "test", not "user/text")
+     * @param repoSimpleName simple repo name (ex "test", not "user/text")
      */
-    public void registerDelete(String repoName) {
-        executor.submit(new GHTaskDelete(repoName));
+    public void registerDelete(String repoSimpleName) {
+        executor.submit(new GHTaskDelete(repoSimpleName));
     }
 
     public void registerDirectoryRemove(String path) {

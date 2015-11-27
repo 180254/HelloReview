@@ -13,6 +13,11 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * During GH repository cloning temp subdirectory are used.<br/>
+ * Some of these subdirectory may not be deleted, if some case of processing errors.<br/>
+ * This class is to cover directory remove logic.
+ */
 @Service
 public class GHTaskDirRemove implements Runnable {
 

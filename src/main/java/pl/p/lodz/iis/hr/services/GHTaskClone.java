@@ -29,6 +29,10 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+/**
+ * Repository cloner. Each repository must be anonymously cloned, as peer should not known who is assessed.<br/>
+ * Whole Clone logic is covered by this class.
+ */
 class GHTaskClone implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GHTaskClone.class);
@@ -46,7 +50,7 @@ class GHTaskClone implements Runnable {
     private GHMyself ghMyself;
 
     private GHRepository assessedRepo;
-    private String targetRepoName;
+    private String targetRepoSimpleName;
     private String targetRepoFullName;
 
     private File directoryForClone;
@@ -82,14 +86,14 @@ class GHTaskClone implements Runnable {
         ghDummy = appConfig.getGitHubConfig().getDummy();
         ghMyself = GHExecutor.ex(() -> ghWait.getMyself());
 
-        String assessedRepoName = GH_URL.matcher(commission.getAssessedGhUrl()).replaceAll("");
-        assessedRepo = GHExecutor.ex(() -> ghWait.getRepository(assessedRepoName));
-        targetRepoName = commission.getUuid().toString();
-        targetRepoFullName = String.format("%s/%s", ghMyself.getLogin(), targetRepoName);
+        String assessedRepoFullName = GH_URL.matcher(commission.getAssessedGhUrl()).replaceAll("");
+        assessedRepo = GHExecutor.ex(() -> ghWait.getRepository(assessedRepoFullName));
+        targetRepoSimpleName = commission.getUuid().toString();
+        targetRepoFullName = String.format("%s/%s", ghMyself.getLogin(), targetRepoSimpleName);
 
         Random random = new SecureRandom();
         String tempDir = appConfig.getGeneralConfig().getTempDir();
-        String dirForClonePath = String.format("%s%s%s%d", tempDir, File.separator, targetRepoName, random.nextInt());
+        String dirForClonePath = String.format("%s%s%s%d", tempDir, File.separator, targetRepoSimpleName, random.nextInt());
         String dirForCloneGitSP = String.format("%s%s.git", dirForClonePath, File.separator);
         directoryForClone = new File(dirForClonePath);
         directoryForCloneGitSubdir = new File(dirForCloneGitSP);
@@ -183,7 +187,7 @@ class GHTaskClone implements Runnable {
         LOGGER.debug("{} Checking if target repo exist.", uuid);
 
         boolean targetRepoExist = GHExecutor.ex(() ->
-                ghWait.getMyself().getRepositories().keySet().contains(targetRepoName)
+                ghWait.getMyself().getRepositories().keySet().contains(targetRepoSimpleName)
         );
 
         LOGGER.debug("{} Target repo should not exist, currently  = {}", uuid, targetRepoExist);
@@ -208,7 +212,7 @@ class GHTaskClone implements Runnable {
         LOGGER.debug("{} Creating target repo.", uuid);
 
         targetRepo = GHExecutor.ex(() ->
-                ghWait.createRepository(targetRepoName, ghDummy.getCommitMsg(), null, true)
+                ghWait.createRepository(targetRepoSimpleName, ghDummy.getCommitMsg(), null, true)
         );
 
         LOGGER.debug("{} Created target repo.", uuid);
