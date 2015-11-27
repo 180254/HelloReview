@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.services;
 
+import com.google.common.base.MoreObjects;
 import pl.p.lodz.iis.hr.configuration.Long2;
 
 import java.io.Serializable;
@@ -76,5 +77,17 @@ public class GHReviewAddForm implements Serializable {
 
     public void setIgnoreWarning(Long2 ignoreWarning) {
         this.ignoreWarning = ignoreWarning;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("respPerPeer", respPerPeer)
+                .add("courseID", courseID)
+                .add("formID", formID)
+                .add("repositoryFullName", repositoryFullName)
+                .add("ignoreWarning", ignoreWarning)
+                .toString();
     }
 }
