@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Custom exceptions handlers.
+ */
 @ControllerAdvice(
         basePackages = "pl.p.lodz.iis.hr.controllers",
         basePackageClasses = CallbackController.class
@@ -39,11 +42,19 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
         return "redirect:/logout?url=/github-issue";
     }
 
+    @ExceptionHandler(ErrorPageException.class)
+    public void handleErrorPageEx(ErrorPageException ex,
+                                  HttpServletResponse response)
+            throws IOException {
+
+        response.sendError(ex.getStatusCode());
+    }
 
     @ExceptionHandler(LocalizedErrorRestException.class)
     @ResponseBody
     public List<String> handleLocalizedErrRestEx(LocalizedErrorRestException ex,
                                                  HttpServletResponse response) {
+
         LOGGER.warn("LocalizedErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return ex.getErrors();
@@ -54,15 +65,9 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     @ResponseBody
     public List<String> handleLocalizableErrRestEx(LocalizableErrorRestException ex,
                                                    HttpServletResponse response) {
+
         LOGGER.warn("LocalizableErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return localeService.getAsList(ex.getLocaleCode(), ex.getLocaleArgs());
-    }
-
-    @ExceptionHandler(ErrorPageException.class)
-    public void handleErrorPageEx(ErrorPageException ex,
-                                  HttpServletResponse response)
-            throws IOException {
-        response.sendError(ex.getStatusCode());
     }
 }

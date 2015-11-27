@@ -38,25 +38,25 @@ class MCommissionsController {
     private final ReviewRepository reviewRepository;
     private final CommissionRepository commissionRepository;
     private final ParticipantRepository participantRepository;
-    private final LocaleService localeService;
     private final GHTaskScheduler ghTaskScheduler;
     private final GHReviewCreator ghReviewCreator;
+    private final LocaleService localeService;
 
     @Autowired
     MCommissionsController(ResCommonService resCommonService,
                            ReviewRepository reviewRepository,
                            CommissionRepository commissionRepository,
                            ParticipantRepository partiRepository,
-                           LocaleService localeService,
                            GHTaskScheduler ghTaskScheduler,
-                           GHReviewCreator ghReviewCreator) {
+                           GHReviewCreator ghReviewCreator,
+                           LocaleService localeService) {
         this.resCommonService = resCommonService;
         this.reviewRepository = reviewRepository;
         this.commissionRepository = commissionRepository;
         this.participantRepository = partiRepository;
-        this.localeService = localeService;
         this.ghTaskScheduler = ghTaskScheduler;
         this.ghReviewCreator = ghReviewCreator;
+        this.localeService = localeService;
     }
 
     @RequestMapping(
@@ -68,13 +68,14 @@ class MCommissionsController {
             throws ErrorPageException {
 
         Review review = resCommonService.getOne(reviewRepository, reviewID.get());
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
-        boolean retryButton = notCompleted == 0;
         List<Commission> commissions = review.getCommissions();
 
-        model.addAttribute("retryButtonForProcessing", retryButton);
-        model.addAttribute("commissions", commissions);
+        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
+        boolean retryButtonEnabled = notCompleted == 0;
+
         model.addAttribute("review", review);
+        model.addAttribute("commissions", commissions);
+        model.addAttribute("retryButtonEnabled", retryButtonEnabled);
         model.addAttribute("addon_forReview", true);
 
         return "m-commissions";
@@ -93,7 +94,7 @@ class MCommissionsController {
         boolean retryButton = notCompleted == 0;
 
         model.addAttribute("commissions", Collections.singletonList(commission));
-        model.addAttribute("retryButtonForProcessing", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButton);
         model.addAttribute("addon_oneCommission", true);
 
         return "m-commissions";
@@ -114,7 +115,7 @@ class MCommissionsController {
 
         model.addAttribute("participant", participant);
         model.addAttribute("commissions", commissions);
-        model.addAttribute("retryButtonForProcessing", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButton);
         model.addAttribute("addon_forParticipant", true);
 
         return "m-commissions";
@@ -133,7 +134,7 @@ class MCommissionsController {
         boolean retryButton = notCompleted == 0;
 
         model.addAttribute("commissions", failed);
-        model.addAttribute("retryButtonForProcessing", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButton);
         model.addAttribute("addon_failed", true);
 
         return "m-commissions";
