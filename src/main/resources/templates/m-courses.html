@@ -11,17 +11,17 @@
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
     <h4 th:if="${addon_oneCourse != null and addon_oneCourse == true}" class="pre-table-addon">
-        <span th:text="#{m.courses.table.head.addon.oneCourse}"></span>
+        <span th:utext="#{m.courses.table.head.addon.oneCourse}"></span>
     </h4>
 
     <table class="table table-hover">
         <thead>
         <tr>
-            <th th:text="#{m.courses.thead.id}"></th>
-            <th th:text="#{m.courses.thead.course.name}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.thead.participants}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.courses.thead.reviews}"></span></th>
-            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.courses.thead.delete}"></span></th>
+            <th th:utext="#{m.courses.thead.id}"></th>
+            <th th:utext="#{m.courses.thead.course.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.courses.thead.participants}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.courses.thead.reviews}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:utext="#{m.courses.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -39,15 +39,13 @@
 
             <td>
                 <a th:href="@{/m/courses/{courseID}/participants(courseID=${course.id})}">
-                    <strong th:text="${course.participants.size()}"></strong>
-                    <span th:text="#{m.courses.tbody.participants}"></span>
+                    <span th:utext="#{m.courses.tbody.participants(${course.participants.size()})}"></span>
                 </a>
             </td>
 
             <td>
                 <a th:href="@{/m/reviews/for/course/{courseID}(courseID=${course.id})}">
-                    <strong th:text="${course.reviews.size()}"></strong>
-                    <span th:text="#{m.courses.tbody.reviews}"></span>
+                    <span th:utext="#{m.courses.tbody.reviews(${course.reviews.size()})}"></span>
                 </a>
             </td>
 
@@ -61,7 +59,7 @@
                         data-btnOkLabel=#{m.courses.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.courses.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
-                   th:text="#{m.courses.tbody.delete}"></a>
+                   th:utext="#{m.courses.tbody.delete}"></a>
             </td>
         </tr>
         </tbody>
@@ -69,7 +67,7 @@
 
     <div th:if="${newButton}" class="add-new text-right">
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#course-add"
-                th:text="#{m.courses.tbody.add.new.one}">
+                th:utext="#{m.courses.tbody.add.new.one}">
         </button>
     </div>
 
@@ -81,7 +79,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" th:text="#{m.courses.add.title}"></h4>
+                    <h4 class="modal-title" th:utext="#{m.courses.add.title}"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -90,7 +88,7 @@
                                th:value="${_csrf.token}"/>
 
                         <div class="form-group">
-                            <label for="course-name" th:text="#{m.courses.add.input.course.name.label}"></label>
+                            <label for="course-name" th:utext="#{m.courses.add.input.course.name.label}"></label>
                             <input type="text" class="form-control" id="course-name" name="course-name"
                                    th:placeholder="#{m.courses.add.input.course.name.placeholder}"/>
                         </div>
@@ -98,18 +96,18 @@
                 </div>
 
                 <div id="course-add-error" class="form-add-ajax-info alert alert-danger" role="alert">
-                    <h4 th:text="#{m.courses.add.validation.header}"></h4>
+                    <h4 th:utext="#{m.courses.add.validation.header}"></h4>
                     <ul id="course-add-error-list">
                     </ul>
                 </div>
 
                 <div class="modal-footer">
                     <button id="course-add-button-close" type="button" class="btn btn-default" data-dismiss="modal"
-                            th:text="#{m.courses.add.button.close}">
+                            th:utext="#{m.courses.add.button.close}">
                     </button>
                     <button id="course-add-button-submit" type="button" class="btn btn-primary"
                             th:attr="data-add-url=@{/m/courses/add}"
-                            th:text="#{m.courses.add.button.submit}">
+                            th:utext="#{m.courses.add.button.submit}">
                     </button>
                 </div>
             </div>

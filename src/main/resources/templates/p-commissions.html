@@ -12,11 +12,11 @@
     <table id="p-comm-table" class="table table-hover fixed">
         <thead>
         <tr>
-            <th th:text="#{p.commissions.table.head.date}" class="wide-id"></th>
-            <th th:text="#{p.commissions.table.head.project}"></th>
-            <th th:text="#{p.commissions.table.head.review.status}"></th>
-            <th th:text="#{p.commissions.table.head.commission.status}"></th>
-            <th th:text="#{p.commissions.table.head.form.url}"></th>
+            <th th:utext="#{p.commissions.table.head.date}" class="wide-id"></th>
+            <th th:utext="#{p.commissions.table.head.project}"></th>
+            <th th:utext="#{p.commissions.table.head.review.status}"></th>
+            <th th:utext="#{p.commissions.table.head.commission.status}"></th>
+            <th th:utext="#{p.commissions.table.head.form.url}"></th>
         </tr>
         </thead>
 
@@ -32,10 +32,10 @@
                    th:text="${commission.review.repository}"></a>
             </td>
 
-            <td th:if="${commission.review.closed == true}" th:text="#{p.commissions.review.close}"></td>
-            <td th:if="${commission.review.closed == false}" th:text="#{p.commissions.review.open}"></td>
+            <td th:if="${commission.review.closed == true}" th:utext="#{p.commissions.review.close}"></td>
+            <td th:if="${commission.review.closed == false}" th:utext="#{p.commissions.review.open}"></td>
 
-            <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
+            <td th:utext="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
 
             <td>
                 <a th:href="@{/p/commissions/{uuid}(uuid=${commission.uuid})}"

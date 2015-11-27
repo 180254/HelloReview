@@ -10,7 +10,7 @@
 <main class="container main-hello text-center">
 
     <div id="sth-went-wrong">
-        <span class="message" th:text="#{error.message}"></span><br/>
+        <span class="message" th:utext="#{error.message}"></span><br/>
         <span class="status" th:text="${status} + ' ' + ${error.toLowerCase()}"></span><br/>
         <img src="" th:src="@{/images/sth-went-wrong.png}" alt=""/><br/>
     </div>

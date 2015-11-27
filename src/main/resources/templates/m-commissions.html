@@ -11,18 +11,18 @@
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
     <h4 th:if="${addon_forReview != null and addon_forReview == true}" class="pre-table-addon">
-        <span th:text="#{m.commissions.table.head.addon.forReview}"></span>
+        <span th:utext="#{m.commissions.table.head.addon.forReview}"></span>
         <a th:href="@{/m/reviews/{reviewID}(reviewID=${review.id})}">
             <strong th:text="${review.name}"></strong>
         </a>
     </h4>
 
     <h4 th:if="${addon_oneCommission != null and addon_oneCommission == true}" class="pre-table-addon">
-        <span th:text="#{m.commissions.table.head.addon.oneCommission}"></span>
+        <span th:utext="#{m.commissions.table.head.addon.oneCommission}"></span>
     </h4>
 
     <h4 th:if="${addon_forParticipant!= null and addon_forParticipant == true}" class="pre-table-addon">
-        <span th:text="#{m.commissions.table.head.addon.forParticipant}"></span>
+        <span th:utext="#{m.commissions.table.head.addon.forParticipant}"></span>
         <a th:href="@{/m/reviews/participants/{participantID}(participantID=${participant.id})}">
             <strong th:text="${participant.name}"></strong>
         </a>
@@ -31,19 +31,19 @@
     </h4>
 
     <h4 th:if="${addon_failed != null and addon_failed == true}" class="pre-table-addon">
-        <span th:text="#{m.commissions.table.head.addon.failed}"></span>
+        <span th:utext="#{m.commissions.table.head.addon.failed}"></span>
     </h4>
 
 
     <table class="table table-hover">
         <thead>
         <tr>
-            <th th:text="#{m.commissions.thead.id}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.review}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessor}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.commissions.thead.assessed}"></span></th>
-            <th th:text="#{m.commissions.thead.status}"></th>
-            <th><i class="fa fa-refresh"></i>&nbsp;<span th:text="#{m.commissions.thead.retry}"></span></th>
+            <th th:utext="#{m.commissions.thead.id}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.commissions.thead.review}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.commissions.thead.assessor}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.commissions.thead.assessed}"></span></th>
+            <th th:utext="#{m.commissions.thead.status}"></th>
+            <th><i class="fa fa-refresh"></i>&nbsp;<span th:utext="#{m.commissions.thead.retry}"></span></th>
         </tr>
         </thead>
 
@@ -71,12 +71,12 @@
                 </a>
             </td>
 
-            <td th:text="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
+            <td th:utext="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
 
             <td th:if="${commission.status.shouldBeRetried(retryButtonEnabled)}">
                 <a href="#" class="commission-retry"
                    th:attr="data-retry-url=@{/m/reviews/commissions/retry}, data-id=${commission.id}"
-                   th:text="#{m.commissions.tbody.retry}">
+                   th:utext="#{m.commissions.tbody.retry}">
                 </a>
             </td>
             <td th:if="${commission.status.shouldBeRetried(retryButtonEnabled) == false}">&nbsp;</td>

@@ -16,7 +16,7 @@
 
             <button type="submit" class="btn btn-block btn-social btn-github">
                 <i class="fa fa-github"></i>
-                <span th:text="#{index.signin}"></span>
+                <span th:utext="#{index.signin}"></span>
             </button>
         </form>
 
@@ -26,7 +26,7 @@
 
         <a class="btn btn-block btn-social btn-github" th:href="@{'https://github.com/' + ${username}}">
             <i class="fa fa-github"></i>
-            <span th:text="#{index.hello}"></span>
+            <span th:utext="#{index.hello}"></span>
             [<span th:text="${username}" class="username"></span>] !
         </a>
 

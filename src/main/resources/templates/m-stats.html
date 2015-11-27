@@ -10,44 +10,32 @@
 <main class="container">
     <p th:text="${rateLimit}"></p>
 
+    <p th:utext="#{m.stats.cache(${okCacheHitPercent})}"></p>
+
+    <p th:utext="#{m.stats.submitted(${submitted})}"></p>
+
+    <p th:utext="#{m.stats.notCompleted(${notCompleted})}"></p>
+
     <p>
-        <span th:text="#{m.stats.cache(${okCacheHitPercent})}"></span>
+        <span th:utext="#{m.stats.processing}"></span>
+        <a th:href="@{/m/reviews/commissions/failed}" th:text="${processing}"></a>
     </p>
 
     <p>
-        <span th:text="#{m.stats.submitted}"></span>
-        <span th:text="${submitted}"></span>
-    </p>
-
-    <p>
-        <span th:text="#{m.stats.notCompleted}"></span>
-        <span th:text="${notCompleted}"></span>
-    </p>
-
-    <p>
-        <span th:text="#{m.stats.processing}"></span>
-        <a th:href="@{/m/reviews/commissions/failed}"
-           th:text="${processing}">
-        </a>
-    </p>
-
-    <p>
-        <span th:text="#{m.stats.junkRepo}"></span>
-        <span th:text="${junkRepoCnt}"></span>
+        <span th:utext="#{m.stats.junkRepo(${junkRepoCnt})}"></span>
 
         <a th:if="${notCompleted == 0 and junkRepo > 0}"
            th:href="@{/m/stats/junk-clean/repo}"
-           th:text="#{m.stats.junkRepo.clean}">
+           th:utext="#{m.stats.junkRepo.clean}">
         </a>
     </p>
 
     <p>
-        <span th:text="#{m.stats.junkTempDir}"></span>
-        <span th:text="${junkTempDir}"></span>
+        <span th:utext="#{m.stats.junkTempDir(${junkTempDirCnt})}"></span>
 
         <a th:if="${notCompleted == 0 and junkTempDirCnt > 0}"
            th:href="@{/m/stats/junk-clean/temp-dir}"
-           th:text="#{m.stats.junkTempDir.clean}">
+           th:utext="#{m.stats.junkTempDir.clean}">
         </a>
     </p>
 

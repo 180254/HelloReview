@@ -6,43 +6,43 @@
     <ul class="nav nav-tabs">
         <li th:class="${#httpServletRequest.requestURI.equals('/')} ? active : ''"
             role="presentation">
-            <a th:href="@{/}" th:text="#{nav.main.page}"></a>
+            <a th:href="@{/}" th:utext="#{nav.main.page}"></a>
         </li>
 
         <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.contains('/m/courses')} ? active : ''"
             role="presentation">
-            <a th:href="@{/m/courses}" th:text="#{nav.m.courses}"></a>
+            <a th:href="@{/m/courses}" th:utext="#{nav.m.courses}"></a>
         </li>
 
         <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.contains('/m/forms')} ? active : ''"
             role="presentation">
-            <a th:href="@{/m/forms}" th:text="#{nav.m.forms}"></a>
+            <a th:href="@{/m/forms}" th:utext="#{nav.m.forms}"></a>
         </li>
 
         <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.contains('/m/reviews')} ? active : ''"
             role="presentation">
-            <a th:href="@{/m/reviews}" th:text="#{nav.m.reviews}"></a>
+            <a th:href="@{/m/reviews}" th:utext="#{nav.m.reviews}"></a>
         </li>
 
         <li th:if="${isMaster}"
             th:class="${#httpServletRequest.requestURI.contains('/m/stats')} ? active : ''"
             role="presentation">
-            <a th:href="@{/m/stats}" th:text="#{nav.m.stats}"></a>
+            <a th:href="@{/m/stats}" th:utext="#{nav.m.stats}"></a>
         </li>
 
         <li th:if="${isPeer}"
             th:class="${#httpServletRequest.requestURI.contains('/p/commissions')} ? active : ''"
             role="presentation">
-            <a th:href="@{/p/commissions}"  th:text="#{nav.p.commissions}"></a>
+            <a th:href="@{/p/commissions}" th:utext="#{nav.p.commissions}"></a>
         </li>
 
         <li th:if="${isLoggedIn}"
             class="navbar-right"
             role="presentation">
-            <a th:href="@{/logout(url='/')}"><span th:text="#{nav.logout}"></span>&nbsp;&nbsp;</a>
+            <a th:href="@{/logout(url='/')}"><span th:utext="#{nav.logout}"></span>&nbsp;&nbsp;</a>
         </li>
 
     </ul>

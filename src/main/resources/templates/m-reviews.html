@@ -11,18 +11,18 @@
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
     <h4 th:if="${addon_oneReview != null and addon_oneReview == true}" class="pre-table-addon">
-        <span th:text="#{m.reviews.table.head.addon.oneReview}"></span>
+        <span th:utext="#{m.reviews.table.head.addon.oneReview}"></span>
     </h4>
 
     <h4 th:if="${addon_forCourse!= null and addon_forCourse == true}" class="pre-table-addon">
-        <span th:text="#{m.reviews.table.head.addon.forCourse}"></span>
+        <span th:utext="#{m.reviews.table.head.addon.forCourse}"></span>
         <a th:href="@{/m/courses/{courseID}(courseID=${course.id})}">
             <strong th:text="${course.name}"></strong>
         </a>
     </h4>
 
     <h4 th:if="${addon_forForm!= null and addon_forForm == true}" class="pre-table-addon">
-        <span th:text="#{m.reviews.table.head.addon.forForm}"></span>
+        <span th:utext="#{m.reviews.table.head.addon.forForm}"></span>
         <a th:href="@{/m/forms/{formID}(formID=${form.id})}">
             <strong th:text="${form.name}"></strong>
         </a>
@@ -31,16 +31,16 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th th:text="#{m.reviews.thead.id}"></th>
-            <th th:text="#{m.reviews.thead.name}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.course}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.form}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.repository}"></span></th>
-            <th th:text="#{m.reviews.thead.comm.per.peer}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.commissions}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.reviews.thead.responses}"></span></th>
-            <th><i class="fa fa-times-circle"></i>&nbsp;<span th:text="#{m.reviews.thead.close}"></span></th>
-            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.reviews.thead.delete}"></span></th>
+            <th th:utext="#{m.reviews.thead.id}"></th>
+            <th th:utext="#{m.reviews.thead.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.reviews.thead.course}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.reviews.thead.form}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.reviews.thead.repository}"></span></th>
+            <th th:utext="#{m.reviews.thead.comm.per.peer}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.reviews.thead.commissions}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.reviews.thead.responses}"></span></th>
+            <th><i class="fa fa-times-circle"></i>&nbsp;<span th:utext="#{m.reviews.thead.close}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:utext="#{m.reviews.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -76,8 +76,7 @@
 
             <td>
                 <a th:href="@{/m/reviews/{reviewID}/commissions(reviewID=${review.id})}">
-                    <strong th:text="${review.commissions.size()}"></strong>
-                    <span th:text="#{m.reviews.tbody.commissions}"></span>
+                    <span th:utext="#{m.reviews.tbody.commissions(${review.commissions.size()})}"></span>
                 </a>
             </td>
 
@@ -103,8 +102,8 @@
                         data-btnCancelLabel=#{m.reviews.open.close.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger">
 
-                    <span th:if="${review.closed == true}" th:text="#{m.reviews.tbody.open.close.open}"></span>
-                    <span th:if="${review.closed == false}" th:text="#{m.reviews.tbody.open.close.close}"></span>
+                    <span th:if="${review.closed == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
+                    <span th:if="${review.closed == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
                 </a>
             </td>
 
@@ -118,7 +117,7 @@
                         data-btnOkLabel=#{m.reviews.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.reviews.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
-                   th:text="#{m.courses.tbody.delete}"></a>
+                   th:utext="#{m.courses.tbody.delete}"></a>
             </td>
 
         </tr>
@@ -127,9 +126,9 @@
 
     <div th:if="${newButton}" class="add-new text-right">
         <a class="btn btn-default btn-xs" th:href="@{/m/reviews/commissions/failed}"
-           th:text="#{m.reviews.tbody.commissions.failed}" role="button"></a><br/>
+           th:utext="#{m.reviews.tbody.commissions.failed}" role="button"></a><br/>
         <a class="btn btn-default" th:href="@{/m/reviews/add}"
-           th:text="#{m.reviews.tbody.add.new.one}" role="button"></a>
+           th:utext="#{m.reviews.tbody.add.new.one}" role="button"></a>
     </div>
 </main>
 

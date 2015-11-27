@@ -11,17 +11,17 @@
     <div th:replace="fragments/ajax :: ajax-loader"></div>
 
     <h4 th:if="${addon_oneForm != null and addon_oneForm == true}" class="pre-table-addon">
-        <span th:text="#{m.forms.table.head.addon.oneForm}"></span>
+        <span th:utext="#{m.forms.table.head.addon.oneForm}"></span>
     </h4>
 
     <table class="table table-hover">
         <thead>
         <tr>
-            <th th:text="#{m.forms.thead.id}"></th>
-            <th th:text="#{m.forms.thead.form.name}"></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.forms.thead.preview}"></span></th>
-            <th><i class="fa fa-eye"></i>&nbsp;<span th:text="#{m.forms.thead.reviews}"></span></th>
-            <th><i class="fa fa-eraser"></i>&nbsp;<span th:text="#{m.forms.thead.delete}"></span></th>
+            <th th:utext="#{m.forms.thead.id}"></th>
+            <th th:utext="#{m.forms.thead.form.name}"></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.forms.thead.preview}"></span></th>
+            <th><i class="fa fa-eye"></i>&nbsp;<span th:utext="#{m.forms.thead.reviews}"></span></th>
+            <th><i class="fa fa-eraser"></i>&nbsp;<span th:utext="#{m.forms.thead.delete}"></span></th>
         </tr>
         </thead>
 
@@ -37,14 +37,13 @@
             </td>
 
             <td>
-                <a th:href="@{/m/forms/preview/{formID}(formID=${form.id})}" th:text="#{m.forms.tbody.as.html}"></a>,
-                <a th:href="@{/m/forms/xml/{formID}(formID=${form.id})}" th:text="#{m.forms.tbody.as.xml}"></a>
+                <a th:href="@{/m/forms/preview/{formID}(formID=${form.id})}" th:utext="#{m.forms.tbody.as.html}"></a>,
+                <a th:href="@{/m/forms/xml/{formID}(formID=${form.id})}" th:utext="#{m.forms.tbody.as.xml}"></a>
             </td>
 
             <td>
                 <a th:href="@{/m/reviews/for/form/{formID}(form=${form.id})}">
-                    <strong th:text="${form.reviews.size()}"></strong>
-                    <span th:text="#{m.forms.tbody.reviews}"></span>
+                    <span th:utext="#{m.forms.tbody.reviews(${form.reviews.size()})}"></span>
                 </a>
             </td>
 
@@ -58,14 +57,14 @@
                         data-btnOkLabel=#{m.forms.delete.btnOkLabel},
                         data-btnCancelLabel=#{m.forms.delete.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger"
-                   th:text="#{m.forms.tbody.delete}"></a>
+                   th:utext="#{m.forms.tbody.delete}"></a>
             </td>
         </tr>
         </tbody>
     </table>
 
     <div th:if="${newButton}" class="add-new text-right">
-        <a class="btn btn-default" th:href="@{/m/forms/add}" th:text="#{m.forms.tbody.add.new.one}" role="button"></a>
+        <a class="btn btn-default" th:href="@{/m/forms/add}" th:utext="#{m.forms.tbody.add.new.one}" role="button"></a>
     </div>
 </main>
 

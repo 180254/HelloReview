@@ -21,7 +21,7 @@
         <div id="review-add-form-body" class="form-group">
 
             <div class="input-2">
-                <label for="review-add-name" th:text="#{m.reviews.add.name.label}"></label>
+                <label for="review-add-name" th:utext="#{m.reviews.add.name.label}"></label>
 
                 <input type="text"
                        class="form-control"
@@ -30,7 +30,7 @@
             </div>
 
             <div class="input-2">
-                <label for="review-add-resp-per-peer" th:text="#{m.reviews.add.comm.per.peer.label}"></label>
+                <label for="review-add-resp-per-peer" th:utext="#{m.reviews.add.comm.per.peer.label}"></label>
 
                 <input type="number" min="1" max="10"
                        class="form-control"
@@ -39,7 +39,7 @@
             </div>
 
             <div class="input-2">
-                <label for="review-add-course" th:text="#{m.reviews.add.course}"></label>
+                <label for="review-add-course" th:utext="#{m.reviews.add.course}"></label>
 
                 <select id="review-add-course" th:field="*{courseID}" class="form-control">
                     <option th:each="course : ${courses}"
@@ -50,7 +50,7 @@
             </div>
 
             <div class="input-2">
-                <label for="review-add-form-2" th:text="#{m.reviews.add.form}"></label>
+                <label for="review-add-form-2" th:utext="#{m.reviews.add.form}"></label>
 
                 <select id="review-add-form-2" th:field="*{formID}" class="form-control">
                     <option th:each="form : ${forms}"
@@ -61,7 +61,7 @@
             </div>
 
             <div class="input-2">
-                <label for="review-add-repository" th:text="#{m.reviews.add.repository}"></label>
+                <label for="review-add-repository" th:utext="#{m.reviews.add.repository}"></label>
 
                 <select id="review-add-repository" th:field="*{repositoryFullName}" class="form-control"
                         th:attr="data-repolist-url=@{/m/reviews/add/repo-list}">
@@ -71,13 +71,13 @@
             <div id="review-add-warning" class="course-add-ajax-info alert alert-warning" role="alert">
                 <h4>
                     <strong id="review-add-warning-part1">0</strong>
-                    <span th:text="#{m.reviews.add.warning.part1}"></span>
+                    <span th:utext="#{m.reviews.add.warning.part1}"></span>
                     <br/>
 
                     <strong id="review-add-warning-part2-of1">0</strong>
-                    <span th:text="#{m.reviews.add.warning.part2.of}"></span>
+                    <span th:utext="#{m.reviews.add.warning.part2.of}"></span>
                     <strong id="review-add-warning-part2-of2">0</strong>
-                    <span th:text="#{m.reviews.add.warning.part2}"></span>
+                    <span th:utext="#{m.reviews.add.warning.part2}"></span>
                 </h4>
 
                 <ul id="review-add-warning-list">
@@ -85,12 +85,12 @@
                 <br/>
 
                 <h4>
-                    <span th:text="#{m.reviews.add.warning.part3}"></span>
+                    <span th:utext="#{m.reviews.add.warning.part3}"></span>
                 </h4>
             </div>
 
             <div id="review-add-error" class="course-add-ajax-info alert alert-danger" role="alert">
-                <h4 th:text="#{m.reviews.add.validation.header}"></h4>
+                <h4 th:utext="#{m.reviews.add.validation.header}"></h4>
 
                 <ul id="review-add-error-list">
                 </ul>
@@ -99,7 +99,7 @@
         </div>
 
         <div class="form-submit forms-buttons-2">
-            <button th:text="#{m.reviews.add.button.submit}"
+            <button th:utext="#{m.reviews.add.button.submit}"
                     id="review-add-submit" type="submit" class="btn btn-default btn-primary">
             </button>
         </div>

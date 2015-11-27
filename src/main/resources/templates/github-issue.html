@@ -10,8 +10,8 @@
 <main class="container main-hello text-center">
 
     <div id="sth-went-wrong">
-        <span class="status" th:text="#{github.issue.status}"></span><br/>
-        <span class="message2" th:text="#{github.issue.message2}"></span><br/>
+        <span class="status" th:utext="#{github.issue.status}"></span><br/>
+        <span class="message2" th:utext="#{github.issue.message2}"></span><br/>
         <img src="" th:src="@{/images/sth-went-wrong.png}" alt=""/><br/>
     </div>
 
