@@ -149,7 +149,7 @@ class MFormsController {
         // input scale must be required
         form.getQuestions().stream()
                 .flatMap(q -> q.getInputs().stream())
-                .filter(input -> proxyService.isInstanceof(input, InputScale.class))
+                .filter(input -> proxyService.isInstanceOf(input, InputScale.class))
                 .forEach(input -> input.setRequired(true));
 
         LOGGER.debug("Form added {}", form);

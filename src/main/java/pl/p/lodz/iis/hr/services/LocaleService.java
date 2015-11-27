@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
- * Get properly localizes message from MessageSource easily.
+ * Get properly localized message (i18n property key) from MessageSource easily.
  *
  * @author original concept by anataliocs @ http://stackoverflow.com/questions/28750292/
  * @author 180254
@@ -32,6 +32,11 @@ public class LocaleService {
         return LocaleContextHolder.getLocale();
     }
 
+    /**
+     * @param msgSupplier supplier of localized msg
+     * @param code        localization property key
+     * @return localized msg or msg code, if no localization is available
+     */
     private String msgOrCode(Supplier<String> msgSupplier, String code) {
         String msg = ExceptionUtil.ignoreException1(msgSupplier::get);
         return (msg == null)

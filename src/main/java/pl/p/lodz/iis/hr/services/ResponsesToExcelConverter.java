@@ -83,7 +83,7 @@ public class ResponsesToExcelConverter {
                 for (Input input : question.getInputs()) {
                     String headQI = String.format("%s %s", input.getQuestion().getQuestionText(), input.getLabel());
 
-                    if (proxyService.isInstanceof(input, InputScale.class)) {
+                    if (proxyService.isInstanceOf(input, InputScale.class)) {
                         InputScale input1 = (InputScale) input;
                         headQI += String.format(" (%d - %d)", input1.getFromS(), input1.getToS());
                     }
@@ -126,7 +126,7 @@ public class ResponsesToExcelConverter {
                     for (Answer answer : response.getAnswers()) {
                         Cell answerCell = responseRow.createCell(cellCnt);
 
-                        if (proxyService.isInstanceof(answer.getInput(), InputScale.class)) {
+                        if (proxyService.isInstanceOf(answer.getInput(), InputScale.class)) {
                             answerCell.setCellValue((double) answer.getAnswerAsNumber());
                         } else {
                             answerCell.setCellValue(answer.getAnswer());

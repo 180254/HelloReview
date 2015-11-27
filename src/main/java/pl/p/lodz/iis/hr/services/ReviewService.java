@@ -8,6 +8,9 @@ import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 
 import java.util.Collection;
 
+/**
+ * Util service to Review model.
+ */
 @Service
 public class ReviewService {
 

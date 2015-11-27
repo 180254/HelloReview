@@ -14,6 +14,7 @@ import java.util.Objects;
 public class Answer implements Serializable {
 
     private static final long serialVersionUID = -1977277745028715412L;
+    public static final int MAX_LENGTH = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +33,7 @@ public class Answer implements Serializable {
     @JsonView
     private Input input;
 
-    @Column(nullable = true, length = 1000)
+    @Column(nullable = true, length = MAX_LENGTH)
     @JsonView
     private String answer;
 

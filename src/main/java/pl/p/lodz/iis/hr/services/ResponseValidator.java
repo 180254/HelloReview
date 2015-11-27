@@ -1,5 +1,6 @@
 package pl.p.lodz.iis.hr.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
@@ -16,8 +17,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Customized validator for model "Response".<br/>
+ * It is not field validating, it checks if response is proper:<br/>
+ * - answers for all inputs are provided<br/>
+ * - ans anwer has proper type (ex. is number if it should be).
+ */
 @Service
 public class ResponseValidator {
+
+    private final ProxyService proxyService;
+
+    @Autowired
+    public ResponseValidator(ProxyService proxyService) {
+        this.proxyService = proxyService;
+    }
 
     public void validate(Response response)
             throws ErrorPageException, LocalizableErrorRestException {
@@ -59,7 +73,7 @@ public class ResponseValidator {
 
     private void ensureInputScaleAnswersAreNumber(Response response) throws ErrorPageException {
         boolean properScaleAnswers = response.getAnswers().stream()
-                .filter(answer1 -> answer1.getInput() instanceof InputScale)
+                .filter(answer1 -> proxyService.isInstanceOf(answer1.getInput(), InputScale.class))
                 .allMatch(answer1 -> !ExceptionUtil.isExceptionThrown1(answer1::getAnswerAsNumber));
 
         if (!properScaleAnswers) {
@@ -69,7 +83,7 @@ public class ResponseValidator {
 
     private void ensureInputScaleAnswersAreInRange(Response response) throws ErrorPageException {
         boolean allAreInRange = response.getAnswers().stream()
-                .filter(answer1 -> answer1.getInput() instanceof InputScale)
+                .filter(answer1 -> proxyService.isInstanceOf(answer1.getInput(), InputScale.class))
                 .filter(answer1 -> answer1.getAnswer() != null)
 
                 .allMatch(answer1 -> isBetweenInclusiveLong(
@@ -85,9 +99,9 @@ public class ResponseValidator {
 
     private void ensureInputTextAnswersLenAreInRange(Response response) throws ErrorPageException {
         boolean allAreInRange = response.getAnswers().stream()
-                .filter(answer1 -> answer1.getInput() instanceof InputText)
+                .filter(answer1 -> proxyService.isInstanceOf(answer1.getInput(), InputText.class))
                 .filter(answer1 -> answer1.getAnswer() != null)
-                .allMatch(answer -> isBetweenInclusiveInt(answer.getAnswer().length(), 1, 1000));
+                .allMatch(answer -> isBetweenInclusiveInt(answer.getAnswer().length(), 1, Answer.MAX_LENGTH));
 
         if (!allAreInRange) {
             throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
