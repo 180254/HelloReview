@@ -1,6 +1,7 @@
 package pl.p.lodz.iis.hr.configuration;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Fix, server should server 400 instead of 500, if parameter was not added to request.<br/>
@@ -43,6 +44,19 @@ public class Long2 implements Serializable {
 
     public long get() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || (getClass() != obj.getClass())) return false;
+        Long2 long2 = (Long2) obj;
+        return value == long2.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     @Override
