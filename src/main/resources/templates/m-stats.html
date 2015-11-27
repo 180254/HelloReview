@@ -33,10 +33,10 @@
 
     <p>
         <span th:text="#{m.stats.junkRepo}"></span>
-        <span th:text="${junkRepo}"></span>
+        <span th:text="${junkRepoCnt}"></span>
 
         <a th:if="${notCompleted == 0 and junkRepo > 0}"
-           th:href="@{/m/stats/junkclean/repo}"
+           th:href="@{/m/stats/junk-clean/repo}"
            th:text="#{m.stats.junkRepo.clean}">
         </a>
     </p>
@@ -45,8 +45,8 @@
         <span th:text="#{m.stats.junkTempDir}"></span>
         <span th:text="${junkTempDir}"></span>
 
-        <a th:if="${notCompleted == 0 and junkTempDir > 0}"
-           th:href="@{/m/stats/junkclean/tempdir}"
+        <a th:if="${notCompleted == 0 and junkTempDirCnt > 0}"
+           th:href="@{/m/stats/junk-clean/temp}"
            th:text="#{m.stats.junkTempDir.clean}">
         </a>
     </p>

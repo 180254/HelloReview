@@ -18,54 +18,43 @@ import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.repositories.FormRepository;
-import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.*;
+import pl.p.lodz.iis.hr.utils.SafeFilenameUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Controller
 class MReviewsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MReviewsController.class);
-    private static final Pattern FILENAME_NOT_SAFE_CHARS = Pattern.compile("[^a-zA-Z0-9.-]");
+    private static final String XLSX_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private final ResCommonService resCommonService;
-    private final ReviewRepository reviewRepository;
-    private final CourseRepository courseRepository;
-    private final FormRepository formRepository;
-    private final ReviewService reviewService;
-    private final LocaleService localeService;
+    private final RepositoryProvider repositoryProvider;
     private final FieldValidator fieldValidator;
+    private final ReviewService reviewService;
     private final GHReviewCreator ghReviewCreator;
     private final ResponsesToExcelConverter respToExcelConverter;
+    private final LocaleService localeService;
 
     @Autowired
     MReviewsController(ResCommonService resCommonService,
-                       ReviewRepository reviewRepository,
-                       CourseRepository courseRepository,
-                       FormRepository formRepository,
-                       ReviewService reviewService,
-                       LocaleService localeService,
+                       RepositoryProvider repositoryProvider,
                        FieldValidator fieldValidator,
+                       ReviewService reviewService,
                        GHReviewCreator ghReviewCreator,
-                       ResponsesToExcelConverter respToExcelConverter) {
+                       ResponsesToExcelConverter respToExcelConverter,
+                       LocaleService localeService) {
         this.resCommonService = resCommonService;
-        this.reviewRepository = reviewRepository;
-        this.courseRepository = courseRepository;
-        this.formRepository = formRepository;
-        this.reviewService = reviewService;
-        this.localeService = localeService;
+        this.repositoryProvider = repositoryProvider;
         this.fieldValidator = fieldValidator;
+        this.reviewService = reviewService;
         this.ghReviewCreator = ghReviewCreator;
         this.respToExcelConverter = respToExcelConverter;
+        this.localeService = localeService;
     }
 
     @RequestMapping(
@@ -74,7 +63,7 @@ class MReviewsController {
     @Transactional
     public String list(Model model) {
 
-        List<Review> reviews = reviewRepository.findAll();
+        List<Review> reviews = repositoryProvider.review().findAll();
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("newButton", true);
@@ -89,7 +78,7 @@ class MReviewsController {
     public String listOne(@PathVariable Long2 reviewID,
                           Model model) throws ErrorPageException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOne(repositoryProvider.review(), reviewID.get());
 
         model.addAttribute("reviews", Collections.singletonList(review));
         model.addAttribute("newButton", false);
@@ -105,7 +94,7 @@ class MReviewsController {
     public String listForCourse(@PathVariable Long2 courseID,
                                 Model model) throws ErrorPageException {
 
-        Course course = resCommonService.getOne(courseRepository, courseID.get());
+        Course course = resCommonService.getOne(repositoryProvider.course(), courseID.get());
         List<Review> reviews = course.getReviews();
 
         model.addAttribute("course", course);
@@ -125,7 +114,7 @@ class MReviewsController {
                               Model model)
             throws ErrorPageException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOne(repositoryProvider.form(), formID.get());
         List<Review> reviews = form.getReviews();
 
         model.addAttribute("form", form);
@@ -142,8 +131,8 @@ class MReviewsController {
     @Transactional
     public String kAdd(Model model) {
 
-        List<Course> courses = courseRepository.findAll();
-        List<Form> forms = formRepository.findByTemporaryFalse();
+        List<Course> courses = repositoryProvider.course().findAll();
+        List<Form> forms = repositoryProvider.form().findByTemporaryFalse();
 
         model.addAttribute("f", new GHReviewAddForm());
         model.addAttribute("courses", courses);
@@ -162,6 +151,7 @@ class MReviewsController {
 
         try {
             return ghReviewCreator.getListOfCourseRepos();
+
         } catch (GHCommunicationException e) {
             throw (LocalizedErrorRestException)
                     new LocalizedErrorRestException(e.getMessage()).initCause(e);
@@ -177,7 +167,7 @@ class MReviewsController {
     public List<String> delete(@ModelAttribute("id") Long2 reviewID)
             throws LocalizableErrorRestException {
 
-        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(repositoryProvider.review(), reviewID.get());
 
         if (!reviewService.canBeDeleted(review)) {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
@@ -198,11 +188,11 @@ class MReviewsController {
     public List<String> openClose(@ModelAttribute("id") Long2 reviewID)
             throws LocalizableErrorRestException {
 
-        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(repositoryProvider.review(), reviewID.get());
 
         LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
         review.setClosed(!review.isClosed());
-        reviewRepository.save(review);
+        repositoryProvider.review().save(review);
 
         return review.isClosed() ? Arrays.asList(
                 localeService.get("m.reviews.open.close.closed"),
@@ -224,7 +214,7 @@ class MReviewsController {
                                @ModelAttribute("pk") Long2 reviewID)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Review review = resCommonService.getOneForRest(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOneForRest(repositoryProvider.review(), reviewID.get());
 
         fieldValidator.validateFieldRestEx(
                 new Review(newName, 0L, null, null, null),
@@ -234,7 +224,7 @@ class MReviewsController {
 
         LOGGER.debug("Review {} renamed to {}", review, newName);
         review.setName(newName);
-        reviewRepository.save(review);
+        repositoryProvider.review().save(review);
 
         return localeService.getAsList("m.reviews.rename.done");
     }
@@ -250,8 +240,8 @@ class MReviewsController {
                                  HttpServletResponse response)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        if (!courseRepository.exists(ghReviewAddForm.getCourseIDLong())
-                || !formRepository.exists(ghReviewAddForm.getFormIDLong())
+        if (!repositoryProvider.course().exists(ghReviewAddForm.getCourseIDLong())
+                || !repositoryProvider.form().exists(ghReviewAddForm.getFormIDLong())
                 || !ghReviewAddForm.getRepositoryFullName().contains("/")) {
 
             throw LocalizableErrorRestException.noResources();
@@ -273,11 +263,11 @@ class MReviewsController {
                 }
         );
 
-
         GHRepository ghRepository;
 
         try {
             ghRepository = ghReviewCreator.getRepositoryByName(ghReviewAddForm.getRepositoryFullName());
+
         } catch (GHCommunicationException ignored) {
             throw LocalizableErrorRestException.noResource();
         }
@@ -286,24 +276,20 @@ class MReviewsController {
         return ghReviewCreator.createReview(ghReviewAddForm, ghRepository, response);
     }
 
-
     @RequestMapping(
             value = "/m/reviews/{reviewID}/responses",
             method = RequestMethod.GET,
-            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            produces = XLSX_MEDIA_TYPE)
     @Transactional
     @ResponseBody
     public byte[] responses(@PathVariable Long2 reviewID,
                             HttpServletResponse response)
             throws ErrorPageException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOne(repositoryProvider.review(), reviewID.get());
 
-        String filename = String.format("%s_%s.xlsx",
-                review.getName(),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm"))
-        );
-        String safeFilename = FILENAME_NOT_SAFE_CHARS.matcher(filename).replaceAll("_");
+        String filename = String.format("%s_%s.xlsx", review.getName(), SafeFilenameUtils.getCurrentTimestamp());
+        String safeFilename = SafeFilenameUtils.toFilenameSafeString(filename);
 
         response.setHeader("Content-Disposition", String.format("attachment; filename=%s", safeFilename));
         response.setHeader("Content-Transfer-Encoding", "binary");

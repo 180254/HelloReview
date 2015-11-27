@@ -22,7 +22,6 @@ import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.models.forms.InputScale;
-import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,25 +38,25 @@ class MFormsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MFormsController.class);
 
     private final ResCommonService resCommonService;
-    private final FormRepository formRepository;
-    private final ReviewService reviewService;
+    private final RepositoryProvider repositoryProvider;
     private final FormValidator formValidator;
-    private final LocaleService localeService;
     private final FieldValidator fieldValidator;
     private final XmlMapperProvider xmlMapperProvider;
     private final ProxyService proxyService;
+    private final ReviewService reviewService;
+    private final LocaleService localeService;
 
     @Autowired
     MFormsController(ResCommonService resCommonService,
-                     FormRepository formRepository,
-                     ReviewService reviewService,
+                     RepositoryProvider repositoryProvider,
                      FormValidator formValidator,
-                     LocaleService localeService,
                      FieldValidator fieldValidator,
                      XmlMapperProvider xmlMapperProvider,
-                     ProxyService proxyService) {
+                     ReviewService reviewService,
+                     ProxyService proxyService,
+                     LocaleService localeService) {
         this.resCommonService = resCommonService;
-        this.formRepository = formRepository;
+        this.repositoryProvider = repositoryProvider;
         this.reviewService = reviewService;
         this.formValidator = formValidator;
         this.localeService = localeService;
@@ -72,7 +71,7 @@ class MFormsController {
     @Transactional
     public String list(Model model) {
 
-        List<Form> byTemporaryFalse = formRepository.findByTemporaryFalse();
+        List<Form> byTemporaryFalse = repositoryProvider.form().findByTemporaryFalse();
 
         model.addAttribute("forms", byTemporaryFalse);
         model.addAttribute("newButton", true);
@@ -87,7 +86,7 @@ class MFormsController {
     public String listOne(@PathVariable Long2 formID,
                           Model model) throws ErrorPageException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOne(repositoryProvider.form(), formID.get());
 
         if (form.isTemporary()) {
             throw new ErrorPageException(HttpServletResponse.SC_NOT_FOUND);
@@ -116,10 +115,10 @@ class MFormsController {
     public List<String> kAddPOST(@ModelAttribute("form-name") String formName,
                                  @ModelAttribute("form-xml") String formXML,
                                  @ModelAttribute("action") String action)
-            throws LocalizedErrorRestException, LocalizableErrorRestException {
+            throws LocalizedErrorRestException, LocalizableErrorRestException, ErrorPageException {
 
         if (!Arrays.asList("preview", "add").contains(action)) {
-            throw new LocalizableErrorRestException("");
+            throw new ErrorPageException(HttpServletResponse.SC_BAD_REQUEST);
         }
 
         Form form;
@@ -140,8 +139,9 @@ class MFormsController {
         form.setName(Strings.emptyToNull(formName));
         form.setTemporary(action.equals("preview"));
 
-        formRepository.delete(formRepository.findByTemporaryTrue());
-        formRepository.flush();
+        List<Form> formRoBeDeleted = repositoryProvider.form().findByTemporaryTrue();
+        repositoryProvider.form().delete(formRoBeDeleted);
+        repositoryProvider.form().flush();
 
         formValidator.validateRestEx(form);
         form.fixRelations();
@@ -149,11 +149,12 @@ class MFormsController {
         // input scale must be required
         form.getQuestions().stream()
                 .flatMap(q -> q.getInputs().stream())
-                .filter(input -> input instanceof InputScale)
+                .filter(input -> proxyService.isInstanceof(input, InputScale.class))
                 .forEach(input -> input.setRequired(true));
 
         LOGGER.debug("Form added {}", form);
-        formRepository.save(form);
+        repositoryProvider.form().save(form);
+        LOGGER.debug("Added form ID {}", form.getId());
 
         return Collections.singletonList(String.valueOf(form.getId()));
     }
@@ -166,7 +167,7 @@ class MFormsController {
                           Model model)
             throws ErrorPageException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOne(repositoryProvider.form(), formID.get());
 
         Review review = new Review(null, 0L, null, form, "user/repo1_1");
         Commission commission = new Commission(review, null, null, (String) null);
@@ -202,7 +203,7 @@ class MFormsController {
     public String xml(@PathVariable Long2 formID)
             throws JsonProcessingException, ErrorPageException {
 
-        Form form = resCommonService.getOne(formRepository, formID.get());
+        Form form = resCommonService.getOne(repositoryProvider.form(), formID.get());
         ObjectWriter objectWriter = xmlMapperProvider.getXmlMapper().writerWithView(JSONViews.FormParseXML.class);
         return objectWriter.writeValueAsString(form);
     }
@@ -216,7 +217,7 @@ class MFormsController {
     public List<String> delete(@ModelAttribute("id") Long2 formID)
             throws LocalizableErrorRestException {
 
-        Form form = resCommonService.getOneForRest(formRepository, formID.get());
+        Form form = resCommonService.getOneForRest(repositoryProvider.form(), formID.get());
 
         List<Review> reviews = form.getReviews();
         if (!reviewService.canBeDeleted(reviews)) {
@@ -225,7 +226,7 @@ class MFormsController {
 
         LOGGER.debug("Form deleted {}", form);
         reviewService.delete(reviews);
-        formRepository.delete(form);
+        repositoryProvider.form().delete(form);
 
         return localeService.getAsList("m.forms.delete.done");
     }
@@ -240,7 +241,7 @@ class MFormsController {
                                @ModelAttribute("pk") Long2 formID)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Form form = resCommonService.getOneForRest(formRepository, formID.get());
+        Form form = resCommonService.getOneForRest(repositoryProvider.form(), formID.get());
 
         fieldValidator.validateFieldRestEx(
                 new Form(newName, null),
@@ -250,7 +251,7 @@ class MFormsController {
 
         LOGGER.debug("Form {} renamed to {}", form, newName);
         form.setName(newName);
-        formRepository.save(form);
+        repositoryProvider.form().save(form);
 
         return localeService.getAsList("m.forms.rename.done");
     }

@@ -14,11 +14,7 @@ import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
-import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.services.FieldValidator;
-import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.ResCommonService;
-import pl.p.lodz.iis.hr.services.ReviewService;
+import pl.p.lodz.iis.hr.services.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,19 +25,19 @@ class MCoursesController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MCoursesController.class);
 
     private final ResCommonService resCommonService;
-    private final CourseRepository courseRepository;
+    private final RepositoryProvider repositoryProvider;
     private final ReviewService reviewService;
     private final FieldValidator fieldValidator;
     private final LocaleService localeService;
 
     @Autowired
     MCoursesController(ResCommonService resCommonService,
-                       CourseRepository courseRepository,
+                       RepositoryProvider repositoryProvider,
                        ReviewService reviewService,
                        FieldValidator fieldValidator,
                        LocaleService localeService) {
         this.resCommonService = resCommonService;
-        this.courseRepository = courseRepository;
+        this.repositoryProvider = repositoryProvider;
         this.reviewService = reviewService;
         this.fieldValidator = fieldValidator;
         this.localeService = localeService;
@@ -53,7 +49,7 @@ class MCoursesController {
     @Transactional
     public String list(Model model) {
 
-        List<Course> courses = courseRepository.findAll();
+        List<Course> courses = repositoryProvider.course().findAll();
 
         model.addAttribute("courses", courses);
         model.addAttribute("newButton", true);
@@ -69,7 +65,7 @@ class MCoursesController {
                           Model model)
             throws ErrorPageException {
 
-        Course course = resCommonService.getOne(courseRepository, courseID.get());
+        Course course = resCommonService.getOne(repositoryProvider.course(), courseID.get());
 
         model.addAttribute("courses", Collections.singletonList(course));
         model.addAttribute("newButton", false);
@@ -95,8 +91,9 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
-        LOGGER.debug("Course added {}", course);
-        courseRepository.save(course);
+        LOGGER.debug("Course adding {}", course);
+        repositoryProvider.course().save(course);
+        LOGGER.debug("Added course ID {}", course.getId());
 
         return localeService.getAsList("m.courses.add.done");
     }
@@ -110,7 +107,7 @@ class MCoursesController {
     public List<String> delete(@ModelAttribute("id") Long2 courseID)
             throws LocalizableErrorRestException {
 
-        Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForRest(repositoryProvider.course(), courseID.get());
         List<Review> reviews = course.getReviews();
 
         if (!reviewService.canBeDeleted(reviews)) {
@@ -119,7 +116,7 @@ class MCoursesController {
 
         LOGGER.debug("Course deleted {}", course);
         reviewService.delete(reviews);
-        courseRepository.delete(courseID.get());
+        repositoryProvider.course().delete(courseID.get());
 
         return localeService.getAsList("m.courses.delete.done");
     }
@@ -134,7 +131,7 @@ class MCoursesController {
                                @ModelAttribute("pk") Long2 courseID)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForRest(repositoryProvider.course(), courseID.get());
 
         fieldValidator.validateFieldRestEx(
                 new Course(newName),
@@ -144,7 +141,7 @@ class MCoursesController {
 
         LOGGER.debug("Course renamed {} to {}", course, newName);
         course.setName(newName);
-        courseRepository.save(course);
+        repositoryProvider.course().save(course);
 
         return localeService.getAsList("m.courses.rename.done");
     }

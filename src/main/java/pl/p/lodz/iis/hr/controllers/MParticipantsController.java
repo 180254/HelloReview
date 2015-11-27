@@ -14,10 +14,9 @@ import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.exceptions.LocalizedErrorRestException;
 import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Participant;
-import pl.p.lodz.iis.hr.repositories.CourseRepository;
-import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.services.FieldValidator;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.RepositoryProvider;
 import pl.p.lodz.iis.hr.services.ResCommonService;
 
 import java.util.Collections;
@@ -29,20 +28,17 @@ class MParticipantsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MParticipantsController.class);
 
     private final ResCommonService resCommonService;
-    private final CourseRepository courseRepository;
-    private final ParticipantRepository participantRepository;
+    private final RepositoryProvider repositoryProvider;
     private final FieldValidator fieldValidator;
     private final LocaleService localeService;
 
     @Autowired
     MParticipantsController(ResCommonService resCommonService,
-                            CourseRepository courseRepository,
-                            ParticipantRepository partiRepository,
+                            RepositoryProvider repositoryProvider,
                             FieldValidator fieldValidator,
                             LocaleService localeService) {
         this.resCommonService = resCommonService;
-        this.courseRepository = courseRepository;
-        this.participantRepository = partiRepository;
+        this.repositoryProvider = repositoryProvider;
         this.fieldValidator = fieldValidator;
         this.localeService = localeService;
     }
@@ -55,7 +51,7 @@ class MParticipantsController {
                        Model model)
             throws ErrorPageException {
 
-        Course course = resCommonService.getOne(courseRepository, courseID.get());
+        Course course = resCommonService.getOne(repositoryProvider.course(), courseID.get());
         List<Participant> participants = course.getParticipants();
 
         model.addAttribute("course", course);
@@ -74,7 +70,7 @@ class MParticipantsController {
                           Model model)
             throws ErrorPageException {
 
-        Participant participant = resCommonService.getOne(participantRepository, participantID.get());
+        Participant participant = resCommonService.getOne(repositoryProvider.participant(), participantID.get());
         Course course = participant.getCourse();
 
         model.addAttribute("course", course);
@@ -96,7 +92,7 @@ class MParticipantsController {
                                  @ModelAttribute("participant-github-name") String gitHubName)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Course course = resCommonService.getOneForRest(courseRepository, courseID.get());
+        Course course = resCommonService.getOneForRest(repositoryProvider.course(), courseID.get());
         Participant participant = new Participant(course, name, gitHubName);
 
         String namePrefix = localeService.get("m.participants.add.validation.prefix.participant.name");
@@ -108,11 +104,11 @@ class MParticipantsController {
                 new String[]{namePrefix, gitHubNamePrefix}
         );
 
-        if (participantRepository.findByCourseAndName(course, name) != null) {
+        if (repositoryProvider.participant().findByCourseAndName(course, name) != null) {
             allErrors.add(String.format("%s %s", namePrefix, localeService.get("UniqueName")));
         }
 
-        if (participantRepository.findByCourseAndGitHubName(course, gitHubName) != null) {
+        if (repositoryProvider.participant().findByCourseAndGitHubName(course, gitHubName) != null) {
             allErrors.add(String.format("%s %s", gitHubNamePrefix, localeService.get("UniqueName")));
         }
 
@@ -121,7 +117,8 @@ class MParticipantsController {
         }
 
         LOGGER.debug("Participant added {}", participant);
-        participantRepository.save(participant);
+        repositoryProvider.participant().save(participant);
+        LOGGER.debug("Added participant ID {}", participant.getId());
 
         return localeService.getAsList("m.participants.add.done");
     }
@@ -135,14 +132,14 @@ class MParticipantsController {
     public List<String> delete(@ModelAttribute("id") Long2 participantID)
             throws LocalizableErrorRestException {
 
-        Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
+        Participant participant = resCommonService.getOneForRest(repositoryProvider.participant(), participantID.get());
 
         if (!participant.getCommissionsAsAssessor().isEmpty()) {
             throw new LocalizableErrorRestException("m.participants.delete.cannot.as.comm.exist");
         }
 
         LOGGER.debug("Participant deleted {}", participant);
-        participantRepository.delete(participant);
+        repositoryProvider.participant().delete(participant);
 
         return localeService.getAsList("m.participants.delete.done");
     }
@@ -157,9 +154,9 @@ class MParticipantsController {
                                    @ModelAttribute("pk") Long2 participantID)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
+        Participant participant = resCommonService.getOneForRest(repositoryProvider.participant(), participantID.get());
 
-        if (participantRepository.findByCourseAndName(participant.getCourse(), newName) != null) {
+        if (repositoryProvider.participant().findByCourseAndName(participant.getCourse(), newName) != null) {
             throw LocalizableErrorRestException.notUniqueName();
         }
 
@@ -171,7 +168,7 @@ class MParticipantsController {
 
         LOGGER.debug("Participant {} name changed to {}", participant, newName);
         participant.setName(newName);
-        participantRepository.save(participant);
+        repositoryProvider.participant().save(participant);
 
         return localeService.getAsList("m.participants.rename.participant.name.done");
     }
@@ -186,9 +183,10 @@ class MParticipantsController {
                                          @ModelAttribute("pk") Long2 participantID)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
-        Participant participant = resCommonService.getOneForRest(participantRepository, participantID.get());
+        Participant participant = resCommonService.getOneForRest(repositoryProvider.participant(), participantID.get());
 
-        if (participantRepository.findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
+        if (repositoryProvider.participant()
+                .findByCourseAndGitHubName(participant.getCourse(), newGitHubName) != null) {
             throw LocalizableErrorRestException.notUniqueName();
         }
 
@@ -200,7 +198,7 @@ class MParticipantsController {
 
         LOGGER.debug("Participant {} GitHub name changed to {}", participant, newGitHubName);
         participant.setGitHubName(newGitHubName);
-        participantRepository.save(participant);
+        repositoryProvider.participant().save(participant);
 
         return localeService.getAsList("m.participants.rename.github.name.done");
     }

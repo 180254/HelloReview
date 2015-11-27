@@ -46,4 +46,8 @@ public class GHTaskScheduler {
 
         return -1L;
     }
+
+    public boolean shouldRetryButtonBeEnabled() {
+        return getApproxNumberOfScheduledTasks() == 0;
+    }
 }

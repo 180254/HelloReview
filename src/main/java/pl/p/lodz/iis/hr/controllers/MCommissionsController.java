@@ -16,13 +16,7 @@ import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
-import pl.p.lodz.iis.hr.repositories.CommissionRepository;
-import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
-import pl.p.lodz.iis.hr.repositories.ReviewRepository;
-import pl.p.lodz.iis.hr.services.GHReviewCreator;
-import pl.p.lodz.iis.hr.services.GHTaskScheduler;
-import pl.p.lodz.iis.hr.services.LocaleService;
-import pl.p.lodz.iis.hr.services.ResCommonService;
+import pl.p.lodz.iis.hr.services.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -35,25 +29,19 @@ class MCommissionsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MCommissionsController.class);
 
     private final ResCommonService resCommonService;
-    private final ReviewRepository reviewRepository;
-    private final CommissionRepository commissionRepository;
-    private final ParticipantRepository participantRepository;
+    private final RepositoryProvider repositoryProvider;
     private final GHTaskScheduler ghTaskScheduler;
     private final GHReviewCreator ghReviewCreator;
     private final LocaleService localeService;
 
     @Autowired
     MCommissionsController(ResCommonService resCommonService,
-                           ReviewRepository reviewRepository,
-                           CommissionRepository commissionRepository,
-                           ParticipantRepository partiRepository,
+                           RepositoryProvider repositoryProvider,
                            GHTaskScheduler ghTaskScheduler,
                            GHReviewCreator ghReviewCreator,
                            LocaleService localeService) {
         this.resCommonService = resCommonService;
-        this.reviewRepository = reviewRepository;
-        this.commissionRepository = commissionRepository;
-        this.participantRepository = partiRepository;
+        this.repositoryProvider = repositoryProvider;
         this.ghTaskScheduler = ghTaskScheduler;
         this.ghReviewCreator = ghReviewCreator;
         this.localeService = localeService;
@@ -67,11 +55,9 @@ class MCommissionsController {
                         Model model)
             throws ErrorPageException {
 
-        Review review = resCommonService.getOne(reviewRepository, reviewID.get());
+        Review review = resCommonService.getOne(repositoryProvider.review(), reviewID.get());
         List<Commission> commissions = review.getCommissions();
-
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
-        boolean retryButtonEnabled = notCompleted == 0;
+        boolean retryButtonEnabled = ghTaskScheduler.shouldRetryButtonBeEnabled();
 
         model.addAttribute("review", review);
         model.addAttribute("commissions", commissions);
@@ -89,12 +75,11 @@ class MCommissionsController {
                         Model model)
             throws ErrorPageException {
 
-        Commission commission = resCommonService.getOne(commissionRepository, commissionID.get());
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
-        boolean retryButton = notCompleted == 0;
+        Commission commission = resCommonService.getOne(repositoryProvider.commission(), commissionID.get());
+        boolean retryButtonEnabled = ghTaskScheduler.shouldRetryButtonBeEnabled();
 
         model.addAttribute("commissions", Collections.singletonList(commission));
-        model.addAttribute("retryButtonEnabled", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButtonEnabled);
         model.addAttribute("addon_oneCommission", true);
 
         return "m-commissions";
@@ -108,14 +93,14 @@ class MCommissionsController {
                         Model model)
             throws ErrorPageException {
 
-        Participant participant = resCommonService.getOne(participantRepository, participantID.get());
+        Participant participant = resCommonService.getOne(repositoryProvider.participant(), participantID.get());
         List<Commission> commissions = participant.getCommissionsAsAssessor();
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
-        boolean retryButton = notCompleted == 0;
+        boolean retryButtonEnabled = ghTaskScheduler.shouldRetryButtonBeEnabled();
+
 
         model.addAttribute("participant", participant);
         model.addAttribute("commissions", commissions);
-        model.addAttribute("retryButtonEnabled", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButtonEnabled);
         model.addAttribute("addon_forParticipant", true);
 
         return "m-commissions";
@@ -127,14 +112,13 @@ class MCommissionsController {
     @Transactional
     public String list4(Model model) {
 
-        List<Commission> failed = commissionRepository.findByStatusIn(
+        List<Commission> failed = repositoryProvider.commission().findByStatusIn(
                 Arrays.asList(CommissionStatus.PROCESSING_FAILED, CommissionStatus.PROCESSING)
         );
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
-        boolean retryButton = notCompleted == 0;
+        boolean retryButtonEnabled = ghTaskScheduler.shouldRetryButtonBeEnabled();
 
         model.addAttribute("commissions", failed);
-        model.addAttribute("retryButtonEnabled", retryButton);
+        model.addAttribute("retryButtonEnabled", retryButtonEnabled);
         model.addAttribute("addon_failed", true);
 
         return "m-commissions";
@@ -149,10 +133,10 @@ class MCommissionsController {
     public List<String> retry(@ModelAttribute("commission-id") Long2 commissionID)
             throws LocalizableErrorRestException {
 
-        Commission comm = resCommonService.getOneForRest(commissionRepository, commissionID.get());
-        int notCompleted = ghTaskScheduler.getApproxNumberOfScheduledTasks();
+        Commission comm = resCommonService.getOneForRest(repositoryProvider.commission(), commissionID.get());
 
-        if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED) && (notCompleted != 0)) {
+        if ((comm.getStatus() != CommissionStatus.PROCESSING_FAILED)
+                && !ghTaskScheduler.shouldRetryButtonBeEnabled()) {
             throw LocalizableErrorRestException.badResource();
         }
 
@@ -169,8 +153,8 @@ class MCommissionsController {
 
         LOGGER.debug("Commission retried {}", comm);
         comm.setStatus(CommissionStatus.PROCESSING);
-        commissionRepository.save(comm);
         ghTaskScheduler.registerClone(comm);
+        repositoryProvider.commission().save(comm);
 
         return localeService.getAsList("m.commissions.retry.done");
     }
