@@ -38,7 +38,7 @@ public class Long2 implements Serializable {
     }
 
     public Long2(String value) {
-        this.value = Long.valueOf(value);
+        this.value = Long.parseLong(value);
     }
 
     public long get() {

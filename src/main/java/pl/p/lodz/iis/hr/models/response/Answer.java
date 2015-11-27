@@ -70,7 +70,7 @@ public class Answer implements Serializable {
     }
 
     public long getAnswerAsNumber() {
-        return Long.valueOf(answer);
+        return Long.parseLong(answer);
     }
 
     /* package */ void setAnswer(String answer) {
