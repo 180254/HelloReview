@@ -4,6 +4,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+/**
+ * Not very good solution to get beans from spring container in non-component classes.
+ */
 @Service
 public class ApplicationContextProvider implements ApplicationContextAware {
 

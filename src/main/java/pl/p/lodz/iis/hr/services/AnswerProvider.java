@@ -1,12 +1,15 @@
 package pl.p.lodz.iis.hr.services;
 
 import org.jetbrains.annotations.Nullable;
-import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Util class for displaying review commission form.<br/>
+ * Main task of this is returning answer for given input.
+ */
 public class AnswerProvider {
 
     private final Map<Long, String> answersMap = new HashMap<>(10);
@@ -16,9 +19,10 @@ public class AnswerProvider {
             return;
         }
 
-        for (Answer answer : response.getAnswers()) {
-            answersMap.put(answer.getInput().getId(), answer.getNotNullAnswer());
-        }
+        response.getAnswers()
+                .forEach(answer ->
+                        answersMap.put(answer.getInput().getId(), answer.getNotNullAnswer())
+                );
     }
 
     public String get(long inputID) {

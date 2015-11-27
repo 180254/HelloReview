@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Internal FormValidator helper.
+ *
+ * @see FormValidator
+ */
 class FormValidator2 {
 
     private final Validator validator;

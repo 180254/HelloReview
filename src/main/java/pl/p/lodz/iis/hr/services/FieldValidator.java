@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Util class for validate if field in model was properly filled.
+ */
 @Service
 public class FieldValidator {
 
@@ -24,6 +27,14 @@ public class FieldValidator {
         this.localeService = localeService;
     }
 
+    /**
+     * Validator for one field.<br/>
+     *
+     * @param object    validated object
+     * @param fieldName field name
+     * @param prefix    field name localized name (ex: "course name" for object "course", and fieldName "name")
+     * @return list of localized errors
+     */
     public List<String> validateField(Object object, String fieldName, String prefix) {
 
         BindingResult bindingResult = new DataBinder(object).getBindingResult();
@@ -36,6 +47,15 @@ public class FieldValidator {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Validator for one field.<br/>
+     * Uses same validation logic as 'validateField', but throws exception instead of returning list of errors.
+     *
+     * @param object    validated object
+     * @param fieldName field name
+     * @param prefix    field name localized name (ex: "course name" for object "course", and fieldName "name")
+     * @throws LocalizedErrorRestException if any field issue found
+     */
     public void validateFieldRestEx(Object object, String fieldName, String prefix)
             throws LocalizedErrorRestException {
 
@@ -46,6 +66,14 @@ public class FieldValidator {
         }
     }
 
+    /**
+     * Validator for multiple fields.
+     *
+     * @param object     validated object
+     * @param fieldNames array of field names
+     * @param prefixes   array of field localized name (ex: "course name" for object "course", and fieldName "name")
+     * @return list of localized errors
+     */
     public List<String> validateFields(Object object, String[] fieldNames, String[] prefixes) {
         List<String> errors = new ArrayList<>(fieldNames.length);
 
@@ -56,6 +84,15 @@ public class FieldValidator {
         return errors;
     }
 
+    /**
+     * Validator for multiple fields.
+     * Uses same validation logic as 'validateFields', but throws exception instead of returning list of errors.
+     *
+     * @param object     validated object
+     * @param fieldNames array of field names
+     * @param prefixes   array of field localized name (ex: "course name" for object "course", and fieldName "name")
+     * @throws LocalizedErrorRestException if any field issue found
+     */
     public void validateFieldsRestEx(Object object, String[] fieldNames, String[] prefixes)
             throws LocalizedErrorRestException {
 
