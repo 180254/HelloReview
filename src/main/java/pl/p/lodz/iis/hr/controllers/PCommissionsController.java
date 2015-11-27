@@ -16,10 +16,9 @@ import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
-import pl.p.lodz.iis.hr.repositories.CommissionRepository;
-import pl.p.lodz.iis.hr.repositories.ParticipantRepository;
 import pl.p.lodz.iis.hr.services.AnswerProvider;
 import pl.p.lodz.iis.hr.services.ProxyService;
+import pl.p.lodz.iis.hr.services.RepositoryProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,18 +31,15 @@ class PCommissionsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PCommissionsController.class);
 
     private final GitHubClient gitHubClient;
-    private final ParticipantRepository participantRepository;
-    private final CommissionRepository commissionRepository;
+    private final RepositoryProvider repositoryProvider;
     private final ProxyService proxyService;
 
     @Autowired
     PCommissionsController(GitHubClient gitHubClient,
-                           ParticipantRepository partiRepository,
-                           CommissionRepository commissionRepository,
+                           RepositoryProvider repositoryProvider,
                            ProxyService proxyService) {
         this.gitHubClient = gitHubClient;
-        this.participantRepository = partiRepository;
-        this.commissionRepository = commissionRepository;
+        this.repositoryProvider = repositoryProvider;
         this.proxyService = proxyService;
     }
 
@@ -56,7 +52,7 @@ class PCommissionsController {
                               Model model) {
 
         List<Participant> byGitHubName = meAsParticipant(request, response);
-        List<Commission> byAssessorIn = commissionRepository.findByAssessorIn(byGitHubName);
+        List<Commission> byAssessorIn = repositoryProvider.commission().findByAssessorIn(byGitHubName);
 
         model.addAttribute("commissions", byAssessorIn);
         return "p-commissions";
@@ -74,7 +70,7 @@ class PCommissionsController {
 
         UUID uuid1 = getUuidFromString(uuid);
 
-        Commission commission = commissionRepository.findByUuid(uuid1);
+        Commission commission = repositoryProvider.commission().findByUuid(uuid1);
         if (commission == null) {
             throw new ErrorPageException(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -113,6 +109,6 @@ class PCommissionsController {
     private List<Participant> meAsParticipant(HttpServletRequest request, HttpServletResponse response) {
         GHPac4jSecurityHelper ghSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
         String username = ghSecurityHelper.getUserProfileFromSession().getUsername();
-        return participantRepository.findByGitHubName(username);
+        return repositoryProvider.participant().findByGitHubName(username);
     }
 }

@@ -16,8 +16,8 @@ import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
 import pl.p.lodz.iis.hr.models.JSONResponse;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.models.response.Response;
-import pl.p.lodz.iis.hr.repositories.ResponseRepository;
 import pl.p.lodz.iis.hr.services.LocaleService;
+import pl.p.lodz.iis.hr.services.RepositoryProvider;
 import pl.p.lodz.iis.hr.services.ResponseConverter;
 import pl.p.lodz.iis.hr.services.ResponseValidator;
 
@@ -33,19 +33,19 @@ class PResponseController {
     private final ObjectMapper objectMapper;
     private final ResponseConverter responseConverter;
     private final ResponseValidator responseValidator;
-    private final ResponseRepository responseRepository;
+    private final RepositoryProvider repositoryProvider;
     private final LocaleService localeService;
 
     @Autowired
     PResponseController(ObjectMapper objectMapper,
                         ResponseConverter responseConverter,
                         ResponseValidator responseValidator,
-                        ResponseRepository responseRepository,
+                        RepositoryProvider repositoryProvider,
                         LocaleService localeService) {
         this.objectMapper = objectMapper;
         this.responseConverter = responseConverter;
         this.responseValidator = responseValidator;
-        this.responseRepository = responseRepository;
+        this.repositoryProvider = repositoryProvider;
         this.localeService = localeService;
     }
 
@@ -84,9 +84,14 @@ class PResponseController {
 
         responseValidator.validate(response1);
 
+        LOGGER.debug("New response added: {}", response1);
+
         response1.getCommission().setResponse(response1);
         response1.getCommission().setStatus(CommissionStatus.FILLED);
-        responseRepository.save(response1);
+        repositoryProvider.response().save(response1);
+
+        LOGGER.debug("Added response ID {}", response1.getId());
+
 
         return localeService.getAsList("p.response.done");
     }
