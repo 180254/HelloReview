@@ -174,7 +174,7 @@ class MParticipantsController {
     }
 
     @RequestMapping(
-            value = "/m/courses/participants/rename/githubname",
+            value = "/m/courses/participants/rename/github-name",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional

@@ -46,7 +46,7 @@
         <span th:text="${junkTempDir}"></span>
 
         <a th:if="${notCompleted == 0 and junkTempDirCnt > 0}"
-           th:href="@{/m/stats/junk-clean/temp}"
+           th:href="@{/m/stats/junk-clean/temp-dir}"
            th:text="#{m.stats.junkTempDir.clean}">
         </a>
     </p>

@@ -24,14 +24,14 @@
 + POST    rest   /m/courses/participants/add
 + POST    rest   /m/courses/participants/delete
 + POST    rest   /m/courses/participants/rename/name
-+ POST    rest   /m/courses/participants/rename/githubname
++ POST    rest   /m/courses/participants/rename/github-name
 
 + GET     html   /m/reviews
 + GET     html   /m/reviews/1
 + GET     html   /m/reviews/for/course/1
 + GET     html   /m/reviews/for/form/1
 + GET     html   /m/reviews/add
-+ GET     rest   /m/reviews/add/repolist
++ GET     rest   /m/reviews/add/repo-list
 + POST    rest   /m/reviews/add
 + POST    rest   /m/reviews/delete
 + POST    rest   /m/reviews/rename
@@ -41,8 +41,11 @@
 + GET     html   /m/reviews/commissions/for/participant/1
 + GET     html   /m/reviews/commissions/failed
 + POST    rest   /m/reviews/commissions/retry
-
 + GET     html   /m/reviews/1/responses
+
++ GET     html   /m/stats
++ POST    rest   /m/stats/junk-clean/repo
++ POST    rest   /m/stats/junk-clean/temp-dir
 
 + GET     html   /p/commissions
 + GET     html   /p/commissions/{uuid}

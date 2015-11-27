@@ -142,7 +142,7 @@ class MReviewsController {
     }
 
     @RequestMapping(
-            value = "/m/reviews/add/repolist",
+            value = "/m/reviews/add/repo-list",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

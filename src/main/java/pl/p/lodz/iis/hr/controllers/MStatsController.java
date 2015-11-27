@@ -161,7 +161,7 @@ class MStatsController {
     }
 
     @RequestMapping(
-            value = "/m/stats/junk-clean/temp",
+            value = "/m/stats/junk-clean/temp-dir",
             method = RequestMethod.GET)
     public String junkCleanTemp() {
 
