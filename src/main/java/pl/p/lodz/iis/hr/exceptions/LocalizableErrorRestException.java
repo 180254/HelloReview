@@ -1,7 +1,10 @@
 package pl.p.lodz.iis.hr.exceptions;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 public class LocalizableErrorRestException extends Exception {
 
@@ -13,12 +16,16 @@ public class LocalizableErrorRestException extends Exception {
 
 
     public LocalizableErrorRestException(int statusCode, String localeCode, String... localeArgs) {
+        super(StringUtils.join(Arrays.asList(String.valueOf(statusCode), localeCode, localeArgs), ","));
+
         this.statusCode = statusCode;
         this.localeCode = localeCode;
         this.localeArgs = localeArgs.clone();
     }
 
     public LocalizableErrorRestException(String localeCode, String... localeArgs) {
+        super(StringUtils.join(Arrays.asList(localeCode, localeArgs), ","));
+
         this.statusCode = HttpServletResponse.SC_BAD_REQUEST;
         this.localeCode = localeCode;
         this.localeArgs = localeArgs.clone();

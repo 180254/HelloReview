@@ -7,6 +7,8 @@ public class ErrorPageException extends Exception {
     public final int statusCode;
 
     public ErrorPageException(int statusCode) {
+        super(String.valueOf(statusCode));
+
         this.statusCode = statusCode;
     }
 
