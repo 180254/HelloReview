@@ -190,11 +190,9 @@ function courseParticipantAddHandler(prefix, $element) {
     }).done(function (data) {
         $errorsDiv.hide();
 
-        toastr.success(data[0], '', {
-            onHidden: function () {
-                location.reload();
-            }
-        });
+        toastr.success(data[0]);
+        $('tbody').append(data[1]);
+        $('input').val('');
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),

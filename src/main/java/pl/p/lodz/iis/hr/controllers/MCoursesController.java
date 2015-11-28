@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.fragment.DOMSelectorFragmentSpec;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
@@ -16,14 +19,20 @@ import pl.p.lodz.iis.hr.models.courses.Course;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.services.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 class MCoursesController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MCoursesController.class);
 
+    private final TemplateEngine templateEngine;
     private final ResCommonService resCommonService;
     private final RepositoryProvider repositoryProvider;
     private final ReviewService reviewService;
@@ -31,11 +40,13 @@ class MCoursesController {
     private final LocaleService localeService;
 
     @Autowired
-    MCoursesController(ResCommonService resCommonService,
+    MCoursesController(TemplateEngine templateEngine,
+                       ResCommonService resCommonService,
                        RepositoryProvider repositoryProvider,
                        ReviewService reviewService,
                        FieldValidator fieldValidator,
                        LocaleService localeService) {
+        this.templateEngine = templateEngine;
         this.resCommonService = resCommonService;
         this.repositoryProvider = repositoryProvider;
         this.reviewService = reviewService;
@@ -80,7 +91,11 @@ class MCoursesController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> kAddPost(@ModelAttribute("course-name") String courseName)
+    public List<String> kAddPost(@ModelAttribute("course-name") String courseName,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 ServletContext servletContext,
+                                 Locale locale)
             throws LocalizedErrorRestException {
 
         Course course = new Course(courseName);
@@ -95,7 +110,13 @@ class MCoursesController {
         repositoryProvider.course().save(course);
         LOGGER.debug("Added course ID {}", course.getId());
 
-        return localeService.getAsList("m.courses.add.done");
+        String msg = localeService.get("m.courses.add.done");
+
+        WebContext ctx = new WebContext(request, response, servletContext, locale);
+        ctx.setVariable("courses", Collections.singletonList(course));
+        String row = templateEngine.process("m-courses", ctx, new DOMSelectorFragmentSpec(".course-one"));
+
+        return Arrays.asList(msg, row);
     }
 
     @RequestMapping(

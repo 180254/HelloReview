@@ -57,6 +57,7 @@ public class Course implements Serializable {
     public Course(String name) {
         this.name = name;
         participants = new ArrayList<>(10);
+        reviews = new ArrayList<>(10);
     }
 
     public long getId() {
