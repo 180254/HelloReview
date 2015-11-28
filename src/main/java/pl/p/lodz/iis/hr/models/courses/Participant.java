@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,6 +66,8 @@ public class Participant implements Serializable {
         this.name = name;
         this.gitHubName = gitHubName;
         this.course = course;
+        this.commissionsAsAssessor = new ArrayList<>(10);
+        this.commissionsAsAssessed = new ArrayList<>(10);
     }
 
     public long getId() {

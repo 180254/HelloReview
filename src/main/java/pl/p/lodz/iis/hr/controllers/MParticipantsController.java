@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.fragment.DOMSelectorFragmentSpec;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.LocalizableErrorRestException;
@@ -19,24 +22,32 @@ import pl.p.lodz.iis.hr.services.LocaleService;
 import pl.p.lodz.iis.hr.services.RepositoryProvider;
 import pl.p.lodz.iis.hr.services.ResCommonService;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 class MParticipantsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MParticipantsController.class);
 
+    private final TemplateEngine templateEngine;
     private final ResCommonService resCommonService;
     private final RepositoryProvider repositoryProvider;
     private final FieldValidator fieldValidator;
     private final LocaleService localeService;
 
     @Autowired
-    MParticipantsController(ResCommonService resCommonService,
+    MParticipantsController(TemplateEngine templateEngine,
+                            ResCommonService resCommonService,
                             RepositoryProvider repositoryProvider,
                             FieldValidator fieldValidator,
                             LocaleService localeService) {
+        this.templateEngine = templateEngine;
         this.resCommonService = resCommonService;
         this.repositoryProvider = repositoryProvider;
         this.fieldValidator = fieldValidator;
@@ -89,7 +100,11 @@ class MParticipantsController {
     @ResponseBody
     public List<String> kAddPOST(@ModelAttribute("course-id") Long2 courseID,
                                  @ModelAttribute("participant-name") String name,
-                                 @ModelAttribute("participant-github-name") String gitHubName)
+                                 @ModelAttribute("participant-github-name") String gitHubName,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 ServletContext servletContext,
+                                 Locale locale)
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Course course = resCommonService.getOneForRest(repositoryProvider.course(), courseID.get());
@@ -120,7 +135,13 @@ class MParticipantsController {
         repositoryProvider.participant().save(participant);
         LOGGER.debug("Added participant ID {}", participant.getId());
 
-        return localeService.getAsList("m.participants.add.done");
+        String msg = localeService.get("m.participants.add.done");
+
+        WebContext ctx = new WebContext(request, response, servletContext, locale);
+        ctx.setVariable("participants", Collections.singletonList(participant));
+        String row = templateEngine.process("m-participants", ctx, new DOMSelectorFragmentSpec(".participant-one"));
+
+        return Arrays.asList(msg, row);
     }
 
     @RequestMapping(
