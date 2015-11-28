@@ -2,6 +2,7 @@
 + POST    html   /login
 + GET     html   /logout?url=
 + GET     html   /github-issue
++ GET     rest   /csrf-token
 + POST    void   /csp-reports
 
 + GET     html   /m/forms
