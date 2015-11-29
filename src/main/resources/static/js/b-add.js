@@ -188,11 +188,13 @@ function courseParticipantAddHandler(prefix, $element) {
         data: serialized
 
     }).done(function (data) {
+        var $textInputs = $('input[type="text"]');
         $errorsDiv.hide();
 
         toastr.success(data[0]);
         $('tbody').append(data[1]);
-        $('input[type="text"]').val('');
+        $textInputs.val('');
+        $textInputs.first().focus();
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),

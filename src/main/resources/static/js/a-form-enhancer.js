@@ -18,6 +18,13 @@ function textareaLettersCounter($textareas) {
             $(this).next().html(textLength + ' / ' + textMax);
         });
     });
+
+    $('.modal').on('shown.bs.modal', function () {
+        var $textInputs = $('input[type="text"]');
+        if ($textInputs.length > 0) {
+            $textInputs.first().focus();
+        }
+    });
 }
 
 $(document).ready(function () {
