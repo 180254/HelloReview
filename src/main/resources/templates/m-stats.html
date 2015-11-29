@@ -24,7 +24,7 @@
     <p>
         <span th:utext="#{m.stats.junkRepo(${junkRepoCnt})}"></span>
 
-        <a th:if="${notCompleted == 0 and junkRepo > 0}"
+        <a th:if="${notCompleted == 0 and junkRepoCnt > 0}"
            th:href="@{/m/stats/junk-clean/repo}"
            th:utext="#{m.stats.junkRepo.clean}">
         </a>
