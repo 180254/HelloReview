@@ -65,6 +65,10 @@ public class Review implements Serializable {
 
     @Column(nullable = false)
     @JsonView
+    private boolean cleaned;
+
+    @Column(nullable = false)
+    @JsonView
     private LocalDateTime created;
 
     @Column(nullable = false)
@@ -82,6 +86,7 @@ public class Review implements Serializable {
         this.repository = repository;
         commissions = new ArrayList<>(10);
         closed = false;
+        cleaned = false;
     }
 
     public long getId() {
@@ -159,6 +164,14 @@ public class Review implements Serializable {
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    public boolean isCleaned() {
+        return cleaned;
+    }
+
+    public void setCleaned(boolean cleaned) {
+        this.cleaned = cleaned;
     }
 
     public LocalDateTime getCreated() {

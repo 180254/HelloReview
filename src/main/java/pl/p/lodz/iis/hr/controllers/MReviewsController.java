@@ -180,7 +180,7 @@ class MReviewsController {
     }
 
     @RequestMapping(
-            value = "/m/reviews/openclose",
+            value = "/m/reviews/open-close",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
@@ -189,6 +189,10 @@ class MReviewsController {
             throws LocalizableErrorRestException {
 
         Review review = resCommonService.getOneForRest(repositoryProvider.review(), reviewID.get());
+
+        if (review.isCleaned()) {
+            throw new LocalizableErrorRestException("m.reviews.open.close.cannot.as.cleaned");
+        }
 
         LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
         review.setClosed(!review.isClosed());

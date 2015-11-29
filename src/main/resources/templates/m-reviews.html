@@ -92,10 +92,11 @@
             </td>
 
             <td>
-                <a href="#"
+                <a th:if="${review.cleaned == false}"
+                   href="#"
                    class="review-open-close-link"
                    th:attr="
-                        data-url=@{/m/reviews/openclose},
+                        data-url=@{/m/reviews/open-close},
                         data-id=${review.id},
                         data-title=#{m.reviews.open.close.title},
                         data-btnOkLabel=#{m.reviews.open.close.btnOkLabel},
@@ -105,6 +106,11 @@
                     <span th:if="${review.closed == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
                     <span th:if="${review.closed == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
                 </a>
+
+                <span th:if="${review.cleaned == true}">
+                    <span th:if="${review.closed == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
+                    <span th:if="${review.closed == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
+                </span>
             </td>
 
             <td>

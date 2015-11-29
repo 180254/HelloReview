@@ -36,6 +36,7 @@
 + POST    rest   /m/reviews/add
 + POST    rest   /m/reviews/delete
 + POST    rest   /m/reviews/rename
++ POST    rest   /m/reviews/open-close
 
 + GET     html   /m/reviews/1/commissions
 + GET     html   /m/reviews/commissions/1

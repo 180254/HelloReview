@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
+import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.services.GHTaskScheduler;
 import pl.p.lodz.iis.hr.services.RepositoryProvider;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
@@ -137,6 +139,7 @@ class MStatsController {
     @RequestMapping(
             value = "/m/stats/junk-clean/repo",
             method = RequestMethod.GET)
+    @Transactional
     public String junkCleanRepo() {
         try {
             GHExecutor.ex(() -> {
@@ -153,6 +156,11 @@ class MStatsController {
                         .filter(r -> !r.getName().equals("fix"))
                         .forEach(r -> ghTaskScheduler.registerDelete(r.getName()));
             });
+
+            List<Review> closedReviews = repositoryProvider.review().findByClosedTrue();
+            closedReviews.stream().forEach(r -> r.setCleaned(true));
+            repositoryProvider.review().save(closedReviews);
+
         } catch (GHCommunicationException e) {
             LOGGER.warn("Exception while junk repo clean", e);
         }
