@@ -1,5 +1,7 @@
 package pl.p.lodz.iis.hr.services;
 
+import com.squareup.okhttp.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 
@@ -16,6 +18,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class GHTaskScheduler {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(3);
+    private final Cache okCache;
+
+    @Autowired
+    public GHTaskScheduler(Cache okHttpCache) {
+        this.okCache = okHttpCache;
+    }
 
     public void registerClone(Commission commission) {
         executor.submit(new GHTaskClone(commission));
@@ -32,6 +40,10 @@ public class GHTaskScheduler {
         executor.submit(new GHTaskDirRemove(path));
     }
 
+    public void registerOkCacheClean() {
+        executor.submit(new GHTaskOkCacheClean(okCache));
+    }
+
     public int getApproxNumberOfScheduledTasks() {
         if (executor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;
@@ -43,7 +55,7 @@ public class GHTaskScheduler {
         return -1;
     }
 
-    public long getApproxNumberOfSubmittedTasks() {
+    public long getApproxNumberOfSubmittedTasksCnt() {
         if (executor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executorT = (ThreadPoolExecutor) executor;
             return executorT.getTaskCount();
@@ -53,6 +65,10 @@ public class GHTaskScheduler {
     }
 
     public boolean shouldRetryButtonBeEnabled() {
+        return getApproxNumberOfScheduledTasks() == 0;
+    }
+
+    public boolean shouldStatsCleanFunctionsBeEnabled() {
         return getApproxNumberOfScheduledTasks() == 0;
     }
 }

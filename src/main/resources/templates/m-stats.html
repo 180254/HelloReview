@@ -8,37 +8,59 @@
 <nav th:replace="fragments/nav :: nav"></nav>
 
 <main class="container">
-    <p th:text="${rateLimit}"></p>
+    <ul>
+        <li th:utext="${ghRateLimit}"></li>
 
-    <p th:utext="#{m.stats.cache(${okCacheHitPercent})}"></p>
+        <li>
+            <span th:utext="#{m.stats.cache.enabled(${cacheEnabled})}"></span>
 
-    <p th:utext="#{m.stats.submitted(${submitted})}"></p>
+            <a th:href="@{/m/stats/cache-switch}"
+               th:utext="#{m.stats.cache.switch}">
+            </a>
+        </li>
 
-    <p th:utext="#{m.stats.notCompleted(${notCompleted})}"></p>
+        <li>
+            <span th:utext="#{m.stats.cache.size(${cacheSizeMB}, ${cacheMaxSizeMB})}"></span>
 
-    <p>
-        <span th:utext="#{m.stats.processing}"></span>
-        <a th:href="@{/m/reviews/commissions/failed}" th:text="${processing}"></a>
-    </p>
+            <a th:if="${scheduledTasksCnt == 0}"
+               th:href="@{/m/stats/clean/cache-dir}"
+               th:utext="#{m.stats.cacheDir.clean}">
+            </a>
+        </li>
 
-    <p>
-        <span th:utext="#{m.stats.junkRepo(${junkRepoCnt})}"></span>
+        <li th:utext="#{m.stats.cache.percent(${cacheHitPercent})}"></li>
 
-        <a th:if="${notCompleted == 0 and junkRepoCnt > 0}"
-           th:href="@{/m/stats/junk-clean/repo}"
-           th:utext="#{m.stats.junkRepo.clean}">
-        </a>
-    </p>
+        <li th:utext="#{m.stats.submitted(${submittedTasksCnt})}"></li>
 
-    <p>
-        <span th:utext="#{m.stats.junkTempDir(${junkTempDirCnt})}"></span>
+        <li th:utext="#{m.stats.scheduled(${scheduledTasksCnt})}"></li>
 
-        <a th:if="${notCompleted == 0 and junkTempDirCnt > 0}"
-           th:href="@{/m/stats/junk-clean/temp-dir}"
-           th:utext="#{m.stats.junkTempDir.clean}">
-        </a>
-    </p>
+        <li>
+            <span th:utext="#{m.stats.processing(${processingTasksCnt})}"></span>
 
+            <a th:href="@{/m/reviews/commissions/failed}"
+               th:utext="#{m.stats.processing.view}">
+            </a>
+        </li>
+
+        <li>
+            <span th:utext="#{m.stats.junkRepo(${junkRepoCnt})}"></span>
+
+            <a th:if="${scheduledTasksCnt == 0 and junkRepoCnt > 0}"
+               th:href="@{/m/stats/clean/junk-repo}"
+               th:utext="#{m.stats.junkRepo.clean}">
+            </a>
+        </li>
+
+        <li>
+            <span th:utext="#{m.stats.tempDir(${junkTempDirCnt})}"></span>
+
+            <a th:if="${scheduledTasksCnt == 0 and junkTempDirCnt > 0}"
+               th:href="@{/m/stats/clean/temp-dir}"
+               th:utext="#{m.stats.tempDir.clean}">
+            </a>
+        </li>
+
+    </ul>
 </main>
 
 </body>

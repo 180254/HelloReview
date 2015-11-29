@@ -46,8 +46,10 @@
 + GET     html   /m/reviews/1/responses
 
 + GET     html   /m/stats
-+ POST    rest   /m/stats/junk-clean/repo
-+ POST    rest   /m/stats/junk-clean/temp-dir
++ POST    loc    /m/stats/clean/cache-dir
++ POST    loc    /m/stats/clean/temp-dir
++ POST    loc    /m/stats/clean/junk-repo
++ POST    loc    /m/stats/cache-switch
 
 + GET     html   /p/commissions
 + GET     html   /p/commissions/{uuid}

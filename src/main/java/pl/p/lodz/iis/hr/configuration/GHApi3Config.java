@@ -7,7 +7,6 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
-import org.kohsuke.github.HttpConnector;
 import org.kohsuke.github.RateLimitHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -49,8 +48,8 @@ class GHApi3Config {
         return new Cache(cacheDirFile, cacheSizeBytes);
     }
 
-    @Bean(name = "okHttpConnector")
-    public HttpConnector okHttpConnector() {
+    @Bean(name = "httpConnector")
+    public HttpConnectorWithCache httpConnector() {
         String appName = appConfig.getGitHubConfig().getApplication().getAppName();
 
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -65,7 +64,7 @@ class GHApi3Config {
 
         try {
             return new GitHubBuilder()
-                    .withConnector(okHttpConnector())
+                    .withConnector(httpConnector())
                     .withRateLimitHandler(rateLimitHandler)
                     .withOAuthToken(dummy.getToken())
                     .build();

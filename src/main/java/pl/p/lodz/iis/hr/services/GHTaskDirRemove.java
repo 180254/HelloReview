@@ -33,7 +33,6 @@ public class GHTaskDirRemove implements Runnable {
         LOGGER.info("{} Directory remove scheduled.", dirPath);
     }
 
-
     @Override
     public void run() {
         LOGGER.info("{} Directory removing.", dirPath);

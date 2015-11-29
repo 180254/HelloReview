@@ -19,13 +19,15 @@ import java.net.URL;
  * OkHttpClient now will use my cache-control directive "max-age=0, must-revalidate"<br/>
  * - will sent request every time, but still will ask if resource is modified, and use cache if not.<br/>
  */
-class GHOkHttpConnector extends OkHttpConnector {
+class GHOkHttpConnector extends OkHttpConnector implements HttpConnectorWithCache {
 
     private final String userAgent;
+    private boolean cacheEnabled;
 
     GHOkHttpConnector(OkUrlFactory urlFactory, String userAgent) {
         super(urlFactory);
         this.userAgent = userAgent;
+        this.cacheEnabled = true;
     }
 
     @Override
@@ -34,8 +36,29 @@ class GHOkHttpConnector extends OkHttpConnector {
 
         connect.setRequestProperty("User-Agent", userAgent);
         connect.setRequestProperty("Accept", "application/vnd.github.v3+json");
-        connect.setRequestProperty("Cache-control", "max-age=0, must-revalidate");
+
+        if (cacheEnabled) {
+            connect.setRequestProperty("Cache-control", "max-age=0, must-revalidate");
+        } else {
+            connect.setRequestProperty("Cache-control", "no-cache, no-store");
+        }
 
         return connect;
     }
+
+    @Override
+    public boolean isCacheEnabled() {
+        return cacheEnabled;
+    }
+
+    @Override
+    public void enableCache() {
+        cacheEnabled = true;
+    }
+
+    @Override
+    public void disableCache() {
+        cacheEnabled = false;
+    }
+
 }
