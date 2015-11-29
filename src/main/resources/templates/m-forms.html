@@ -42,7 +42,7 @@
             </td>
 
             <td>
-                <a th:href="@{/m/reviews/for/form/{formID}(form=${form.id})}">
+                <a th:href="@{/m/reviews/for/form/{formID}(formID=${form.id})}">
                     <span th:utext="#{m.forms.tbody.reviews(${form.reviews.size()})}"></span>
                 </a>
             </td>
