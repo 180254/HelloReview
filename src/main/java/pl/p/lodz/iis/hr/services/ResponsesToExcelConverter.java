@@ -4,6 +4,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
@@ -26,6 +28,8 @@ import java.util.Date;
 
 @Service
 public class ResponsesToExcelConverter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResponsesToExcelConverter.class);
 
     private final ProxyService proxyService;
     private final LocaleService localeService;
@@ -110,8 +114,10 @@ public class ResponsesToExcelConverter {
                 }
                 cellCnt++;
 
-                Cell assessorCell = responseRow.createCell(cellCnt);
-                assessorCell.setCellValue(commission.getAssessor().getName());
+                if (commission.getAssessor() != null) {
+                    Cell assessorCell = responseRow.createCell(cellCnt);
+                    assessorCell.setCellValue(commission.getAssessor().getName());
+                }
                 cellCnt++;
 
                 Cell assessedCell = responseRow.createCell(cellCnt);
@@ -146,6 +152,7 @@ public class ResponsesToExcelConverter {
             return baos.toByteArray();
 
         } catch (Exception e) {
+            LOGGER.warn("ResponsesToExcelConverter.convert exception on review {}", review, e);
             throw (ErrorPageException)
                     new ErrorPageException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).initCause(e);
         }
