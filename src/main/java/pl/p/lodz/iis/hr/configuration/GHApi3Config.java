@@ -53,7 +53,9 @@ class GHApi3Config {
     public HttpConnector okHttpConnector() {
         String appName = appConfig.getGitHubConfig().getApplication().getAppName();
 
-        OkHttpClient okHttpClient = new OkHttpClient().setCache(cache());
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setCache(cache());
+
         OkUrlFactory okUrlFactory = new OkUrlFactory(okHttpClient);
         return new GHOkHttpConnector(okUrlFactory, appName);
     }

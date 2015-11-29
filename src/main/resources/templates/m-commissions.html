@@ -48,7 +48,7 @@
         </thead>
 
         <tbody>
-        <tr th:each="commission : ${commissions}">
+        <tr th:each="commission : ${commissions}" class="commission-one">
 
             <td th:text="${commission.id}" th:title="${commission.uuid}"></td>
 

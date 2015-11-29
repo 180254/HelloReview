@@ -14,7 +14,7 @@ function commissionRetryHandler($retryLink) {
 
     }).done(function (data) {
         toastr.success(data[0]);
-        $retryLink.closest('tr').addClass('stale');
+        $retryLink.closest('tr').replaceWith(data[1]);
         $retryLink.remove();
 
     }).fail(function (jqXHR) {

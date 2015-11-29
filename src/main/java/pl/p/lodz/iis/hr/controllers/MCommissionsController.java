@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.fragment.DOMSelectorFragmentSpec;
 import pl.p.lodz.iis.hr.configuration.Long2;
 import pl.p.lodz.iis.hr.exceptions.ErrorPageException;
 import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
@@ -18,16 +21,20 @@ import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.services.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 class MCommissionsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MCommissionsController.class);
 
+    private final TemplateEngine templateEngine;
     private final ResCommonService resCommonService;
     private final RepositoryProvider repositoryProvider;
     private final GHTaskScheduler ghTaskScheduler;
@@ -35,11 +42,13 @@ class MCommissionsController {
     private final LocaleService localeService;
 
     @Autowired
-    MCommissionsController(ResCommonService resCommonService,
+    MCommissionsController(TemplateEngine templateEngine,
+                           ResCommonService resCommonService,
                            RepositoryProvider repositoryProvider,
                            GHTaskScheduler ghTaskScheduler,
                            GHReviewCreator ghReviewCreator,
                            LocaleService localeService) {
+        this.templateEngine = templateEngine;
         this.resCommonService = resCommonService;
         this.repositoryProvider = repositoryProvider;
         this.ghTaskScheduler = ghTaskScheduler;
@@ -130,7 +139,11 @@ class MCommissionsController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @ResponseBody
-    public List<String> retry(@ModelAttribute("commission-id") Long2 commissionID)
+    public List<String> retry(@ModelAttribute("commission-id") Long2 commissionID,
+                              HttpServletRequest request,
+                              HttpServletResponse response,
+                              ServletContext servletContext,
+                              Locale locale)
             throws LocalizableErrorRestException {
 
         Commission comm = resCommonService.getOneForRest(repositoryProvider.commission(), commissionID.get());
@@ -156,7 +169,14 @@ class MCommissionsController {
         ghTaskScheduler.registerClone(comm);
         repositoryProvider.commission().save(comm);
 
-        return localeService.getAsList("m.commissions.retry.done");
+        String msg = localeService.get("m.commissions.retry.done");
+
+        WebContext ctx = new WebContext(request, response, servletContext, locale);
+        ctx.setVariable("commissions", Collections.singletonList(comm));
+        ctx.setVariable("retryButtonEnabled", false);
+        String row = templateEngine.process("m-commissions", ctx, new DOMSelectorFragmentSpec(".commission-one"));
+
+        return Arrays.asList(msg, row);
     }
 
 }
