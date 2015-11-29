@@ -24,10 +24,10 @@ function deleteB($deleteLink) {
     });
 }
 
-$(document).ready(function () {
+function makeDeleteable($elements) {
     'use strict';
 
-    $('.b-delete-link').each(function () {
+    $elements.each(function () {
         var $dis = $(this);
 
         $(this).confirmation({
@@ -36,6 +36,12 @@ $(document).ready(function () {
             }
         });
     });
+}
+
+$(document).ready(function () {
+    'use strict';
+
+    makeDeleteable($('.b-delete-link'));
 
 });
 

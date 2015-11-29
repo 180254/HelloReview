@@ -1,10 +1,10 @@
 /*jslint browser: true*/
 /*global $, jQuery, toastr, getAjaxParameter, responseJSONToArray*/
 
-$(document).ready(function () {
+function makeEditable($elements) {
     'use strict';
 
-    $('.b-rename-link').editable({
+    $elements.editable({
         params: function (params) {
             jQuery.extend(params, getAjaxParameter());
             return params;
@@ -19,4 +19,9 @@ $(document).ready(function () {
             toastr.success(response.toBrNL());
         }
     });
+}
+$(document).ready(function () {
+    'use strict';
+
+    makeEditable($('.b-rename-link'));
 });

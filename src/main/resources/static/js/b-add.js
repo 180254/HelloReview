@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, toastr, jqXHRFailToArray*/
+/*global $, jQuery, toastr, jqXHRFailToArray, makeEditable, makeDeleteable*/
 
 /*                  form                              */
 function formAddHandler(action) {
@@ -188,13 +188,20 @@ function courseParticipantAddHandler(prefix, $element) {
         data: serialized
 
     }).done(function (data) {
-        var $textInputs = $('input[type="text"]');
+        var $textInputs = $('input[type="text"]'),
+            lastTR;
+
         $errorsDiv.hide();
 
         toastr.success(data[0]);
         $('tbody').append(data[1]);
+
         $textInputs.val('');
         $textInputs.first().focus();
+
+        lastTR = $('tr').last();
+        makeEditable(lastTR.find('.b-rename-link'));
+        makeDeleteable(lastTR.find('.b-delete-link'));
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),
