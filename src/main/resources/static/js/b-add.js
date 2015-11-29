@@ -192,7 +192,7 @@ function courseParticipantAddHandler(prefix, $element) {
 
         toastr.success(data[0]);
         $('tbody').append(data[1]);
-        $('input').val('');
+        $('input[type="text"]').val('');
 
     }).fail(function (jqXHR) {
         var errors = jqXHRFailToArray(jqXHR),
