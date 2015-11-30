@@ -17,7 +17,6 @@ import pl.p.lodz.iis.hr.models.courses.Participant;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.services.AnswerProvider;
-import pl.p.lodz.iis.hr.services.ProxyService;
 import pl.p.lodz.iis.hr.services.RepositoryProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,15 +31,12 @@ class PCommissionsController {
 
     private final GitHubClient gitHubClient;
     private final RepositoryProvider repositoryProvider;
-    private final ProxyService proxyService;
 
     @Autowired
     PCommissionsController(GitHubClient gitHubClient,
-                           RepositoryProvider repositoryProvider,
-                           ProxyService proxyService) {
+                           RepositoryProvider repositoryProvider) {
         this.gitHubClient = gitHubClient;
         this.repositoryProvider = repositoryProvider;
-        this.proxyService = proxyService;
     }
 
     @RequestMapping(
@@ -93,7 +89,6 @@ class PCommissionsController {
         model.addAttribute("review", review);
         model.addAttribute("commission", commission);
         model.addAttribute("answerProvider", answerProvider);
-        model.addAttribute("proxyService", proxyService);
 
         return "p-form";
     }

@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.RelationsAware;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -88,7 +89,7 @@ public class Question implements Serializable, RelationsAware {
     }
 
     public List<Input> getInputs() {
-        return inputs;
+        return ProxyUtils.unproxyCollection(inputs);
     }
 
     /* package */ void setInputs(List<Input> inputs) {

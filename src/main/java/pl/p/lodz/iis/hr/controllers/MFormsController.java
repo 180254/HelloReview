@@ -23,6 +23,7 @@ import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.models.forms.InputScale;
 import pl.p.lodz.iis.hr.services.*;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,7 +43,6 @@ class MFormsController {
     private final FormValidator formValidator;
     private final FieldValidator fieldValidator;
     private final XmlMapperProvider xmlMapperProvider;
-    private final ProxyService proxyService;
     private final ReviewService reviewService;
     private final LocaleService localeService;
 
@@ -53,7 +53,6 @@ class MFormsController {
                      FieldValidator fieldValidator,
                      XmlMapperProvider xmlMapperProvider,
                      ReviewService reviewService,
-                     ProxyService proxyService,
                      LocaleService localeService) {
         this.resCommonService = resCommonService;
         this.repositoryProvider = repositoryProvider;
@@ -62,7 +61,6 @@ class MFormsController {
         this.localeService = localeService;
         this.fieldValidator = fieldValidator;
         this.xmlMapperProvider = xmlMapperProvider;
-        this.proxyService = proxyService;
     }
 
     @RequestMapping(
@@ -149,7 +147,7 @@ class MFormsController {
         // input scale must be required
         form.getQuestions().stream()
                 .flatMap(q -> q.getInputs().stream())
-                .filter(input -> proxyService.isInstanceOf(input, InputScale.class))
+                .filter(input -> ProxyUtils.isInstanceOf(input, InputScale.class))
                 .forEach(input -> input.setRequired(true));
 
         LOGGER.debug("Form added {}", form);
@@ -179,7 +177,6 @@ class MFormsController {
         model.addAttribute("review", review);
         model.addAttribute("commission", commission);
         model.addAttribute("answerProvider", answerProvider);
-        model.addAttribute("proxyService", proxyService);
 
         return "p-form";
     }

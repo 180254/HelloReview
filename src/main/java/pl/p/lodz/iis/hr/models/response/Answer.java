@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import pl.p.lodz.iis.hr.models.forms.Input;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -58,7 +59,7 @@ public class Answer implements Serializable {
     }
 
     public Input getInput() {
-        return input;
+        return ProxyUtils.initializeAndUnproxy(input);
     }
 
     public String getAnswer() {

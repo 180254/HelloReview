@@ -16,6 +16,7 @@ import pl.p.lodz.iis.hr.models.forms.InputScale;
 import pl.p.lodz.iis.hr.models.forms.Question;
 import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -31,13 +32,10 @@ public class ResponsesToExcelConverter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponsesToExcelConverter.class);
 
-    private final ProxyService proxyService;
     private final LocaleService localeService;
 
     @Autowired
-    public ResponsesToExcelConverter(ProxyService proxyService,
-                                     LocaleService localeService) {
-        this.proxyService = proxyService;
+    public ResponsesToExcelConverter(LocaleService localeService) {
         this.localeService = localeService;
     }
 
@@ -87,7 +85,7 @@ public class ResponsesToExcelConverter {
                 for (Input input : question.getInputs()) {
                     String headQI = String.format("%s %s", input.getQuestion().getQuestionText(), input.getLabel());
 
-                    if (proxyService.isInstanceOf(input, InputScale.class)) {
+                    if (ProxyUtils.isInstanceOf(input, InputScale.class)) {
                         InputScale input1 = (InputScale) input;
                         headQI += String.format(" (%d - %d)", input1.getFromS(), input1.getToS());
                     }
@@ -132,7 +130,7 @@ public class ResponsesToExcelConverter {
                     for (Answer answer : response.getAnswers()) {
                         Cell answerCell = responseRow.createCell(cellCnt);
 
-                        if (proxyService.isInstanceOf(answer.getInput(), InputScale.class)) {
+                        if (ProxyUtils.isInstanceOf(answer.getInput(), InputScale.class)) {
                             answerCell.setCellValue((double) answer.getAnswerAsNumber());
                         } else {
                             answerCell.setCellValue(answer.getAnswer());

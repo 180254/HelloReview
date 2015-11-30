@@ -11,6 +11,7 @@ import pl.p.lodz.iis.hr.models.forms.InputText;
 import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
 import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class ResponseValidator {
         LOGGER.debug("validation ensureInputScaleAnswersAreNumber started.");
 
         boolean properScaleAnswers = response.getAnswers().stream()
-                .filter(answer1 -> ProxyService.isInstanceOf(answer1.getInput(), InputScale.class))
+                .filter(answer1 -> ProxyUtils.isInstanceOf(answer1.getInput(), InputScale.class))
                 .allMatch(answer1 -> !ExceptionUtil.isExceptionThrown1(answer1::getAnswerAsNumber));
 
         if (!properScaleAnswers) {
@@ -100,7 +101,7 @@ public class ResponseValidator {
         LOGGER.debug("validation ensureInputScaleAnswersAreInRange started.");
 
         boolean allAreInRange = response.getAnswers().stream()
-                .filter(answer1 -> ProxyService.isInstanceOf(answer1.getInput(), InputScale.class))
+                .filter(answer1 -> ProxyUtils.isInstanceOf(answer1.getInput(), InputScale.class))
                 .filter(answer1 -> answer1.getAnswer() != null)
 
                 .allMatch(answer1 -> isBetweenInclusiveLong(
@@ -121,7 +122,7 @@ public class ResponseValidator {
         LOGGER.debug("validation ensureInputTextAnswersLenAreInRange started.");
 
         boolean allAreInRange = response.getAnswers().stream()
-                .filter(answer1 -> ProxyService.isInstanceOf(answer1.getInput(), InputText.class))
+                .filter(answer1 -> ProxyUtils.isInstanceOf(answer1.getInput(), InputText.class))
                 .filter(answer1 -> answer1.getAnswer() != null)
                 .allMatch(answer -> isBetweenInclusiveInt(answer.getAnswer().length(), 1, Answer.MAX_LENGTH));
 
@@ -146,7 +147,6 @@ public class ResponseValidator {
         }
 
         LOGGER.debug("validation ensureAllRequiredAnswersGiven successfully ended.");
-
     }
 
     private boolean isBetweenInclusiveInt(int x, int min, int max) {
