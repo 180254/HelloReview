@@ -4,7 +4,7 @@ import com.jayway.awaitility.Awaitility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 import pl.p.lodz.iis.hr.utils.IRunner2;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class GHTaskDirRemove implements Runnable {
         LOGGER.info("{} Directory removing.", dirPath);
 
         IRunner2 deleteRunner = () -> deleteDirectoryNIOWait(Paths.get(dirPath));
-        boolean success = !ExceptionUtil.isExceptionThrown2(deleteRunner);
+        boolean success = !ExceptionUtils.isExceptionThrown2(deleteRunner);
 
         LOGGER.info("{} Directory removing status succeeded = {}", dirPath, success);
     }
@@ -55,7 +55,7 @@ public class GHTaskDirRemove implements Runnable {
                     .atMost(10L, TimeUnit.SECONDS)
                     .pollDelay(3L, TimeUnit.SECONDS)
                     .pollInterval(3L, TimeUnit.SECONDS)
-                    .until(() -> !ExceptionUtil.isExceptionThrown2(deleteNIORunner));
+                    .until(() -> !ExceptionUtils.isExceptionThrown2(deleteNIORunner));
         } catch (Throwable ex) {
             throw new IOException(ex);
         }

@@ -3,7 +3,7 @@ package pl.p.lodz.iis.hr.services;
 import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 import pl.p.lodz.iis.hr.utils.GHIRunner2;
 
@@ -29,7 +29,7 @@ class GHTaskDelete implements Runnable {
         GitHub ghWait = ApplicationContextProvider.getBean("ghWait", GitHub.class);
 
         GHIRunner2 deleteRunner = () -> ghWait.getMyself().getRepository(repoSimpleName).delete();
-        boolean success = !ExceptionUtil.isExceptionThrown2(() -> GHExecutor.ex(deleteRunner));
+        boolean success = !ExceptionUtils.isExceptionThrown2(() -> GHExecutor.ex(deleteRunner));
 
         LOGGER.info("{} Repo delete status succeeded = {}", repoSimpleName, success);
     }

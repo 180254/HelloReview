@@ -1,6 +1,6 @@
 package pl.p.lodz.iis.hr.configuration;
 
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -41,7 +41,7 @@ public class Long2 implements Serializable {
     }
 
     public Long2(String value) {
-        Long value2 = ExceptionUtil.ignoreException1(() -> Long.parseLong(value));
+        Long value2 = ExceptionUtils.ignoreException1(() -> Long.parseLong(value));
         this.value = (value2 != null) ? value2 : 0L;
     }
 

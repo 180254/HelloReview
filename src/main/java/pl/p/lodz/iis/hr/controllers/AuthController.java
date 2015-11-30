@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.p.lodz.iis.hr.configuration.GHPac4jSecurityHelper;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ class AuthController {
         GHPac4jSecurityHelper ghSecurityHelper = new GHPac4jSecurityHelper(gitHubClient, request, response);
 
         if (ghSecurityHelper.getProfileManager().isAuthenticated()
-                && !ExceptionUtil.isExceptionThrown1(ghSecurityHelper::getUserProfileUp2Date)) {
+                && !ExceptionUtils.isExceptionThrown1(ghSecurityHelper::getUserProfileUp2Date)) {
             return "redirect:/";
 
         } else {

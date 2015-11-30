@@ -3,12 +3,12 @@ package pl.p.lodz.iis.hr.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class ExceptionUtil {
+public final class ExceptionUtils {
 
-    private ExceptionUtil() {
+    private ExceptionUtils() {
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionUtils.class);
 
     public static <T> boolean isExceptionThrown1(IRunner1<T> runner) {
         try {

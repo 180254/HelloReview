@@ -18,7 +18,7 @@ import pl.p.lodz.iis.hr.exceptions.GHCommunicationException;
 import pl.p.lodz.iis.hr.models.courses.Commission;
 import pl.p.lodz.iis.hr.models.courses.CommissionStatus;
 import pl.p.lodz.iis.hr.repositories.CommissionRepository;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 import pl.p.lodz.iis.hr.utils.GHExecutor;
 
 import java.io.File;
@@ -155,12 +155,12 @@ class GHTaskClone implements Runnable {
             commissionRepository.save(commission);
 
             LOGGER.debug("{} Cleaning. Deleting target repo if exist.", uuid);
-            ExceptionUtil.ignoreException2(() ->
+            ExceptionUtils.ignoreException2(() ->
                     GHExecutor.ex(() -> ghWait.getRepository(targetRepoFullName).delete())
             );
 
             LOGGER.debug("{} Cleaning. Deleting clone dir if exist.", uuid);
-            ExceptionUtil.ignoreException2(() ->
+            ExceptionUtils.ignoreException2(() ->
                     deleteDirForCloneIfExist(false)
             );
 

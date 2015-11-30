@@ -5,7 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +38,7 @@ public class LocaleService {
      * @return localized msg or msg code, if no localization is available
      */
     private String msgOrCode(Supplier<String> msgSupplier, String code) {
-        String msg = ExceptionUtil.ignoreException1(msgSupplier::get);
+        String msg = ExceptionUtils.ignoreException1(msgSupplier::get);
         return (msg == null)
                 ? String.format("??%s%s??", code, getLocale().toString())
                 : msg;

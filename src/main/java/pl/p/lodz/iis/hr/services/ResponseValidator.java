@@ -10,7 +10,7 @@ import pl.p.lodz.iis.hr.models.forms.InputScale;
 import pl.p.lodz.iis.hr.models.forms.InputText;
 import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
-import pl.p.lodz.iis.hr.utils.ExceptionUtil;
+import pl.p.lodz.iis.hr.utils.ExceptionUtils;
 import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -87,7 +87,7 @@ public class ResponseValidator {
 
         boolean properScaleAnswers = response.getAnswers().stream()
                 .filter(answer1 -> ProxyUtils.isInstanceOf(answer1.getInput(), InputScale.class))
-                .allMatch(answer1 -> !ExceptionUtil.isExceptionThrown1(answer1::getAnswerAsNumber));
+                .allMatch(answer1 -> !ExceptionUtils.isExceptionThrown1(answer1::getAnswerAsNumber));
 
         if (!properScaleAnswers) {
             LOGGER.debug("validation ensureAnswersHarmony failed.");
