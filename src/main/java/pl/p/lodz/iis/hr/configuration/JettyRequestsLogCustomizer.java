@@ -27,7 +27,7 @@ class JettyRequestsLogCustomizer implements JettyServerCustomizer {
         }
 
         NCSARequestLog reqLogImpl = new NCSARequestLog();
-        reqLogImpl.setFilename(new File("logs/request.yyyy-MM-dd.log").getAbsolutePath());
+        reqLogImpl.setFilename(new File("logs/request.yyyy_MM_dd.log").getAbsolutePath());
         reqLogImpl.setFilenameDateFormat("yyyy-MM-dd");
         reqLogImpl.setExtended(true);
         reqLogImpl.setAppend(true);
