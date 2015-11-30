@@ -67,11 +67,11 @@ public class _DevInit {
         Course course1 = new Course("Course1");
         repositoryProvider.course().save(course1);
 
-        Participant participant1 = new Participant(course, "180254", "180254");
+        Participant participant1 = new Participant(course1, "180254", "180254");
         repositoryProvider.participant().save(participant1);
 
-        Participant participant2 = new Participant(course, "astepniewski", "astepniewski");
-        repositoryProvider.participant().save(participant1);
+        Participant participant2 = new Participant(course1, "astepniewski", "astepniewski");
+        repositoryProvider.participant().save(participant2);
 
         mFormsController.kAddPOST("Form1", mFormsController.xmlExample(), "add");
 
