@@ -35,6 +35,19 @@ public class _DevInit {
     }
 
     @RequestMapping(
+            value = "/reset",
+            method = RequestMethod.GET)
+    @Transactional
+    @ResponseBody
+    public String reset() {
+        
+        repositoryProvider.course().deleteAll();
+        repositoryProvider.form().deleteAll();
+
+        return "OK";
+    }
+
+    @RequestMapping(
             value = "/init",
             method = RequestMethod.GET)
     @Transactional
