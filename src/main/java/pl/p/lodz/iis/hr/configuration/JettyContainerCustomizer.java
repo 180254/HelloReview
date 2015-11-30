@@ -4,10 +4,7 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 
-/**
- * @see JettyConfig
- */
-class JettyEmbSerConCus2 implements EmbeddedServletContainerCustomizer {
+class JettyContainerCustomizer implements EmbeddedServletContainerCustomizer {
 
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
@@ -17,6 +14,8 @@ class JettyEmbSerConCus2 implements EmbeddedServletContainerCustomizer {
     }
 
     private void customizeJetty(JettyEmbeddedServletContainerFactory jetty) {
-        jetty.addServerCustomizers(new JettyServerCustomizer2());
+        jetty.addServerCustomizers(new JettyNoVersionCustomizer());
+        jetty.addServerCustomizers(new JettyRequestsLogCustomizer());
+
     }
 }

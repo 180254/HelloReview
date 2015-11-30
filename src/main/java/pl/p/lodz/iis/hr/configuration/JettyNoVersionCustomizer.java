@@ -7,9 +7,13 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
 
 /**
- * @see JettyConfig
+ * Reconfigure Jetty, to do not send server version in header.<br/>
+ * http://stackoverflow.com/questions/28339724/customizing-httpconfiguration-of-jetty-with-spring-boot<br/>
+ * http://stackoverflow.com/questions/15652902/remove-the-http-server-header-in-jetty-9
+ *
+ * @author Andy Wilkinson(http://stackoverflow.com/users/1384297/andy-wilkinson)
  */
-class JettyServerCustomizer2 implements JettyServerCustomizer {
+class JettyNoVersionCustomizer implements JettyServerCustomizer {
 
     @Override
     public void customize(Server server) {

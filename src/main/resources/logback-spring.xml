@@ -4,18 +4,18 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/log.%d{yyyy-MM}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/log.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
+                <maxFileSize>50MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <maxHistory>30</maxHistory>
+            <maxHistory>2</maxHistory>
         </rollingPolicy>
 
         <encoder>
             <pattern>
-                %d [%-12.12thread] %-5level [ %-40.40logger{40} ] - %msg%r%n
+                [%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}] [%-12.12thread] %-5level [ %-40.40logger{40} ] - %msg%r%n
             </pattern>
         </encoder>
 
