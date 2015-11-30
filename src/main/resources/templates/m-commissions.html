@@ -25,9 +25,8 @@
         <span th:utext="#{m.commissions.table.head.addon.forParticipant}"></span>
         <a th:href="@{/m/reviews/participants/{participantID}(participantID=${participant.id})}">
             <strong th:text="${participant.name}"></strong>
-        </a>
-        (<a th:href="@{/m/courses/{participantID}(paericipantID=${participant.id})}">
-        <strong th:text="${participant.course.name}"></strong></a>)
+        </a>(<a th:href="@{/m/courses/{participantID}(paericipantID=${participant.id})}"><strong
+            th:text="${participant.course.name}"></strong></a>)
     </h4>
 
     <h4 th:if="${addon_failed != null and addon_failed == true}" class="pre-table-addon">

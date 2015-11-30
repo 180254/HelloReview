@@ -43,7 +43,7 @@
 + GET     html   /m/reviews/commissions/for/participant/1
 + GET     html   /m/reviews/commissions/failed
 + POST    rest   /m/reviews/commissions/retry
-+ GET     html   /m/reviews/1/responses
++ GET     xlsx   /m/reviews/1/responses
 
 + GET     html   /m/stats
 + POST    loc    /m/stats/clean/cache-dir
