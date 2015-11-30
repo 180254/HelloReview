@@ -153,6 +153,10 @@ public class Form implements Serializable, RelationsAware {
 
     @Override
     public void fixRelations() {
+        if (questions == null) {
+            questions = new ArrayList<>(0);
+        }
+
         for (Question question : questions) {
             question.setForm(this);
             question.fixRelations();

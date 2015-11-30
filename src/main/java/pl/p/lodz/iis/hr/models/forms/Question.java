@@ -97,6 +97,10 @@ public class Question implements Serializable, RelationsAware {
 
     @Override
     public void fixRelations() {
+        if (inputs == null) {
+            inputs = new ArrayList<>(0);
+        }
+
         for (Input input : inputs) {
             input.setQuestion(this);
         }

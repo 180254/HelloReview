@@ -143,8 +143,8 @@ class MFormsController {
         repositoryProvider.form().delete(formRoBeDeleted);
         repositoryProvider.form().flush();
 
-        formValidator.validateRestEx(form);
         form.fixRelations();
+        formValidator.validateRestEx(form);
 
         // input scale must be required
         form.getQuestions().stream()
