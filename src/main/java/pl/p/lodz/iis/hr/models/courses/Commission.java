@@ -35,19 +35,19 @@ public class Commission implements Serializable {
     @JsonView
     private UUID uuid;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
     private Review review;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
     private Participant assessed;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     @JoinColumn(nullable = true)
     @Fetch(FetchMode.JOIN)
     @JsonView
@@ -66,7 +66,7 @@ public class Commission implements Serializable {
     @JsonView
     private CommissionStatus status;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true, orphanRemoval = true)
     @JoinColumn(nullable = true)
     @Fetch(FetchMode.JOIN)
     @JsonView

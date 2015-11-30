@@ -33,19 +33,19 @@ public class Participant implements Serializable {
     @JsonView
     private String gitHubName;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
     private Course course;
 
-    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "assessor", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "assessor", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessor")
     private List<Commission> commissionsAsAssessor;
 
-    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "assessed", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "assessed", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessed")

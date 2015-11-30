@@ -87,6 +87,7 @@ public class InputScale extends Input {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("super", super.toString())
                 .add("fromLabel", fromLabel)
                 .add("fromS", fromS)
                 .add("toLabel", toLabel)

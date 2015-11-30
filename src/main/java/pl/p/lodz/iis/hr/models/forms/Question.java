@@ -26,7 +26,7 @@ public class Question implements Serializable, RelationsAware {
     @JsonView
     private long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
@@ -40,7 +40,7 @@ public class Question implements Serializable, RelationsAware {
     @JsonView(JSONViews.FormParseXML.class)
     private String additionalTips;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("input")

@@ -32,7 +32,7 @@ public abstract class Input implements Serializable {
     @JsonView
     private long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
@@ -46,7 +46,7 @@ public abstract class Input implements Serializable {
     @JsonView(JSONViews.FormParseXML.class)
     private String label;
 
-    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "input", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "input", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("answer")
@@ -121,4 +121,6 @@ public abstract class Input implements Serializable {
                 .add("label", label)
                 .toString();
     }
+
+
 }

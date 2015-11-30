@@ -25,14 +25,14 @@ public class Response implements Serializable, RelationsAware {
     @JsonView
     private long id;
 
-    @OneToOne(cascade = {}, fetch = FetchType.EAGER, optional = false, mappedBy = "response")
+    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, mappedBy = "response")
     @PrimaryKeyJoinColumn
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
     private Commission commission;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "response", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "response", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")

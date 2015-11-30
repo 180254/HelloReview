@@ -42,13 +42,13 @@ public class Form implements Serializable, RelationsAware {
     @JsonView(JSONViews.FormParseXML.class)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "form", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("question")
     private List<Question> questions;
 
-    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "form", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")

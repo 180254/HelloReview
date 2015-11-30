@@ -37,13 +37,13 @@ public class Review implements Serializable {
     @JsonView
     private long commPerPeer;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
     private Course course;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView
@@ -53,7 +53,7 @@ public class Review implements Serializable {
     @JsonView
     private String repository;
 
-    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "review", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "review", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commission")
