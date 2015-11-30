@@ -53,7 +53,7 @@ public class Review implements Serializable {
     @JsonView
     private String repository;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "review", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "review", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commission")

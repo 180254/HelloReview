@@ -66,7 +66,7 @@ public class Commission implements Serializable {
     @JsonView
     private CommissionStatus status;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true, orphanRemoval = true)
     @JoinColumn(nullable = true)
     @Fetch(FetchMode.JOIN)
     @JsonView

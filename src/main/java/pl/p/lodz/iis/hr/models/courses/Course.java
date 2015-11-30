@@ -31,13 +31,13 @@ public class Course implements Serializable {
     @JsonView
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "course", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "course", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("student")
     private List<Participant> participants;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "course", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "course", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")

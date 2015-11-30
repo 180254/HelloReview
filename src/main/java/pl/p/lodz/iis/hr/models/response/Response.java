@@ -25,7 +25,8 @@ public class Response implements Serializable, RelationsAware {
     @JsonView
     private long id;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, optional = false)
+    @OneToOne(cascade = {}, fetch = FetchType.EAGER, optional = false, mappedBy = "response")
+    @PrimaryKeyJoinColumn
     @JoinColumn(nullable = false)
     @Fetch(FetchMode.JOIN)
     @JsonView

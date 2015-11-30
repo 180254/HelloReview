@@ -46,7 +46,7 @@ public abstract class Input implements Serializable {
     @JsonView(JSONViews.FormParseXML.class)
     private String label;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "input", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "input", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("answer")

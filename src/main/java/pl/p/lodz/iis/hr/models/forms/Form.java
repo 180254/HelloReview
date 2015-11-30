@@ -48,7 +48,7 @@ public class Form implements Serializable, RelationsAware {
     @JsonProperty("question")
     private List<Question> questions;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "form", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "form", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")

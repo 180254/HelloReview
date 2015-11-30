@@ -39,13 +39,13 @@ public class Participant implements Serializable {
     @JsonView
     private Course course;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "assessor", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "assessor", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessor")
     private List<Commission> commissionsAsAssessor;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "assessed", orphanRemoval = true)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "assessed", orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessed")
