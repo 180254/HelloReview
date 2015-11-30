@@ -174,7 +174,7 @@ class GHTaskClone implements Runnable {
         boolean exists = directoryForClone.exists();
 
         LOGGER.debug("{} Directory for clone should {}, currently exist = {}",
-                uuid, shouldExist ? "not exist" : "exist", exists
+                uuid, shouldExist ? "exist" : "not exist", exists
         );
 
         if (exists) {
