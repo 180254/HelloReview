@@ -44,9 +44,9 @@ public class _DevInit {
             LocalizableErrorRestException, LocalizedErrorRestException {
 
         repositoryProvider.course().deleteAll();
-        repositoryProvider.course().flush();
-
         repositoryProvider.form().deleteAll();
+
+        repositoryProvider.course().flush();
         repositoryProvider.form().flush();
 
         Course course = new Course("MTO 2014/2015");
@@ -63,6 +63,15 @@ public class _DevInit {
             Participant participant = new Participant(course, parti, parti);
             repositoryProvider.participant().save(participant);
         }
+
+        Course course1 = new Course("Course1");
+        repositoryProvider.course().save(course1);
+
+        Participant participant1 = new Participant(course, "180254", "180254");
+        repositoryProvider.participant().save(participant1);
+
+        Participant participant2 = new Participant(course, "astepniewski", "astepniewski");
+        repositoryProvider.participant().save(participant1);
 
         mFormsController.kAddPOST("Form1", mFormsController.xmlExample(), "add");
 
