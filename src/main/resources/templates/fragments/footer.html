@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<footer th:fragment="footer">
+    <!-- // @formatter:off  -->
+    <script th:src="@{/lib/jquery.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script th:src="@{/lib/bootstrap.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script th:src="@{/lib/bootstrap-slider.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.6/bootstrap-slider.min.js"></script>
+    <script th:src="@{/lib/bootstrap-editable.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script th:src="@{/lib/bootstrap-confirmation.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
+    <script th:src="@{/lib/autosize.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.13/autosize.min.js"></script>
+    <script th:src="@{/lib/toastr.min.js}" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
+
+    <script                     th:src="@{/js/a-ajax-loader.js}"></script>
+    <script                     th:src="@{/js/a-plugins-options.js}"></script>
+    <script                     th:src="@{/js/a-form-enhancer.js}"></script>
+    <script                     th:src="@{/js/a-utils.js}"></script>
+
+
+    <script th:if="${isMaster}" th:src="@{/js/b-add.js}"></script>
+    <script th:if="${isMaster}" th:src="@{/js/b-delete.js}"></script>
+    <script th:if="${isMaster}" th:src="@{/js/b-rename.js}"></script>
+    <script th:if="${isMaster}" th:src="@{/js/c-close.js}"></script>
+    <script th:if="${isMaster}" th:src="@{/js/c-retry.js}"></script>
+
+    <script th:if="${isPeer}"   th:src="@{/js/d-form.js}"></script>
+    <!-- // @formatter:on  -->
+</footer>
+
+</html>
