@@ -70,7 +70,7 @@ class MStatsController {
             method = RequestMethod.GET)
     public String cleanCacheDir() {
 
-        LOGGER.debug("cleanCacheDir executed");
+        LOGGER.info("cleanCacheDir executed");
 
         if (ghTaskScheduler.shouldStatsCleanFunctionsBeEnabled()) {
             ghTaskScheduler.registerOkCacheClean();
@@ -84,7 +84,7 @@ class MStatsController {
             method = RequestMethod.GET)
     public String junkCleanTemp() {
 
-        LOGGER.debug("junkCleanTemp executed");
+        LOGGER.info("junkCleanTemp executed");
 
         if (ghTaskScheduler.shouldStatsCleanFunctionsBeEnabled()) {
 
@@ -108,7 +108,7 @@ class MStatsController {
     @Transactional
     public String cleanJunkRepo() {
 
-        LOGGER.debug("cleanJunkRepo executed");
+        LOGGER.info("cleanJunkRepo executed");
 
         if (ghTaskScheduler.shouldStatsCleanFunctionsBeEnabled()) {
 
@@ -130,7 +130,7 @@ class MStatsController {
             method = RequestMethod.GET)
     public String cacheSwitch() {
 
-        LOGGER.debug("cacheSwitch executed, new state = {}", !httpConnectorWithCache.isCacheEnabled());
+        LOGGER.info("cacheSwitch executed, new state = {}", !httpConnectorWithCache.isCacheEnabled());
 
         if (httpConnectorWithCache.isCacheEnabled()) {
             httpConnectorWithCache.disableCache();
