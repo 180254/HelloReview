@@ -40,7 +40,7 @@ class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .put("img-src",         "'self' data:")
              // .put("media-src ",      "'none'") // unnecessary - default-src
              // .put("object-src",      "'none'") // unnecessary - default-src
-                .put("script-src",      "'self")
+                .put("script-src",      "'self'")
                 .put("style-src",       "'self' 'unsafe-inline'")
              // .put("frame-src",       "") // deprecated in CSP2, SHOULD use the child-src directive instead.
              // .put("sandbox",         "") // unnecessary -  object-src is none
