@@ -40,6 +40,8 @@
     <logger name="org.springframework" level="INFO"/>
     <logger name="pl.p.lodz.iis.hr" level="DEBUG"/>
 
+    <logger name="org.pac4j" level="DEBUG"/>
+
     <logger name="org.hibernate.SQL" level="TRACE"/>
     <logger name="org.hibernate.type" level="INFO"/>
 </configuration>
