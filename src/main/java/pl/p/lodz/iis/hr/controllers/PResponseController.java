@@ -84,13 +84,13 @@ class PResponseController {
 
         responseValidator.validate(response1);
 
-        LOGGER.debug("New response added: {}", response1);
+        LOGGER.debug("New response adding: {}", response1);
 
         response1.getCommission().setResponse(response1);
         response1.getCommission().setStatus(CommissionStatus.FILLED);
         repositoryProvider.response().save(response1);
 
-        LOGGER.debug("Added response ID {}", response1.getId());
+        LOGGER.info("Added response {}", response1);
 
 
         return localeService.getAsList("p.response.done");

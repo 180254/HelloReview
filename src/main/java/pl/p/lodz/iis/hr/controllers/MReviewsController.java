@@ -173,7 +173,7 @@ class MReviewsController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Review deleted {}", review);
+        LOGGER.info("Review deleted {}", review);
         reviewService.delete(review);
 
         return localeService.getAsList("m.reviews.delete.done");
@@ -194,7 +194,7 @@ class MReviewsController {
             throw new LocalizableErrorRestException("m.reviews.open.close.cannot.as.cleaned");
         }
 
-        LOGGER.debug("Review closed state changes {} to {}", review, !review.isClosed());
+        LOGGER.info("Review closed state changes {} to {}", review, !review.isClosed());
         review.setClosed(!review.isClosed());
         repositoryProvider.review().save(review);
 
@@ -226,7 +226,7 @@ class MReviewsController {
                 localeService.get("m.reviews.add.validation.prefix.name")
         );
 
-        LOGGER.debug("Review {} renamed to {}", review, newName);
+        LOGGER.info("Review {} renamed to {}", review, newName);
         review.setName(newName);
         repositoryProvider.review().save(review);
 
@@ -276,7 +276,7 @@ class MReviewsController {
             throw LocalizableErrorRestException.noResource();
         }
 
-        LOGGER.debug("Review creating {}", ghReviewAddForm);
+        LOGGER.info("Review creating {}", ghReviewAddForm);
         return ghReviewCreator.createReview(ghReviewAddForm, ghRepository, response);
     }
 

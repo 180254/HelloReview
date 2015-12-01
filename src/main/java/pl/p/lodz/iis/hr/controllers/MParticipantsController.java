@@ -133,7 +133,7 @@ class MParticipantsController {
 
         LOGGER.debug("Participant added {}", participant);
         repositoryProvider.participant().save(participant);
-        LOGGER.debug("Added participant ID {}", participant.getId());
+        LOGGER.info("Added participant {}", participant);
 
         String msg = localeService.get("m.participants.add.done");
 
@@ -159,7 +159,7 @@ class MParticipantsController {
             throw new LocalizableErrorRestException("m.participants.delete.cannot.as.comm.exist");
         }
 
-        LOGGER.debug("Participant deleted {}", participant);
+        LOGGER.info("Participant deleted {}", participant);
         repositoryProvider.participant().delete(participant);
 
         return localeService.getAsList("m.participants.delete.done");
@@ -187,7 +187,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.participant.name")
         );
 
-        LOGGER.debug("Participant {} name changed to {}", participant, newName);
+        LOGGER.info("Participant {} name changed to {}", participant, newName);
         participant.setName(newName);
         repositoryProvider.participant().save(participant);
 
@@ -217,7 +217,7 @@ class MParticipantsController {
                 localeService.get("m.participants.add.validation.prefix.github.name")
         );
 
-        LOGGER.debug("Participant {} GitHub name changed to {}", participant, newGitHubName);
+        LOGGER.info("Participant {} GitHub name changed to {}", participant, newGitHubName);
         participant.setGitHubName(newGitHubName);
         repositoryProvider.participant().save(participant);
 

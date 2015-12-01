@@ -55,7 +55,7 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     public List<String> handleLocalizedErrRestEx(LocalizedErrorRestException ex,
                                                  HttpServletResponse response) {
 
-        LOGGER.warn("LocalizedErrorRestException", ex);
+        LOGGER.debug("LocalizedErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return ex.getErrors();
     }
@@ -66,7 +66,7 @@ class CustomizedExHandlerController extends ResponseEntityExceptionHandler {
     public List<String> handleLocalizableErrRestEx(LocalizableErrorRestException ex,
                                                    HttpServletResponse response) {
 
-        LOGGER.warn("LocalizableErrorRestException", ex);
+        LOGGER.debug("LocalizableErrorRestException", ex);
         response.setStatus(ex.getStatusCode());
         return localeService.getAsList(ex.getLocaleCode(), ex.getLocaleArgs());
     }

@@ -152,7 +152,7 @@ class MFormsController {
 
         LOGGER.debug("Form added {}", form);
         repositoryProvider.form().save(form);
-        LOGGER.debug("Added form ID {}", form.getId());
+        LOGGER.info("Added form {}", form);
 
         return Collections.singletonList(String.valueOf(form.getId()));
     }
@@ -221,7 +221,7 @@ class MFormsController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Form deleted {}", form);
+        LOGGER.info("Form deleted {}", form);
         reviewService.delete(reviews);
         repositoryProvider.form().delete(form);
 
@@ -246,7 +246,7 @@ class MFormsController {
                 localeService.get("m.forms.rename.validation.prefix.name")
         );
 
-        LOGGER.debug("Form {} renamed to {}", form, newName);
+        LOGGER.info("Form {} renamed to {}", form, newName);
         form.setName(newName);
         repositoryProvider.form().save(form);
 

@@ -108,7 +108,7 @@ class MCoursesController {
 
         LOGGER.debug("Course adding {}", course);
         repositoryProvider.course().save(course);
-        LOGGER.debug("Added course ID {}", course.getId());
+        LOGGER.info("Added course {}", course);
 
         String msg = localeService.get("m.courses.add.done");
 
@@ -135,7 +135,7 @@ class MCoursesController {
             throw new LocalizableErrorRestException("m.reviews.delete.cannot.as.comm.processing");
         }
 
-        LOGGER.debug("Course deleted {}", course);
+        LOGGER.info("Course deleted {}", course);
         reviewService.delete(reviews);
         repositoryProvider.course().delete(courseID.get());
 
@@ -160,7 +160,7 @@ class MCoursesController {
                 localeService.get("m.courses.add.validation.prefix.course.name")
         );
 
-        LOGGER.debug("Course renamed {} to {}", course, newName);
+        LOGGER.info("Course renamed {} to {}", course, newName);
         course.setName(newName);
         repositoryProvider.course().save(course);
 

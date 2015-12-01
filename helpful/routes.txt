@@ -5,15 +5,6 @@
 + GET     rest   /csrf-token
 + POST    void   /csp-reports
 
-+ GET     html   /m/forms
-+ GET     html   /m/forms/1
-+ GET     html   /m/forms/add
-+ POST    rest   /m/forms/add
-+ GET     html   /m/forms/preview/1
-+ GET     html   /m/forms/xml/1
-+ POST    rest   /m/forms/delete
-+ POST    rest   /m/forms/rename
-
 + GET     html   /m/courses
 + GET     html   /m/courses/1
 + POST    rest   /m/courses/add
@@ -26,6 +17,15 @@
 + POST    rest   /m/courses/participants/delete
 + POST    rest   /m/courses/participants/rename/name
 + POST    rest   /m/courses/participants/rename/github-name
+
++ GET     html   /m/forms
++ GET     html   /m/forms/1
++ GET     html   /m/forms/add
++ POST    rest   /m/forms/add
++ GET     html   /m/forms/preview/1
++ GET     html   /m/forms/xml/1
++ POST    rest   /m/forms/delete
++ POST    rest   /m/forms/rename
 
 + GET     html   /m/reviews
 + GET     html   /m/reviews/1

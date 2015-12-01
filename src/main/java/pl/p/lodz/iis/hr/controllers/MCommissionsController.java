@@ -164,7 +164,7 @@ class MCommissionsController {
 
         }
 
-        LOGGER.debug("Commission retried {}", comm);
+        LOGGER.info("Commission retried {}", comm);
         comm.setStatus(CommissionStatus.PROCESSING);
         ghTaskScheduler.registerClone(comm);
         repositoryProvider.commission().save(comm);
