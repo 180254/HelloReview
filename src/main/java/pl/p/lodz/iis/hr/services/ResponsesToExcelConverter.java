@@ -3,6 +3,7 @@ package pl.p.lodz.iis.hr.services;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,11 @@ import pl.p.lodz.iis.hr.models.forms.Question;
 import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
 import pl.p.lodz.iis.hr.utils.ProxyUtils;
+import pl.p.lodz.iis.hr.utils.SafeFilenameUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,12 +43,15 @@ public class ResponsesToExcelConverter {
     public byte[] convert(Review review) throws ErrorPageException {
 
         try (XSSFWorkbook wb = new XSSFWorkbook()) {
+            XSSFCreationHelper creationHelper = wb.getCreationHelper();
 
             Sheet sheet = wb.createSheet(
-                    String.format("%s_%s",
-                            review.getName(),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm")))
+                    SafeFilenameUtils.toFilenameSafeString(
+                            String.format("%s_%s",
+                                    review.getName(),
+                                    SafeFilenameUtils.getCurrentTimestamp()))
             );
+
             sheet.setDefaultColumnWidth(20);
 
             int rowCnt = 0;
@@ -74,6 +78,11 @@ public class ResponsesToExcelConverter {
             Cell headCellAssessed = headRow.createCell(cellCnt);
             headCellAssessed.setCellValue(localeService.get("m.commission.response.xls.head.assessed"));
             headCellAssessed.setCellStyle(headCellStyle);
+            cellCnt++;
+
+            Cell headCellAssGhUrl = headRow.createCell(cellCnt);
+            headCellAssGhUrl.setCellValue(localeService.get("m.commission.response.xls.head.ass.gh.url"));
+            headCellAssGhUrl.setCellStyle(headCellStyle);
             cellCnt++;
 
             Cell headCellStatus = headRow.createCell(cellCnt);
@@ -122,8 +131,21 @@ public class ResponsesToExcelConverter {
                 assessedCell.setCellValue(commission.getAssessed().getName());
                 cellCnt++;
 
+                if (commission.getAssessedGhUrl() != null) {
+                    Hyperlink assGhUrl = creationHelper.createHyperlink(Hyperlink.LINK_URL);
+                    assGhUrl.setAddress(commission.getAssessedGhUrl());
+
+                    Cell assGhUrlCell = responseRow.createCell(cellCnt);
+                    assGhUrlCell.setCellValue(commission.getAssessedGhUrl());
+                    assGhUrlCell.setHyperlink(assGhUrl);
+                }
+                cellCnt++;
+
                 Cell statusCell = responseRow.createCell(cellCnt);
-                statusCell.setCellValue(localeService.get(commission.getStatus().getLocaleCode()).toUpperCase());
+                statusCell.setCellValue(
+                        localeService.get(commission.getStatus().getLocaleCode())
+                                .toUpperCase(localeService.getLocale())
+                );
                 cellCnt++;
 
                 if (response != null) {
@@ -142,7 +164,7 @@ public class ResponsesToExcelConverter {
             }
 
 
-            sheet.setAutoFilter(new CellRangeAddress(0, rowCnt, 1, 3));
+            sheet.setAutoFilter(new CellRangeAddress(0, rowCnt, 1, 4));
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             wb.write(baos);

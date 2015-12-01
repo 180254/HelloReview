@@ -94,6 +94,10 @@ public class Participant implements Serializable {
         this.gitHubName = gitHubName;
     }
 
+    public String getFullName() {
+        return String.format("%s (%s)", name, gitHubName);
+    }
+
     public Course getCourse() {
         return course;
     }

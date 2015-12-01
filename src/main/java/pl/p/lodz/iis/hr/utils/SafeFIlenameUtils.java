@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public final class SafeFilenameUtils {
 
     private static final Pattern NOT_SAFE_CHARS = Pattern.compile("[^a-zA-Z0-9.-]");
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
 
     private SafeFilenameUtils() {
     }

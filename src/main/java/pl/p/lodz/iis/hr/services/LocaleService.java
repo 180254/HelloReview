@@ -28,7 +28,7 @@ public class LocaleService {
         this.messageSource = messageSource;
     }
 
-    private Locale getLocale() {
+    public Locale getLocale() {
         return LocaleContextHolder.getLocale();
     }
 
