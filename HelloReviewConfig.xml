@@ -9,11 +9,12 @@
     <github>
         <masters>
             <username>peerreview70</username>
-            <username>radamuspl</username>
         </masters>
 
         <courserepos>
             <username>mto-lab</username>
+            <username>radamuspl</username>
+            <username>180254</username>
         </courserepos>
 
         <dummy>
