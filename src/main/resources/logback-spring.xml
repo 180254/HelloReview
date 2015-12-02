@@ -15,7 +15,7 @@
 
         <encoder>
             <pattern>
-                [%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}] [%-12.12thread] %-5level [ %-40.40logger{40} ] - %msg%r%n
+                [%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}] [%-12.12thread] %-5level [ %-40.40logger{40} ] - %msg%n
             </pattern>
         </encoder>
 
