@@ -16,6 +16,8 @@ class CallbackController2 extends CallbackController {
     @Override
     public String callback(HttpServletRequest request, HttpServletResponse response) {
         LOGGER.debug("IP {}", request.getRemoteAddr());
+        LOGGER.debug("HOST {}", request.getRemoteHost());
+        LOGGER.debug("X-FOR {}", request.getHeader("X-FORWARDED-FOR"));
         return super.callback(request, response);
     }
 }
