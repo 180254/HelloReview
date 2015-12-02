@@ -15,21 +15,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Controller for actions related to authorizations.<br/>
+ * Controller for action related to authorizations - login.<br/>
  * <br/>
  * /login    - pl.p.lodz.iis.hr.controllers.AuthController<br/>
  * /logout   - ApplicationLogoutController2 extends org.pac4j.springframework.web.ApplicationLogoutController<br/>
  * /callback - CallbackController2 extends org.pac4j.springframework.web.CallbackController<br/>
  */
 @Controller
-class AuthController {
+class AuthLoginController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthLoginController.class);
 
     private final GitHubClient gitHubClient;
 
     @Autowired
-    AuthController(GitHubClient gitHubClient) {
+    AuthLoginController(GitHubClient gitHubClient) {
         this.gitHubClient = gitHubClient;
     }
 

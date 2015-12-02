@@ -8,10 +8,16 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Controller for action related to authorization - OAuth2 authorization callback from GitHub.<br/>
+ * <br/>
+ * It is org.pac4j.springframework.web.ApplicationLogoutController with additional logger info:<br/>
+ * - extra info about user IP<br/>
+ */
 @Controller
-class CallbackController2 extends CallbackController {
+class AuthCallbackController extends CallbackController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CallbackController2.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthCallbackController.class);
 
     @Override
     public String callback(HttpServletRequest request, HttpServletResponse response) {
