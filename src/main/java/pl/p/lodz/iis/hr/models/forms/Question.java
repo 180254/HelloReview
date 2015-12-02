@@ -106,14 +106,14 @@ public class Question implements Serializable, RelationsAware {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Question)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Question.class))) return false;
         Question that = (Question) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

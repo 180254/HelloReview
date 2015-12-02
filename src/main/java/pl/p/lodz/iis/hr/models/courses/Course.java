@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
 import pl.p.lodz.iis.hr.services.UniqueName;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -117,14 +118,14 @@ public class Course implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Course)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Course.class))) return false;
         Course that = (Course) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

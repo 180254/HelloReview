@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import pl.p.lodz.iis.hr.models.forms.Form;
 import pl.p.lodz.iis.hr.repositories.ReviewRepository;
 import pl.p.lodz.iis.hr.services.UniqueName;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -199,14 +200,14 @@ public class Review implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Review)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Review.class))) return false;
         Review that = (Review) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

@@ -12,6 +12,7 @@ import pl.p.lodz.iis.hr.models.RelationsAware;
 import pl.p.lodz.iis.hr.models.courses.Review;
 import pl.p.lodz.iis.hr.repositories.FormRepository;
 import pl.p.lodz.iis.hr.services.UniqueName;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -162,14 +163,14 @@ public class Form implements Serializable, RelationsAware {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Form)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Form.class))) return false;
         Form that = (Form) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

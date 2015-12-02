@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
 import pl.p.lodz.iis.hr.models.response.Answer;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -98,14 +99,14 @@ public abstract class Input implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Input)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Input.class))) return false;
         Input that = (Input) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

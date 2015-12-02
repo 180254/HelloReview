@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.response.Response;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -208,14 +209,14 @@ public class Commission implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Commission)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Commission.class))) return false;
         Commission that = (Commission) obj;
-        return id == that.id;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 
     @Override

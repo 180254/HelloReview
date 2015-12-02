@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
 import pl.p.lodz.iis.hr.models.RelationsAware;
 import pl.p.lodz.iis.hr.models.courses.Commission;
+import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -82,14 +83,14 @@ public class Response implements Serializable, RelationsAware {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Response)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Response.class))) return false;
         Response that = (Response) obj;
-        return commission.getId() == that.commission.getId();
+        return getCommission().getId() == that.getCommission().getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(commission.getId());
+        return Objects.hash(getCommission().getId());
     }
 
     @Override

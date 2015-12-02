@@ -77,14 +77,14 @@ public class Answer implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Answer)) return false;
+        if ((obj == null) || !(ProxyUtils.isInstanceOf(obj, Answer.class))) return false;
         Answer that = (Answer) obj;
-        return input.getId() == that.input.getId();
+        return getInput().getId() == that.getInput().getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(input.getId());
+        return Objects.hash(getInput().getId());
     }
 
     @Override
