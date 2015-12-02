@@ -3,8 +3,6 @@ package pl.p.lodz.iis.hr.models.forms;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -29,7 +27,6 @@ public class Question implements Serializable, RelationsAware {
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Form form;
 
@@ -42,7 +39,6 @@ public class Question implements Serializable, RelationsAware {
     private String additionalTips;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("input")
     private List<Input> inputs;

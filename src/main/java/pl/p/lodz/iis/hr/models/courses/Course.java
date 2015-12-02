@@ -3,8 +3,6 @@ package pl.p.lodz.iis.hr.models.courses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.repositories.CourseRepository;
@@ -32,13 +30,11 @@ public class Course implements Serializable {
     private String name;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "course", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("student")
     private List<Participant> participants;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "course", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("review")
     private List<Review> reviews;

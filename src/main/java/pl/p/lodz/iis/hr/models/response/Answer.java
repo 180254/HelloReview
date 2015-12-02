@@ -2,8 +2,6 @@ package pl.p.lodz.iis.hr.models.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import pl.p.lodz.iis.hr.models.forms.Input;
 import pl.p.lodz.iis.hr.utils.ProxyUtils;
 
@@ -24,13 +22,11 @@ public class Answer implements Serializable {
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Response response;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Input input;
 

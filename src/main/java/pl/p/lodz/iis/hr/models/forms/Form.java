@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -43,14 +41,12 @@ public class Form implements Serializable, RelationsAware {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
-    @JsonView(JSONViews.FormParseXML.class)
+        @JsonView(JSONViews.FormParseXML.class)
     @JsonProperty("question")
     private List<Question> questions;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "form", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
-    @JsonView
+        @JsonView
     @JsonProperty("review")
     private List<Review> reviews;
 

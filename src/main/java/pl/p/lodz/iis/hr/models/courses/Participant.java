@@ -3,8 +3,6 @@ package pl.p.lodz.iis.hr.models.courses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -35,18 +33,15 @@ public class Participant implements Serializable {
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Course course;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "assessor", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessor")
     private List<Commission> commissionsAsAssessor;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "assessed", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("commissionAsAssessed")
     private List<Commission> commissionsAsAssessed;

@@ -2,8 +2,6 @@ package pl.p.lodz.iis.hr.models.courses;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.response.Response;
@@ -37,19 +35,16 @@ public class Commission implements Serializable {
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Review review;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Participant assessed;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     @JoinColumn(nullable = true)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Participant assessor;
 
@@ -68,7 +63,6 @@ public class Commission implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true, orphanRemoval = true)
     @JoinColumn(nullable = true)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Response response;
 

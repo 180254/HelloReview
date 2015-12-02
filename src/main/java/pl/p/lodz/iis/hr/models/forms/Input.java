@@ -2,8 +2,6 @@ package pl.p.lodz.iis.hr.models.forms;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import pl.p.lodz.iis.hr.models.JSONViews;
@@ -34,7 +32,6 @@ public abstract class Input implements Serializable {
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Fetch(FetchMode.JOIN)
     @JsonView
     private Question question;
 
@@ -47,7 +44,6 @@ public abstract class Input implements Serializable {
     private String label;
 
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "input", orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonView
     @JsonProperty("answer")
     private List<Answer> answers;
