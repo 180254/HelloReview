@@ -108,7 +108,7 @@ class MParticipantsController {
             throws LocalizedErrorRestException, LocalizableErrorRestException {
 
         Course course = resCommonService.getOneForRest(repositoryProvider.course(), courseID.get());
-        Participant participant = new Participant(course, name, gitHubName);
+        Participant participant = new Participant(course, name, gitHubName.trim());
 
         String namePrefix = localeService.get("m.participants.add.validation.prefix.participant.name");
         String gitHubNamePrefix = localeService.get("m.participants.add.validation.prefix.github.name");
@@ -218,7 +218,7 @@ class MParticipantsController {
         );
 
         LOGGER.info("Participant {} GitHub name changed to {}", participant, newGitHubName);
-        participant.setGitHubName(newGitHubName);
+        participant.setGitHubName(newGitHubName.trim());
         repositoryProvider.participant().save(participant);
 
         return localeService.getAsList("m.participants.rename.github.name.done");
