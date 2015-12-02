@@ -5,7 +5,6 @@ import org.pac4j.core.config.Config;
 import org.pac4j.oauth.client.GitHubClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import pl.p.lodz.iis.hr.appconfig.AppConfig;
 import pl.p.lodz.iis.hr.appconfig.GHApplication;
@@ -15,7 +14,7 @@ import pl.p.lodz.iis.hr.appconfig.GeneralConfig;
  * Configuration of beans that are provide possibility of log in using OAuth by GitHub.
  */
 @Configuration
-@ComponentScan(basePackages = "org.pac4j.springframework.web")
+//@ComponentScan(basePackages = "org.pac4j.springframework.web")
 class GHPac4jSecurityConfig {
 
     @Autowired private AppConfig appConfig;
