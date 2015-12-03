@@ -24,7 +24,7 @@ class IndexController {
 
     @RequestMapping(
             value = "/",
-            method = RequestMethod.GET)
+            method = {RequestMethod.GET, RequestMethod.HEAD})
     public String index() {
         return "index";
     }
