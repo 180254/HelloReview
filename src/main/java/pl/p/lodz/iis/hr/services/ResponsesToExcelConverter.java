@@ -110,8 +110,7 @@ public class ResponsesToExcelConverter {
             // --------------------------------------------------------
 
             for (Question question : review.getForm().getQuestions()) {
-                appendQuestionToHead(headRow, headRowCellCnt, headCellStyle, question);
-                headRowCellCnt++;
+                headRowCellCnt = appendQuestionToHead(headRow, headRowCellCnt, headCellStyle, question);
             }
             rowCnt++;
 
@@ -165,8 +164,9 @@ public class ResponsesToExcelConverter {
         headCellTimestamp.setCellStyle(headCellStyle);
     }
 
-    private void appendQuestionToHead(Row headRow, int cellCnt, CellStyle headCellStyle, Question question) {
+    private int appendQuestionToHead(Row headRow, int cellCnt, CellStyle headCellStyle, Question question) {
         StringBuilder headQI = new StringBuilder(100);
+        int internalCellCnt = cellCnt;
 
         for (Input input : question.getInputs()) {
             headQI.setLength(0);
@@ -177,10 +177,13 @@ public class ResponsesToExcelConverter {
                 headQI.append(String.format(" (%d - %d)", input1.getFromS(), input1.getToS()));
             }
 
-            Cell cellQI = headRow.createCell(cellCnt);
+            Cell cellQI = headRow.createCell(internalCellCnt);
             cellQI.setCellValue(headQI.toString());
             cellQI.setCellStyle(headCellStyle);
+            internalCellCnt++;
         }
+
+        return internalCellCnt;
     }
 
     private void appendCommissionRow(Sheet sheet, CreationHelper creationHelper, int rowCnt, Commission commission) {
