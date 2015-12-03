@@ -38,7 +38,10 @@ class HibernateStatInterceptor2 implements AsyncHandlerInterceptor {
             throws Exception {
 
         Long queryCount = statisticsInterceptor.getQueryCount();
-        modelAndView.addObject("_queryCount", queryCount);
+
+        if (modelAndView != null) {
+            modelAndView.addObject("_queryCount", queryCount);
+        }
     }
 
     @Override
