@@ -24,6 +24,7 @@ import pl.p.lodz.iis.hr.utils.SafeFilenameUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAccessor;
 
 @Service
 public class ResponsesToExcelConverter {
@@ -60,16 +61,16 @@ public class ResponsesToExcelConverter {
 
             // --------------------------------------------------------
 
-            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.gen", DTFormatter.format(LocalDateTime.now()));
+            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.gen", LocalDateTime.now());
             rowCnt += 2;
 
             appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.name", review.getName());
             rowCnt++;
 
-            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.created", DTFormatter.format(review.getCreated()));
+            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.created", review.getCreated());
             rowCnt++;
 
-            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.closed", DTFormatter.format(review.getClosed()));
+            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.closed", review.getClosed());
             rowCnt++;
 
             appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.course", review.getCourse().getName());
@@ -81,7 +82,7 @@ public class ResponsesToExcelConverter {
             appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.repo", review.getRepository());
             rowCnt++;
 
-            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.rsp", Long.toString(review.getCommPerPeer()));
+            appendInfoRow(sheet, rowCnt, "m.commission.response.xls.info.rsp", (double) review.getCommPerPeer());
             rowCnt += 2;
 
 
@@ -137,7 +138,7 @@ public class ResponsesToExcelConverter {
     }
 
 
-    private void appendInfoRow(Sheet sheet, int rowCnt, String keyCode, String value) {
+    private void appendInfoRow(Sheet sheet, int rowCnt, String keyCode, Object value) {
         int cellCnt = 0;
         Row infoRow = sheet.createRow(rowCnt);
 
@@ -146,7 +147,16 @@ public class ResponsesToExcelConverter {
         cellCnt++;
 
         Cell infoCellGen2 = infoRow.createCell(cellCnt);
-        infoCellGen2.setCellValue(value);
+
+        if (value instanceof String) {
+            infoCellGen2.setCellValue((String) value);
+
+        } else if (value instanceof Double) {
+            infoCellGen2.setCellValue((Double) value);
+
+        } else if (value instanceof LocalDateTime) {
+            infoCellGen2.setCellValue(DTFormatter.format((TemporalAccessor) value));
+        }
     }
 
     private void appendHeadCell(Row headRow, int cellCnt, CellStyle headCellStyle, String keyCode) {
