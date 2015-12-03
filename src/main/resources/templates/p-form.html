@@ -10,7 +10,7 @@
 <main class="container form-main">
 
     <form id="p-form"
-          th:class="${commission.status.isFilled() or review.closed} ? 'f-disabled' : ''"
+          th:class="${commission.status.isFilled() or review.isClosed()} ? 'f-disabled' : ''"
           th:attr="
                 data-form-action=@{/p/response},
                 data-comm-id=${commission.uuid},

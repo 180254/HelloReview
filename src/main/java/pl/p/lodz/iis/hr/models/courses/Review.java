@@ -55,9 +55,9 @@ public class Review implements Serializable {
     @JsonProperty("commission")
     private List<Commission> commissions;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonView
-    private boolean closed;
+    private LocalDateTime closed;
 
     @Column(nullable = false)
     @JsonView
@@ -81,7 +81,7 @@ public class Review implements Serializable {
         this.form = form;
         this.repository = repository;
         commissions = new ArrayList<>(10);
-        closed = false;
+        closed = null;
         cleaned = false;
     }
 
@@ -154,12 +154,16 @@ public class Review implements Serializable {
                 .count();
     }
 
-    public boolean isClosed() {
+    public LocalDateTime getClosed() {
         return closed;
     }
 
-    public void setClosed(boolean closed) {
+    public void setClosed(LocalDateTime closed) {
         this.closed = closed;
+    }
+
+    public boolean isClosed() {
+        return closed != null;
     }
 
     public boolean isCleaned() {

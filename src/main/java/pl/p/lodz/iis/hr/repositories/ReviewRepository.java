@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, FindByNameProvider<Review> {
 
-    List<Review> findByClosedTrue();
+    List<Review> findByClosedIsNotNull(); // is closed
 
-    List<Review> findByClosedFalse();
+    List<Review> findByClosedIsNull(); // is not closed
 }

@@ -22,6 +22,7 @@ import pl.p.lodz.iis.hr.services.*;
 import pl.p.lodz.iis.hr.utils.SafeFilenameUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -195,7 +196,8 @@ class MReviewsController {
         }
 
         LOGGER.info("Review closed state changes {} to {}", review, !review.isClosed());
-        review.setClosed(!review.isClosed());
+        review.setClosed(review.isClosed() ? null : LocalDateTime.now());
+
         repositoryProvider.review().save(review);
 
         return review.isClosed() ? Arrays.asList(

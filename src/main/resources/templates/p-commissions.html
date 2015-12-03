@@ -9,7 +9,7 @@
 
 <main class="container">
 
-    <table id="p-comm-table" class="table table-hover fixed">
+    <table id="p-comm-table" class="table table-hover">
         <thead>
         <tr>
             <th th:utext="#{p.commissions.table.head.date}" class="wide-id"></th>
@@ -23,23 +23,35 @@
         <tbody>
 
         <tr th:each="commission : ${commissions}"
-            th:class="${commission.status.isUnfilled() and commission.review.closed == false} ? 'comm-unfilled' : ''">
+            th:class="${commission.status.isUnfilled() and commission.review.isClosed() == false} ? 'comm-unfilled' : ''">
 
-            <td th:text="${commission.getCreatedDate()}"></td>
+            <td th:text="${T(pl.p.lodz.iis.hr.utils.DTFormatter).format(commission.created)}"></td>
 
             <td>
                 <a th:href="'https://github.com/'+${commission.review.repository}"
                    th:text="${commission.review.repository}"></a>
             </td>
 
-            <td th:if="${commission.review.closed == true}" th:utext="#{p.commissions.review.close}"></td>
-            <td th:if="${commission.review.closed == false}" th:utext="#{p.commissions.review.open}"></td>
+            <td th:if="${commission.review.isClosed() == true}"
+                th:utext="#{p.commissions.review.close(${T(pl.p.lodz.iis.hr.utils.DTFormatter).format(commission.review.closed)})}">
+            </td>
+            <td th:if="${commission.review.isClosed() == false}" th:utext="#{p.commissions.review.open}"></td>
 
-            <td th:utext="#{${commission.status.localeCode}}" th:class="${commission.status.cssClass}"></td>
+            <td>
+                <span th:utext="#{${commission.status.localeCode}}"></span>
+                <span th:if="${commission.status.isFilled()}"
+                      th:utext="#{p.commissions.review.filled(${T(pl.p.lodz.iis.hr.utils.DTFormatter).format(commission.response.created)})}"></span>
+            </td>
 
             <td>
                 <a th:href="@{/p/commissions/{uuid}(uuid=${commission.uuid})}"
                    th:text="${commission.getUuidShotVersion()}"></a>
+            </td>
+        </tr>
+
+        <tr th:if="${commissions.isEmpty()}">
+            <td colspan="5">
+                <span th:utext="#{p.commissions.empty}"></span>
             </td>
         </tr>
 

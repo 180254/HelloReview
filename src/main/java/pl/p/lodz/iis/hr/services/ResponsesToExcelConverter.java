@@ -17,15 +17,16 @@ import pl.p.lodz.iis.hr.models.forms.InputScale;
 import pl.p.lodz.iis.hr.models.forms.Question;
 import pl.p.lodz.iis.hr.models.response.Answer;
 import pl.p.lodz.iis.hr.models.response.Response;
+import pl.p.lodz.iis.hr.utils.DTFormatter;
 import pl.p.lodz.iis.hr.utils.ProxyUtils;
 import pl.p.lodz.iis.hr.utils.SafeFilenameUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
@@ -62,6 +63,84 @@ public class ResponsesToExcelConverter {
             headCellStyle.setAlignment(HorizontalAlignment.CENTER);
             headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
+            // --------------------------------------------------------
+
+            Row infoRowGen = sheet.createRow(rowCnt);
+            Cell infoCellGen = infoRowGen.createCell(cellCnt);
+            infoCellGen.setCellValue(localeService.get("m.commission.response.xls.info.gen"));
+            cellCnt++;
+            Cell infoCellGen2 = infoRowGen.createCell(cellCnt);
+            infoCellGen2.setCellValue(DTFormatter.format(LocalDateTime.now()));
+            rowCnt += 2;
+
+            cellCnt = 0;
+            Row infoRowName = sheet.createRow(rowCnt);
+            Cell infoCellName = infoRowName.createCell(cellCnt);
+            infoCellName.setCellValue(localeService.get("m.commission.response.xls.info.name"));
+            cellCnt++;
+            Cell infoCellName2 = infoRowName.createCell(cellCnt);
+            infoCellName2.setCellValue(review.getName());
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowCrated = sheet.createRow(rowCnt);
+            Cell infoCellCreated = infoRowCrated.createCell(cellCnt);
+            infoCellCreated.setCellValue(localeService.get("m.commission.response.xls.info.created"));
+            cellCnt++;
+            Cell infoCellCreated2 = infoRowCrated.createCell(cellCnt);
+            infoCellCreated2.setCellValue(DTFormatter.format(review.getCreated()));
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowClosed = sheet.createRow(rowCnt);
+            Cell infoCellClosed = infoRowClosed.createCell(cellCnt);
+            infoCellClosed.setCellValue(localeService.get("m.commission.response.xls.info.closed"));
+            cellCnt++;
+            if (review.getClosed() != null) {
+                Cell infoCellClosed2 = infoRowClosed.createCell(cellCnt);
+                infoCellClosed2.setCellValue(DTFormatter.format(review.getClosed()));
+            }
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowCourse = sheet.createRow(rowCnt);
+            Cell infoCellCourse = infoRowCourse.createCell(cellCnt);
+            infoCellCourse.setCellValue(localeService.get("m.commission.response.xls.info.course"));
+            cellCnt++;
+            Cell infoCellCourse2 = infoRowCourse.createCell(cellCnt);
+            infoCellCourse2.setCellValue(review.getCourse().getName());
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowTeam = sheet.createRow(rowCnt);
+            Cell infoCellTeam = infoRowTeam.createCell(cellCnt);
+            infoCellTeam.setCellValue(localeService.get("m.commission.response.xls.info.form"));
+            cellCnt++;
+            Cell infoCellTeam2 = infoRowTeam.createCell(cellCnt);
+            infoCellTeam2.setCellValue(review.getForm().getName());
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowRepo = sheet.createRow(rowCnt);
+            Cell infoCellRepo = infoRowRepo.createCell(cellCnt);
+            infoCellRepo.setCellValue(localeService.get("m.commission.response.xls.info.repo"));
+            cellCnt++;
+            Cell infoCellRepo2 = infoRowRepo.createCell(cellCnt);
+            infoCellRepo2.setCellValue(review.getRepository());
+            rowCnt++;
+
+            cellCnt = 0;
+            Row infoRowCommPerPeer = sheet.createRow(rowCnt);
+            Cell infoCellCommPerPeer = infoRowCommPerPeer.createCell(cellCnt);
+            infoCellCommPerPeer.setCellValue(localeService.get("m.commission.response.xls.info.rsp"));
+            cellCnt++;
+            Cell infoCellCommPerPeer2 = infoRowCommPerPeer.createCell(cellCnt);
+            infoCellCommPerPeer2.setCellValue(Long.toString(review.getCommPerPeer()));
+            rowCnt += 2;
+
+            // --------------------------------------------------------
+
+            cellCnt = 0;
             Row headRow = sheet.createRow(rowCnt);
             headRow.setHeightInPoints(60.0f);
 
@@ -90,6 +169,8 @@ public class ResponsesToExcelConverter {
             headCellStatus.setCellStyle(headCellStyle);
             cellCnt++;
 
+            // --------------------------------------------------------
+
             for (Question question : review.getForm().getQuestions()) {
                 for (Input input : question.getInputs()) {
                     String headQI = String.format("%s %s", input.getQuestion().getQuestionText(), input.getLabel());
@@ -116,7 +197,7 @@ public class ResponsesToExcelConverter {
                 if (response != null) {
                     Cell createdCell = responseRow.createCell(cellCnt);
                     createdCell.setCellValue(
-                            response.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            DTFormatter.format(response.getCreated())
                     );
                 }
                 cellCnt++;
@@ -164,7 +245,7 @@ public class ResponsesToExcelConverter {
             }
 
 
-            sheet.setAutoFilter(new CellRangeAddress(0, rowCnt, 1, 4));
+            sheet.setAutoFilter(new CellRangeAddress(10, rowCnt, 1, 4));
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             wb.write(baos);

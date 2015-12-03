@@ -103,13 +103,13 @@
                         data-btnCancelLabel=#{m.reviews.open.close.btnCancelLabel}"
                    data-btnOkClass="btn btn-sm btn-danger">
 
-                    <span th:if="${review.closed == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
-                    <span th:if="${review.closed == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
+                    <span th:if="${review.isClosed() == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
+                    <span th:if="${review.isClosed() == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
                 </a>
 
                 <span th:if="${review.cleaned == true}">
-                    <span th:if="${review.closed == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
-                    <span th:if="${review.closed == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
+                    <span th:if="${review.isClosed() == true}" th:utext="#{m.reviews.tbody.open.close.open}"></span>
+                    <span th:if="${review.isClosed() == false}" th:utext="#{m.reviews.tbody.open.close.close}"></span>
                 </span>
             </td>
 

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -22,6 +21,7 @@ import java.util.regex.Pattern;
 public class Commission implements Serializable {
 
     private static final long serialVersionUID = 7967942829146568225L;
+
     private static final Pattern DESC_PROJECT = Pattern.compile("\\{project\\}");
     private static final Pattern DESC_URL = Pattern.compile("\\{url\\}");
 
@@ -162,10 +162,6 @@ public class Commission implements Serializable {
 
     public LocalDateTime getCreated() {
         return created;
-    }
-
-    public String getCreatedDate() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(created);
     }
 
     /* package */ void setCreated(LocalDateTime created) {

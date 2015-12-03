@@ -116,7 +116,7 @@ class MStatsController {
 
             if (!junkRepos.isEmpty()) {
                 junkRepos.forEach(r -> ghTaskScheduler.registerDelete(r.getName()));
-                List<Review> closedReviews = repositoryProvider.review().findByClosedTrue();
+                List<Review> closedReviews = repositoryProvider.review().findByClosedIsNotNull();
                 closedReviews.stream().forEach(r -> r.setCleaned(true));
                 repositoryProvider.review().save(closedReviews);
             }
