@@ -3,7 +3,7 @@
 
     <property name="defaultPattern"
               value="[%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}] [%-12.12thread] %-5level
-[%X{username}] [%X{req.remoteHost} %X{req.xForwardedFor}] [%X{req.method} %X{req.requestURI}]
+[ %X{username} ] [ %X{req.remoteHost} %X{req.xForwardedFor} ] [ %X{req.method} %X{req.requestURI} ]
 [ %-40.40logger{40} ] - %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
