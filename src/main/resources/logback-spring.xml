@@ -2,9 +2,8 @@
 <configuration scan="true">
 
     <property name="defaultPattern"
-              value="[%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}]
-[%X{username} %X{req.remoteHost} %X{req.xForwardedFor} %X{req.method} %X{req.requestURI}]
-[%-12.12thread] %-5level [ %-40.40logger{40} ] - %msg%n"/>
+              value="[%d{dd/MMM/yyyy:HH:mm:ss Z, GMT}] [%-12.12thread] %-5level [ %-40.40logger{40} ] -
+%X{username} %X{req.remoteHost} %X{req.xForwardedFor} %X{req.method} %X{req.requestURI} - %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
