@@ -51,8 +51,7 @@ class HibernateStatInterceptor2 implements AsyncHandlerInterceptor {
         statisticsInterceptor.clearCounter();
         time.remove();
 
-        LOGGER.debug("[Time: {} ms] [Queries: {}] {} {}",
-                duration, queryCount, request.getMethod(), request.getRequestURI());
+        LOGGER.debug("[Time: {} ms] [Queries: {}] ", duration, queryCount);
     }
 
     @Override
