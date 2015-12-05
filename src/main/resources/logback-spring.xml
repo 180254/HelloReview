@@ -21,7 +21,7 @@
                 <maxFileSize>50MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <maxHistory>2</maxHistory>
+            <maxHistory>60</maxHistory>
         </rollingPolicy>
 
         <encoder>
