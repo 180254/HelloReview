@@ -7,14 +7,16 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "http://repo.spring.io/release" }
+        maven { url "https://repo.spring.io/release" }
         maven { url "https://repo.spring.io/snapshot" }
         maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://repo.spring.io/plugins-release" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "http://repo.jenkins-ci.org/public" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
     }
 }
 
@@ -22,6 +24,11 @@ apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "spring-boot"
+
+apply plugin: "propdeps"
+apply plugin: "propdeps-maven"
+apply plugin: "propdeps-idea"
+apply plugin: "propdeps-eclipse"
 
 jar {
     baseName = "hello-review"
@@ -33,9 +40,10 @@ targetCompatibility = 1.8
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "http://repo.spring.io/release" }
+    maven { url "https://repo.spring.io/release" }
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
+    maven { url "https://repo.spring.io/plugins-release" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "http://repo.jenkins-ci.org/public" }
 }
@@ -59,6 +67,8 @@ dependencies {
         compile("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
     }
 
+    optional("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+
     compile("com.h2database:h2:1.4.190")
     compile("org.hibernate:hibernate-java8:5.0.5.Final");
 
@@ -66,7 +76,6 @@ dependencies {
     compile("org.pac4j:pac4j-oauth:1.8.0")
 
     compile("org.kohsuke:github-api:1.71")
-    compile("org.jenkins-ci:annotation-indexer:1.4")
     compile("com.squareup.okhttp:okhttp:2.6.0")
     compile("com.squareup.okhttp:okhttp-urlconnection:2.6.0")
 
@@ -86,6 +95,8 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     testCompile("junit:junit:4.12")
 }
+
+compileJava.dependsOn(processResources)
 
 eclipse {
     classpath {

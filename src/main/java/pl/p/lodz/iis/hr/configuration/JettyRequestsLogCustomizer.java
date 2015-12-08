@@ -19,6 +19,12 @@ import java.io.File;
  */
 class JettyRequestsLogCustomizer implements JettyServerCustomizer {
 
+    private final JettyRequestLogProperties jettyReqLogProp;
+
+    JettyRequestsLogCustomizer(JettyRequestLogProperties jettyReqLogProp) {
+        this.jettyReqLogProp = jettyReqLogProp;
+    }
+
     @Override
     public void customize(Server server) {
         HandlerCollection handlers = new HandlerCollection();
@@ -27,12 +33,17 @@ class JettyRequestsLogCustomizer implements JettyServerCustomizer {
         }
 
         NCSARequestLog reqLogImpl = new NCSARequestLog();
-        reqLogImpl.setFilename(new File("logs/request.yyyy_MM_dd.log").getAbsolutePath());
-        reqLogImpl.setFilenameDateFormat("yyyy-MM-dd");
-        reqLogImpl.setExtended(true);
-        reqLogImpl.setAppend(true);
-        reqLogImpl.setLogTimeZone("GMT");
-        reqLogImpl.setRetainDays(60);
+        reqLogImpl.setFilename(new File(jettyReqLogProp.getFilename()).getAbsolutePath());
+        reqLogImpl.setFilenameDateFormat(jettyReqLogProp.getFilenameDateFormat());
+        reqLogImpl.setExtended(jettyReqLogProp.isExtended());
+        reqLogImpl.setAppend(jettyReqLogProp.isAppend());
+        reqLogImpl.setLogCookies(jettyReqLogProp.isLogCookies());
+        reqLogImpl.setLogLatency(jettyReqLogProp.isLogLatency());
+        reqLogImpl.setLogServer(jettyReqLogProp.isLogServer());
+        reqLogImpl.setIgnorePaths(jettyReqLogProp.getIgnorePathsAsArray());
+        reqLogImpl.setLogLocale(jettyReqLogProp.getLocaleObject());
+        reqLogImpl.setLogTimeZone(jettyReqLogProp.getLogTimeZone());
+        reqLogImpl.setRetainDays(jettyReqLogProp.getRetainDays());
 
         RequestLogHandler reqLogs = new RequestLogHandler();
         reqLogs.setRequestLog(reqLogImpl);

@@ -3,6 +3,8 @@ package pl.p.lodz.iis.hr.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,8 +20,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-//@Controller
-public class _DevInit {
+@Controller
+@Profile("dev")
+class _DevInit {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(_DevInit.class);
 
@@ -27,8 +30,8 @@ public class _DevInit {
     private final MFormsController mFormsController;
 
     @Autowired
-    public _DevInit(RepositoryProvider repositoryProvider,
-                    MFormsController mFormsController) {
+    _DevInit(RepositoryProvider repositoryProvider,
+             MFormsController mFormsController) {
         this.repositoryProvider = repositoryProvider;
         this.mFormsController = mFormsController;
     }
