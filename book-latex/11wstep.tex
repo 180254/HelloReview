@@ -1,0 +1,29 @@
+\chapter{Wstęp}
+
+\section{Cel pracy}
+Pomysłem przewodnim tej pracy inżynierskiej jest: studenci piszą programy - studenci je oceniają. Celem pracy jest opracowanie systemu, który umożliwia anonimowe przeglądanie kodu, przez kogoś równorzędnego do autora oraz dokonywanie oceny kodu na podstawie wytycznych zdefiniowanych przez zlecającego przegląd. Zakres pracy obejmuje projekt i~implementację systemu, oraz opisanie rezultatów pracy.
+
+\section{Rodzaje przeglądów}
+Przegląd kodu (ang. review) można podzielić na dwie zasadnicze kategorie:
+
+\begin{itemize}
+\item przegląd formalny (ang. formal review) - wysoce sformalizowany przegląd, prowadzony i~dokumentowany zgodnie z~ustaloną procedurą;
+\item przegląd nieformalny (ang. informal review, ad-hoc review) - przegląd, którym nie kierują żadne formalne procedury.
+\end{itemize}
+
+Przeglądów nieformalnych tak na prawdę dokonujemy często - nie zastanawiając się na tym, a~nawet no tym nie wiedząc. Najprostszym przykładem przeglądu nieformalnego jest poproszenie kolegi o~pomoc w~rozwiązaniu problemu. Jednym z~typów przeglądu nieformalnego jest przegląd koleżeński. Adam Roman w~swojej książce pojęcie to definiuje następująco:
+
+\medskip
+\textquote{przegląd koleżeński (ang. peer review) - przegląd produktów powstałych podczas wytwarzania oprogramowania prowadzony przez kolegów ich twórcy mający na celu wskazanie defektów i~możliwości poprawek} \cite{TestPWN}
+
+\medskip
+Zwyczajowo przeglądy wykonuje się w~pracy zawodowej, starając się zapewnić jak najwyższą jakość tworzonego oprogramowania. Działający produkt to nie wszystko. Każde oprogramowanie dostarczające rozwiązanie niebanalnego problemu posiada błędy. Ważne jest, aby te błędy wykrywać jak najszybciej. Im szybciej wykryta i~naprawiona zostanie usterka, tym mniejszy koszt wygeneruje. Przeglądy są jednym z~typów testowania statycznego, których celem jest jest odnajdywanie defektów na jak najwcześniejszym etapie. Mediana skuteczności usuwania defektów przy wykonywaniu przeglądu wynosi około 60\% dla przeglądów formalnych, i~około 35\% dla przeglądów nieformalnych \cite{TestPWN}. Statystyki te zachęcają do przyjrzenia się bliżej przeglądom i~wykorzystaniu ich potencjału nie tylko w~czasie pracy zawodowej.
+
+\section{Cel biznesowy}
+Przegląd koleżeński jest tym typem przeglądu na którym skupiono się w~tej pracy. Motywacją, która przyświeca tej pracy jest uwzględnienie takiej czynności w~procesie nauki. Nie da się nauczyć tworzyć dobre oprogramowanie kończąc na realizacji algorytmu. Refaktoryzacja działającego kodu jest ważnym etapem. O~wiele prościej jest ją wykonać, gdy ktoś da nam wskazówki, przedstawi swoje uwagi. Te natomiast łatwo zdobyć wykonując przegląd koleżeński.
+
+\medskip
+System zaprojektowano z~myślą o~zajęciach studenckich, na których prowadzący laboratoria może zadać studentom jako formę ćwiczenia wykonanie przeglądu prac swoich kolegów. Przegląd taki wykonywany jest według kryteriów ustalonych przez prowadzącego i~jest anonimowy (oceniający nie zna autora pracy). Na potrzeby procesu zbierania wymagań, a~później projektowania systemu, zajęcia studenckie zostały uogólnione do postaci kursu, a~studenci do kursantów. W~kontekście systemu laboratoria studenckie nie wyróżnia nic, co by nakazywało użyć formy bardziej szczegółowej. Ponadto takie określenia zaznaczają, że system jest uniwersalny i~może być użyty nie tylko w~ramach zajęć studenckich, lecz w~trakcie jakichkolwiek kursów związanych z~nauką programowania.
+
+
+% ex: set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab fileformat=unix filetype=tex spelllang=pl,en spell:

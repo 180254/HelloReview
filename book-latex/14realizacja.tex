@@ -1,0 +1,27 @@
+\chapter{Sposób realizacji wymagań}
+
+Wymagania nie wymuszają sposobu ich realizacji. W~czasie projektowania systemu autor przemyślał kilka rozwiązań i~ocenił pod kątem ich przydatności w~realizowanym systemie, trudności implementacji i~atrakcyjności biznesowej.
+
+\section{Źródło ocenianych prac}
+Pierwszą ważną kwestią jest źródło ocenianych prac. Prowadzący kurs mógłby na przykład udostępniać poprzez system zadanie do realizacji, a~kursanci po jego wykonaniu wgrywać rozwiązanie do systemu za pomocą odpowiedniego formularza. Takie rozwiązanie nie uzależnia od żadnych zewnętrznych usług. Problemy rodzi dopiero możliwość aktualizacji zadania, notowanie postępów w~czasie. Nie jest to także atrakcyjne wyjście z~biznesowego punktu widzenia.
+
+\medskip
+Wzorując się jednak na istniejących narzędziach zauważyć należy, że wykorzystują one do działania systemy kontroli wersji (ang. revision control system). Wykorzystanie takiego systemu nie koniecznie ułatwia implementację systemu. Znacząco usprawnia jednak prowadzenie kursów, zwłaszcza gdy dodatkowo wykorzystany zostanie usługa pozwalająca przechowywać repozytorium (ang. repository) systemu kontroli wersji (pliki, i~historię ich zmian) online. Kontrola wersji jest aktualnie nieodłącznym elementem programowania. Dlatego projektowany system w~znacznej części opiera się o~kontrolę wersji, i~usługi z~tym związane. Wybranym źródłem ocenianych prac jest usługa przechowująca historię wersji w~Internecie. Naturalnym wydaje się próba integracji z~już wykorzystywanymi usługami, ma to też uzasadnienie biznesowe.
+
+\section{Sposób autoryzacji użytkownika}
+Użytkownik musi mieć konto w~systemie, aby mógł zobaczyć zlecenia przeglądów, które zostały mu zadane, oraz na nie odpowiedzieć. Wymóg logowania zapewnia także, że nikt nie wypełni jego pracy. Klasycznym sposobem autoryzacji użytkowników jest założenie mu konta w~serwisie i~przekazanie danych autoryzujących, lub pozwolenie na samodzielne założenie konta (ewentualnie połączone z~automatycznym lub manualnym mechanizm potwierdzania prawidłowości wprowadzonych danych).
+
+\medskip
+Należy się jednak zastanowić, czy jest konieczne, aby kursant musiał mieć kolejne konto. W~związku z~założeniem, iż projekt opiera się na usługach związanych kontrolą wersji autor rozważył pogłębienie integracji. Usługi takie często oferują mechanizmy dostępu do zasobów prywatnych innym usługom, bez przekazywania danych autoryzujących. Przykładem takich sposobów autoryzacji są SAML, OpenID, OAuth1, OAuth2 \cite{3rdAuth}. Taki mechanizm łatwo wykorzystać jako sposób logowania za pomocą konta w~aplikacji trzeciej. Wystarczy, że wymagamy od kursanta posiadania konta w~usłudze związanej z~systemem kontroli wersji - nie ma potrzeby wymagać od niego jeszcze jednego konta. Rozwiązanie takie daje jeszcze jedną korzyść - brak konieczności dodatkowego łączenia pomiędzy kontem w~serwisie a~kontem w~usłudze kontroli wersji. 
+
+\section{Anonimowość przeglądanej pracy}
+Istotnym wymaganiem jest anonimowość przeglądanej pracy. Recenzent nie może wiedzieć, czyją pracę ocenia. Nie można więc po prostu mu przekazać adresu, gdzie autor umieścił swoje rozwiązanie. Przekazujemy w~ten sposób wszystkie meta-dane tam zawarte, w~tym autora pracy. Problem ten autor rozważył uwzględniając dodatkowe założenie integracji z~usługą kontroli wersji. Autor nie dokonał analizy technik możliwych do zastosowania w~przypadku innego źródła ocenianych prac.
+
+\medskip
+Jednym z~pomysłów rozwiązania tego problemu jest założenie kursantom kont prywatnych w~usłudze przechowywania repozytorium historii wersji. Każde takie konto może mieć nazwę, która nie musi zdradzać personaliów kursanta. Prywatne konta jednak częściowo nie spełniają wymagania, mówiącego, że ewentualne usługi trzecie muszą być darmowe. W~przypadku poziomu akademickiego często można poprosić o~takie konta, dla potrzeb uczelni. Chcąc jednak uogólnić system nie można przyjąć tego rozwiązania jako satysfakcjonującego.
+
+\medskip
+Innym, wykorzystanym, sposobem jest skopiowanie danej pracy, i~przekazanie recenzentowi kopii. Kopia taka, odpowiednio przygotowana, dokonana przy użyciu specjalnie do tego przeznaczonego konta, spełnia wymóg anonimowości. Autor widniejący pod przekazanym adresem nie odzwierciedla wtedy prawdziwej informacji, za każdym razem wskazuje na to samo bezosobowe konto.
+
+
+% ex: set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab fileformat=unix filetype=tex spelllang=pl,en spell:

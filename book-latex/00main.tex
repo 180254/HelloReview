@@ -1,0 +1,90 @@
+\pdfoutput=1
+
+\pdfcompresslevel=1    % 1-9; 9 podczas rozwijania; 4 lub mniej do druku
+\pdfobjcompresslevel=2
+\pdfminorversion=7     % PDF 1.7 jest standardem ISO
+
+\pdfinfo
+{
+    /Author (Adrian Pedziwiatr (180254))
+    /Title (System do wzajemnej oceny kodu programistycznego)
+}
+\documentclass[a4paper,onecolumn,twoside,12pt]{mwrep}
+
+%\usepackage{mathptmx}         % URW NimbusRomNo9L, odmiana Times New Roman, 
+\usepackage{tgtermes}        % czcionka szeryfowa TeX Gyre Termes, nie powoduje problemów podczas kopiowania tekstu z PDF
+
+\usepackage[utf8]{inputenc}  % kodowanie dokumentu
+\usepackage[T1]{fontenc}     % system kodowanie czcionek
+\usepackage[polish]{babel}   % niezbędne dla narodowych znaków
+\usepackage{polski}          % polski słownik łamania wyrazów
+\usepackage{geometry}        % możliwość ustawienia marginesów
+
+\usepackage{csquotes}        % cudzysłowy; nie ma domyślnie ustawień dla języka polskiego
+\DeclareQuoteAlias{croatian}{polish} % cudzysłowy dla Polski są takie jak w~Chorwacji
+
+\usepackage{pdflscape}       % możliwość zmiany orientacji strony (landscape/portrait mode)
+% bibliografia
+% backend=biber
+% backend=bibtex,bibencoding=ascii
+\usepackage[
+    backend=biber,
+    natbib=true,
+    style=numeric,
+    sorting=nyt % sortowanie: nazwiska (n), rok (y), tytuł (t)
+]{biblatex}
+\addbibresource{999bibliografia.bib}
+
+\hyphenpenalty=10000		% nie dziel wyrazów zbyt często
+\clubpenalty=10000			% kara za sierotki
+\widowpenalty=10000			% nie pozostawiaj wdów
+\brokenpenalty=10000		% nie dziel wyrazów między stronami
+\exhyphenpenalty=999999		% nie dziel słów z~myślnikiem
+\righthyphenmin=3			% dziel minimum 3 litery
+
+\pretolerance=250           % tolerancja dzielenia wyrazów (-1 do 10000)
+\hbadness=10000             % zgłaszaj błędy 'underfull' 'overfull' (0 do 10000)
+\sloppy						% umacnia pozycję prawego marginesu
+
+\linespread{1.3}            % interlinia
+
+\usepackage{graphicx}       % rysunki
+\graphicspath{ {images/} {images2/} {db/} }  % źródło rysunków
+
+\begin{document}
+    \newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=2.5cm, rmargin=2.5cm}
+    
+    \input{01tytulowa}
+    \null
+    \thispagestyle{empty}
+    \clearpage
+    
+    \newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm} 
+    \input{02streszczenie}
+    \clearpage
+    \null
+    
+    \tableofcontents
+    
+    \input{11wstep}
+    \input{12wymagania}
+    \input{13potencjal}
+    \input{14realizacja}
+    \input{15technologie}
+    \input{16architektura}
+    \input{17konfiguracja}
+    \input{18projekt}
+    \input{19baza}
+    \input{20problemy}
+    \input{21kierunki}
+    \input{22podsumowanie}
+    
+    \thispagestyle{empty}
+    \listoffigures
+    
+    \nocite{*}
+    \printbibliography[title={Bibliografia}]
+    
+\end{document}
+
+% ex: set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab fileformat=unix filetype=tex spelllang=pl,en spell:

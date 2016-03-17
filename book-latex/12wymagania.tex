@@ -1,0 +1,59 @@
+\chapter{Wymagania}
+
+\section{Cel systemu}
+
+Wymagania stawiane systemowi do wzajemnej oceny kodu, wykorzystywanemu w~procesie nauki są inne niż przypadku pracy zawodowej. Celem systemu jest spowodowanie, aby kursant-recenzent przyjrzał się pracy wykonywanej przez innych kursantów. Pozwoli mu to spojrzeć na kod z~innej perspektywy. Możliwe jest, że wtedy zauważy inne elementy, rozważy nowe sposoby rozwiązania, nauczy się czegoś. System, który spełni postawione wymagania potencjalnie może wspierać wiele scenariuszy. Osoba oceniającą może być zarówno \textquote{poprowadzona za rękę} poprzez przekazanie jej podczas procesu oceny szczegółowych instrukcji, jak i~pozostawiona sama sobie posiadając jedynie ogólne wskazówki i~pytania.
+
+\section{Aktorzy systemu}
+System musi uwzględniać następujące role:
+
+\begin{itemize}
+    \item prowadzący kurs (ang. course master),
+    \item zleceniodawca przeglądu (ang. review supervisor),
+    \item uczestnik kursu (ang. course partiticipant),
+    \item autor pracy, osoba oceniana (ang. assessed person),
+    \item recenzent, osoba oceniająca (ang. reviewer, assessor).
+\end{itemize}
+
+\section{Cechy systemu}
+System wykonany w~ramach niniejszej pracy inżynierskiej, w~porównaniu do tradycyjnych systemów wspomagających proces przeglądów nieformalnych, wyróżnia się w~następujących elementach:
+
+\begin{itemize}
+    \item przegląd zleca osoba nadrzędna (zleceniodawca),
+    \item oceniana jest całość, nie pojedyncza zamiana,
+    \item ocena następuje poprzez wypełnienie ankiety,
+    \item ocena następuje według określonych kryteriów,
+    \item ocena jest dokonywana anonimowo.
+\end{itemize}
+
+Różnice wynikają z~innej grupy docelowej, która ma system wykorzystywać, i~celom, którym ma służyć. Jest to jednocześnie spis wymagań postanowionych w~stosunku do tworzonego oprogramowania, które zostały przewidziane i~zrealizowane.
+
+\subsection{Zleceniodawca przeglądu}
+Wykorzystując system wspomagający przegląd koleżeński w~zakładzie pracy zleceniodawcą przeglądu może być zarówno kierownik, jak i~pracownik (chociaż z~definicji należało by mówić tylko o~koledze - pracowniku). Wybór osoby oceniającej także leży w~gestii obydwu tych osób. Wszystko zależy od tego, jakie są przyjęte w~firmie (projekcie) zasady, i~jaka jest motywacja przeglądu. Może tu chodzić zarówno o~sprawdzenie kodu osoby mniej doświadczonej, przez bardziej doświadczoną - gdzie głównym celem jest poprawa jakości kodu, jak i~odwrotnie - gdzie mimo świeżego poglądu prawdopodobnie większy zaobserwowany zysk będzie w~aspekcie edukacyjnym (zobaczeniu jak pewne problemy rozwiązują starsi, bardziej doświadczeni koledzy).
+
+\medskip
+W opracowanym systemie przegląd jest rodzajem ćwiczenia, w~szczególnym przypadku pracy domowej. Wykonanie przeglądu zawsze zleca osoba nadrzędna - prowadząca kurs. W~chwili obecnej nie przewidziano możliwości wskazania kto ma czyją pracę ocenić - jako element nieistotny przydział został zrealizowany losowo, jednak z~uwzględnieniem tego, że powinien być równomierny - tj. każda praca oceniona tyle samo razy.
+
+\subsection{Ocena całości}
+W typowym systemie często nie chodzi o~przegląd całej aplikacji - gdyż jest to często niemożliwe z~uwagi stopień jej skomplikowania. Osoba nr 1 implementując nową funkcjonalność, lub modyfikując istniejącą potencjalnie eliminuje, lub wprowadza nowe błędy w~systemie. Motywacją przeglądu kodu przez inną osobę (nr 2) jest między innymi jest poprawienie jakości tego kodu, eliminacja defektów, skupiając się na tym, co zostało w~nim zmodyfikowane. Historia zmian jest istotną kwestią w~tej motywacji.
+
+\medskip
+W opracowanym systemie historia zmian nie jest istotna. Z~założenia program nie jest długi, a~osoba oceniająca nie musi znać historii, wiedzieć jak wyglądał rozwój. Ważny jest efekt końcowy - i~to on powinien zostać oceniony, w~całości.
+
+\subsection{Sposób oceny}
+Typowy system zwykle umożliwia napisanie komentarza: do linijki kodu, do funkcji, do pliku, do całej ocenianej zmiany. Nie ma tu jednak żadnej standaryzacji. Każdy wpisuje swoje uwagi w~miejscu, które uważa za najodpowiedniejsze. Zwykle wybór ten zależy od tego, jak bardzo szczegółowa uwaga zostaje zanotowana. Trudno więc porównać otrzymane uwagi, w~przypadku gdy ten sam fragment przegląda wiele osób. 
+
+\medskip
+W opracowanym systemie recenzent nie wpisuje oceny bezpośrednio komentując kod. Prowadzący może określić zarówno szczegółowe kryteria jak i~dać jedynie ogólne wskazówki/pytania. Ważne jest, by możliwe było łatwe porównanie opinii różnych uczestników kursu na daną realizację zadania (w~przypadku, gdy pracę oceniało wiele osób). Ustalonym sposobem oceny spełniających to wymaganie jest wypełnienie przez recenzenta odpowiednio przygotowanej ankiety. Ankietę przygotowuję prowadzący uwzględniając co było w~danym zadaniu ważne, jaki scenariusz chciałby zrealizować, oraz jaki cel chciałby osiągnąć w~tym ćwiczeniu. Ankieta jako sposób oceny daje szeroką gamę możliwości i~czyni system bardziej wszechstronnym.
+
+\subsection{Kryteria oceny}
+W typowym systemie kryteria oceny mogą dotyczyć zgodności napisanego kodu z~zasadami przyjętymi w~firmie - dla przykładu: stosowane formatowanie kodu, unikanie niezalecanych funkcji. Każdy przegląd jest jednak inny, dotyczy czegoś innego - brak jest formalnej procedury. 
+
+\medskip
+W opracowanym także można przygotować ogólny zestaw pytań, pasujący do każdego zadania. Typowy przebieg jest w~nim jednak inny. Tutaj proces oceny dotyczy wcześniej przygotowanego, dokładnie przemyślanego zadania. W~zamyśle prowadzącego kurs było ułożenie tego zadania tak, by np. zasadnym było wykorzystanie konkretnego wzorca programistycznego. Łatwo jest przygotować wyspecjalizowane kryteria oceny, którymi powinien podążać recenzent. Punkt ten naturalnie związany jest ze sposobem oceny i~uzupełnia wymóg dostosowania sposobu oceny.
+
+\subsection{Anonimowość przeglądanej pracy}
+Typowa ocena jest imienna - to znaczy nie ma powodu, by ukrywać informację kto jest autorem ocenianej pracy. Realizowany system zakłada jednak, że uczestnik kursu nie wie czyją pracę ocenia. Anonimowe przedstawienie pracy zapewnia, że recenzent nie będzie się sugerował faktem, iż ocenia osobę, której wyniki są zwykle powyżej lub poniżej przeciętnej. Taka autosugestia może negatywnie wpłynąć na bezstronność oceny, szczególnie na etapie nauki. Dlatego też system zapewniać musi, iż recenzent nie zostanie poinformowany o~personaliach autora kodu.
+
+
+% ex: set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab fileformat=unix filetype=tex spelllang=pl,en spell:

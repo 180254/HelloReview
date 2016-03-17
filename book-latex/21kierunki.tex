@@ -1,0 +1,36 @@
+\chapter{Możliwe kierunki rozwoju systemu}
+
+Przygotowany system jest kompletny. Wszystkie założone wymagania znajdują pokrycie w~zrealizowanej funkcjonalności. Nie oznacza to jednak, że nie można go rozbudowywać i~rozszerzać dostępnych możliwości. Poniżej wymieniono kilka wartych rozważenia opcji wraz z~próbą przybliżenia stopnia trudności ich realizacji. 
+
+\section{Internacjonalizacja}
+System komunikuje się z~użytkownikiem w~języku angielskim. Umożliwienie komunikacji w~innym języku jest relatywnie proste. Należy przetłumaczyć komunikaty, które zostały już zebrane w~jednym pliku, oraz zaprogramować funkcję zmiany języka komunikatów w~interfejsie (front-end). Funkcjonalność taka została przewidziana na serwerze (back-end), i~odpowiednie funkcje po tej stronie są gotowe do użycia.
+
+\medskip
+Inaczej jest jednak z~systemem formularzy, za pomocą którego recenzent udziela odpowiedzi. Ten system nie został zaprojektowany z~myślą o~wyświetlaniu komunikatów w~wielu językach. Nie stanowi to problemu, jeżeli kurs składa się w~całości z~osób komunikujących się jednym wspólnym językiem. Formularz pod konkretne zadanie można utworzyć wielokrotnie - za każdym razem wpisując komunikaty w~języku odpowiednim dla danego kursu. Możliwość tworzenia wielonarodowościowych kursów nie została przewidziana i~wymaga przebudowy systemu formularzy.
+
+\section{Wielu prowadzących}
+System umożliwia ustawienie uprawnień master (prowadzący) wielu użytkownikom. Wszyscy jednak mają tą samą listę kursów, formularzy,  zleceń i~recenzji. Elementy te nie mają przypisanego właściciela i~wymagają wspólnego zaufania pomiędzy osobami z~uprawnieniami prowadzącego. Podczas projektowania nie została przewidziana taka możliwość, więc logika z~tym związana nie istnieje. Należy ją dopisać, co spowoduje także wymóg zmiany struktury bazodanowej. 
+
+\section{Ręczny przydział przeglądów}
+Prowadzący przy zlecaniu przeglądu może określić ile prac każdy z~kursantów powinien ocenić. Jest to obecnie realizowane losowo, z~uwzględnieniem równomierności przydziału, i~braku możliwości oceny swojej pracy. Nie ma jednak możliwości ręcznego przydziału kto czyją pracę powinien ocenić. Realizacja takiej opcji nie powinna sprawiać problemów komplementacyjnych, choć wymaga dostosowania algorytmu do takiej możliwości.
+
+\section{Panel konfiguracyjny}
+System obecnie jest konfigurowany przy użyciu pliku XML. Konfiguracja jest ładowana raz - przy uruchomieniu serwera. Nie ma możliwości zmiany konfiguracji podczas działania systemu. Zmiana zawartości pliku konfiguracyjnego wymaga przeładowania całego systemu. System można usprawnić umożliwiając zmianę konfiguracji podczas pracy systemu. Sposobów na realizację tego są co najmniej dwa. Jednym z~nich jest zrealizowanie opcji ponownego odczytu konfiguracji, i~aktualizacji elementów zależnych od tej konfiguracji podczas działania systemu - przy czym nadal konfiguracja znajduje się pliku. Drugim sposobem jest przebudowanie systemu konfiguracji na nowo - wprowadzenie panelu konfiguracyjnego, i~przeniesienie wpisów konfiguracyjnych z~pliku do systemu bazodanowego.
+
+\medskip
+Stopień skomplikowania zależy od przyjętych nowych założeń, które elementy konfiguracji mogą być zmienione bez potrzeby ponownego uruchomienia serwera. Niektóre z~nich nie sprawią żadnych trudności, i~nie wymagają dodatkowych działań. Do nich zaliczyć można np. listę osób z~uprawnieniami prowadzących, czy listę kont, które są źródłem zadań w~usłudze Github. Są jednak też takie, których zmiana może znacznie skomplikować logikę. Do tych zaliczyć należy zmianę folderu, który służy jako cache połączeń, oraz zmianę sekretnych danych OAuth2 identyfikujących aplikację w~usłudze GitHub. 
+
+\section{Obsługa repozytoriów prywatnych}
+System zrealizowano bazując na obsłudze kont darmowych - w~których repozytoria kontroli wersji są publicznie dostępne. Wykorzystana usługa GitHub umożliwia jednak także tworzenie organizacji w~ramach których repozytoria są prywatne. Konta takie zwykle są płatne, lecz w~tym konkretnym przypadku można poprosić o~licencję akademicką, do celów naukowych. Aktualnie takie repozytoria nie są obsługiwane.
+
+\medskip
+GitHub API repozytorium, i~repozytorium w~ramach organizacji uznaje za inny rodzaj zasobu. Ten drugi nie jest w~tym momencie w~ogóle używany. Algorytmy należy uogólnić, tak by odpytywał o~prawidłowy zasób. Należy też rozbudować konfigurację systemu i~formularz tworzenia zleceń przeglądów.
+
+\section{Zmniejszenie ilości wykonywanych kopii}
+Zastosowany algorytm anonimizacji można zoptymalizować pod kątem czasowym, ilości wykonywanych operacji, i~zapytań do GitHub API. Miejscem, w~którym można znaleźć dość oczywisty słaby punkt jest ilość wykonywanych kopii. W~tym momencie, jeżeli w~ramach przeglądu prowadzący kurs zleci, by każdy ocenił pracę 3 innych kolegów, to każda z~prac będzie skopiowana co najmniej 3 razy - dla każdej oceny.
+
+\medskip
+Usunięcie wykonywania zbędnych kopii wymaga kilku zmian. Po pierwsze, najbardziej oczywiste - poprawa algorytmu kopiującego. Po drugie zmiana struktury bazodanowej - która aktualnie przewiduje oddzielny link dla każdej kopii. Do takiej zmiany dostosować należało by także algorytmy oczyszczające - kasujące kopie, tak by nie próbowały wielokrotnie usuwać tego samego repozytorium.
+
+
+% ex: set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab fileformat=unix filetype=tex spelllang=pl,en spell:
