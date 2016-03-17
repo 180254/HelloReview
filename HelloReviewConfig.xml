@@ -12,20 +12,18 @@
         </masters>
 
         <courserepos>
-            <username>mto-lab</username>
-            <username>radamuspl</username>
             <username>180254</username>
         </courserepos>
 
         <dummy>
-            <token>5d9ace8a9f8e682ae5a62055cb67209f52b7e52c</token>
+            <token>xxxxyyyyyzzzz</token>
             <commitmsg>clone for anonymous peer review purposes</commitmsg>
         </dummy>
 
         <application>
             <appname>HelloReview</appname>
-            <clientid>4d8d2aaee4f9a1c6a176</clientid>
-            <clientsecret>e6b71ddec1774464bb9538142a65ef8bba844647</clientsecret>
+            <clientid>xxxxyyyyyzzzz</clientid>
+            <clientsecret>xxxxyyyyyzzzz</clientsecret>
         </application>
     </github>
 
