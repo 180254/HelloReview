@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.p.lodz.iis.hr.services.LocaleService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -43,8 +44,9 @@ class CustomizedErrorController extends BasicErrorController {
     }
 
     @Override
-    public ModelAndView errorHtml(HttpServletRequest request) {
-        ModelAndView errorHtml = super.errorHtml(request);
+    public ModelAndView errorHtml(HttpServletRequest request,
+                                  HttpServletResponse response) {
+        ModelAndView errorHtml = super.errorHtml(request, response);
         Map<String, Object> model = errorHtml.getModel();
 
         LOGGER.debug("HTML ERROR {}", errorHtml);

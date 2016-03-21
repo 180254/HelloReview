@@ -212,7 +212,10 @@ class GHTaskClone implements Runnable {
         LOGGER.debug("{} Creating target repo.", uuid);
 
         targetRepo = GHExecutor.ex(() ->
-                ghWait.createRepository(targetRepoSimpleName, ghDummy.getCommitMsg(), null, true)
+                ghWait.createRepository(targetRepoSimpleName)
+                        .description(ghDummy.getCommitMsg())
+                        .private_(false)
+                        .create()
         );
 
         LOGGER.debug("{} Created target repo.", uuid);

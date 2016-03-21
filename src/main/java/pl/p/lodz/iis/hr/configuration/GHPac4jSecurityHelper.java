@@ -58,7 +58,7 @@ public class GHPac4jSecurityHelper {
 
     public GitHubProfile getUserProfileUp2Date() {
         String accessToken = sessionUserProfile.get().getAccessToken();
-        return gitHubClient.getUserProfile(accessToken);
+        return gitHubClient.getUserProfile(webContext.get(), accessToken);
     }
 
     public boolean isMaster(AppConfig appConfig) {

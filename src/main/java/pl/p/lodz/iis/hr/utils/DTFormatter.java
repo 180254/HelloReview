@@ -1,6 +1,6 @@
 package pl.p.lodz.iis.hr.utils;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
