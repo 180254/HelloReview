@@ -1,8 +1,0 @@
-https://developers.google.com/api-client-library/dotnet/reference/1.9.1/interfaceGoogle_1_1Apis_1_1Services_1_1IClientService
-https://developers.google.com/apps-script/reference/forms/item-response?hl=en-US
-https://developers.google.com/apps-script/guides/rest/
-https://www.jotform.com/pricing
-http://www.apptivo.com/google-forms-integration-create-sales-leads-from-google-forms/
-http://code.lancepollard.com/introducing-the-google-form-api
-http://www.wufoo.com/pricing/
-https://pandaform.com/pricing-sign-up/ó
