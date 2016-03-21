@@ -1,5 +1,5 @@
 
-more screenshots: see bsc-thesis/book-latex/images2
+more screenshots: see bsc-thesis/book-latex/images
 
 ***************
 
